@@ -61,6 +61,87 @@ namespace NHibernate.OData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected exponent for decimal literal at {0}..
+        /// </summary>
+        internal static string Lexer_DecimalCannotHaveExponent {
+            get {
+                return ResourceManager.GetString("Lexer_DecimalCannotHaveExponent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected digits after exponent at {0}..
+        /// </summary>
+        internal static string Lexer_ExpectedDigitsAfterExponent {
+            get {
+                return ResourceManager.GetString("Lexer_ExpectedDigitsAfterExponent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Binary format is invalid at {0}..
+        /// </summary>
+        internal static string Lexer_InvalidBinaryFormat {
+            get {
+                return ResourceManager.GetString("Lexer_InvalidBinaryFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date/time format is invalid at {0}..
+        /// </summary>
+        internal static string Lexer_InvalidDateTimeFormat {
+            get {
+                return ResourceManager.GetString("Lexer_InvalidDateTimeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duration format is invalid at {0}..
+        /// </summary>
+        internal static string Lexer_InvalidDurationFormat {
+            get {
+                return ResourceManager.GetString("Lexer_InvalidDurationFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Guid format is invalid at {0}..
+        /// </summary>
+        internal static string Lexer_InvalidGuidFormat {
+            get {
+                return ResourceManager.GetString("Lexer_InvalidGuidFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected exponent for long literal at {0}..
+        /// </summary>
+        internal static string Lexer_LongCannotHaveExponent {
+            get {
+                return ResourceManager.GetString("Lexer_LongCannotHaveExponent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpecter character &apos;{0}&apos; at offset {1}..
+        /// </summary>
+        internal static string Lexer_UnexpectedCharacter {
+            get {
+                return ResourceManager.GetString("Lexer_UnexpectedCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unterminated string starting at {0}..
+        /// </summary>
+        internal static string Lexer_UnterminatedString {
+            get {
+                return ResourceManager.GetString("Lexer_UnterminatedString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot understand query string element &apos;{0}&apos;..
         /// </summary>
         internal static string ODataExpression_InvalidQueryStringElement {
@@ -75,51 +156,6 @@ namespace NHibernate.OData {
         internal static string ODataExpression_SkipTopMustBePositive {
             get {
                 return ResourceManager.GetString("ODataExpression_SkipTopMustBePositive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unexpected exponent for decimal literal at {0}..
-        /// </summary>
-        internal static string Tokenizer_DecimalCannotHaveExponent {
-            get {
-                return ResourceManager.GetString("Tokenizer_DecimalCannotHaveExponent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Expected digits after exponent at {0}..
-        /// </summary>
-        internal static string Tokenizer_ExpectedDigitsAfterExponent {
-            get {
-                return ResourceManager.GetString("Tokenizer_ExpectedDigitsAfterExponent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unexpected exponent for long literal at {0}..
-        /// </summary>
-        internal static string Tokenizer_LongCannotHaveExponent {
-            get {
-                return ResourceManager.GetString("Tokenizer_LongCannotHaveExponent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unexpecter character &apos;{0}&apos; at offset {1}..
-        /// </summary>
-        internal static string Tokenizer_UnexpectedCharacter {
-            get {
-                return ResourceManager.GetString("Tokenizer_UnexpectedCharacter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unterminated string starting at {0}..
-        /// </summary>
-        internal static string Tokenizer_UnterminatedString {
-            get {
-                return ResourceManager.GetString("Tokenizer_UnterminatedString", resourceCulture);
             }
         }
     }

@@ -117,25 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Lexer_DecimalCannotHaveExponent" xml:space="preserve">
+    <value>Unexpected exponent for decimal literal at {0}.</value>
+  </data>
+  <data name="Lexer_ExpectedDigitsAfterExponent" xml:space="preserve">
+    <value>Expected digits after exponent at {0}.</value>
+  </data>
+  <data name="Lexer_InvalidBinaryFormat" xml:space="preserve">
+    <value>Binary format is invalid at {0}.</value>
+  </data>
+  <data name="Lexer_InvalidDateTimeFormat" xml:space="preserve">
+    <value>Date/time format is invalid at {0}.</value>
+  </data>
+  <data name="Lexer_InvalidDurationFormat" xml:space="preserve">
+    <value>Duration format is invalid at {0}.</value>
+  </data>
+  <data name="Lexer_InvalidGuidFormat" xml:space="preserve">
+    <value>Guid format is invalid at {0}.</value>
+  </data>
+  <data name="Lexer_LongCannotHaveExponent" xml:space="preserve">
+    <value>Unexpected exponent for long literal at {0}.</value>
+  </data>
+  <data name="Lexer_UnexpectedCharacter" xml:space="preserve">
+    <value>Unexpecter character '{0}' at offset {1}.</value>
+  </data>
+  <data name="Lexer_UnterminatedString" xml:space="preserve">
+    <value>Unterminated string starting at {0}.</value>
+  </data>
   <data name="ODataExpression_InvalidQueryStringElement" xml:space="preserve">
     <value>Cannot understand query string element '{0}'.</value>
   </data>
   <data name="ODataExpression_SkipTopMustBePositive" xml:space="preserve">
     <value>Query string parameter '{0}' must be a positive integer.</value>
-  </data>
-  <data name="Tokenizer_DecimalCannotHaveExponent" xml:space="preserve">
-    <value>Unexpected exponent for decimal literal at {0}.</value>
-  </data>
-  <data name="Tokenizer_ExpectedDigitsAfterExponent" xml:space="preserve">
-    <value>Expected digits after exponent at {0}.</value>
-  </data>
-  <data name="Tokenizer_LongCannotHaveExponent" xml:space="preserve">
-    <value>Unexpected exponent for long literal at {0}.</value>
-  </data>
-  <data name="Tokenizer_UnexpectedCharacter" xml:space="preserve">
-    <value>Unexpecter character '{0}' at offset {1}.</value>
-  </data>
-  <data name="Tokenizer_UnterminatedString" xml:space="preserve">
-    <value>Unterminated string starting at {0}.</value>
   </data>
 </root>

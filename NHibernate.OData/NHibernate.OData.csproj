@@ -62,6 +62,7 @@
     <Compile Include="Token.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="TokenType.cs" />
+    <Compile Include="XmlTimeSpan.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ErrorMessages.resx">

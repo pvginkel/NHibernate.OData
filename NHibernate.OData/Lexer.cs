@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace NHibernate.OData
 {
     internal class Lexer
     {
+        private static readonly Regex DateTimeRegex = new Regex("^(\\d{4})-(\\d{1,2})-(\\d{1,2})T(\\d{1,22}):(\\d{2})(?::(\\d{2})(?:\\.(\\d{7}))?)?$");
+        private static readonly Regex GuidRegex = new Regex("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$");
+        private static readonly Regex DurationRegex = new Regex("^(-)?P(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)D)?T?(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d*)?)S)?$");
         private readonly string _source;
         private int _offset;
         private int _current;
@@ -62,7 +67,7 @@ namespace NHibernate.OData
                     else
                     {
                         throw new ODataException(String.Format(
-                            ErrorMessages.Tokenizer_UnexpectedCharacter, c, _current
+                            ErrorMessages.Lexer_UnexpectedCharacter, c, _current
                         ));
                     }
             }
@@ -96,7 +101,7 @@ namespace NHibernate.OData
                 return SyntaxToken.Minus;
         }
 
-        private Token ParseString()
+        private LiteralToken ParseString()
         {
             var sb = new StringBuilder();
             bool hadEnd = false;
@@ -136,7 +141,7 @@ namespace NHibernate.OData
             if (!hadEnd)
             {
                 throw new ODataException(String.Format(
-                    ErrorMessages.Tokenizer_UnterminatedString, _offset
+                    ErrorMessages.Lexer_UnterminatedString, _offset
                 ));
             }
 
@@ -147,14 +152,6 @@ namespace NHibernate.OData
 
         private Token ParseNumeric()
         {
-            if (Char.IsDigit(_source[_offset]))
-            {
-                var dateTimeToken = TryParseDateTime();
-
-                if (dateTimeToken != null)
-                    return dateTimeToken;
-            }
-
             bool floating = false;
             char c;
 
@@ -193,7 +190,7 @@ namespace NHibernate.OData
                     if (!exponentEnd.HasValue)
                     {
                         throw new ODataException(String.Format(
-                            ErrorMessages.Tokenizer_ExpectedDigitsAfterExponent, _offset
+                            ErrorMessages.Lexer_ExpectedDigitsAfterExponent, _offset
                         ));
                     }
 
@@ -208,13 +205,13 @@ namespace NHibernate.OData
                         if (c == 'm' || c == 'M')
                         {
                             throw new ODataException(String.Format(
-                                ErrorMessages.Tokenizer_DecimalCannotHaveExponent, _offset
+                                ErrorMessages.Lexer_DecimalCannotHaveExponent, _offset
                             ));
                         }
                         else if (c == 'l' || c == 'L')
                         {
                             throw new ODataException(String.Format(
-                                ErrorMessages.Tokenizer_LongCannotHaveExponent, _offset
+                                ErrorMessages.Lexer_LongCannotHaveExponent, _offset
                             ));
                         }
                     }
@@ -269,127 +266,6 @@ namespace NHibernate.OData
             return new LiteralToken(value);
         }
 
-        private LiteralToken TryParseDateTime()
-        {
-            // Date/times are parsed following 2.2.2. Note that we do not throw
-            // when we don't match a date/time. We just interpret the value
-            // as a number and let some other part of the tokenizer throw.
-            // This includes e.g. 13 as the month value.
-
-            int yearStart = _current;
-            int? yearEnd = SkipDigits(yearStart);
-
-            if (
-                !yearEnd.HasValue ||
-                yearEnd.Value - yearStart != 4 ||
-                _source[yearEnd.Value + 1] != '-'
-            )
-                return null;
-
-            int monthStart = yearEnd.Value + 1;
-            int? monthEnd = SkipDigits(monthStart);
-
-            if (
-                !monthEnd.HasValue ||
-                monthEnd.Value - monthStart > 2 ||
-                _source[monthEnd.Value + 1] != '-'
-            )
-                return null;
-
-            int dayStart = monthEnd.Value + 1;
-            int? dayEnd = SkipDigits(dayStart);
-
-            if (
-                !dayEnd.HasValue ||
-                dayEnd.Value - dayStart > 2 ||
-                _source[dayEnd.Value + 1] != 'T'
-            )
-                return null;
-
-            int hourStart = dayEnd.Value + 1;
-            int? hourEnd = SkipDigits(hourStart);
-
-            if (
-                !hourEnd.HasValue ||
-                hourEnd.Value - hourStart > 2 ||
-                _source[hourEnd.Value + 1] != ':'
-            )
-                return null;
-
-            int minuteStart = hourEnd.Value + 1;
-            int? minuteEnd = SkipDigits(minuteStart);
-
-            if (
-                !minuteEnd.HasValue ||
-                minuteEnd.Value - minuteStart > 2
-            )
-                return null;
-
-            int offset = minuteEnd.Value;
-
-            int? secondStart = null;
-            int? secondEnd = null;
-            int? nanoSecondStart = null;
-            int? nanoSecondEnd = null;
-
-            if (_source[minuteEnd.Value + 1] == ':')
-            {
-                secondStart = minuteEnd.Value + 1;
-                secondEnd = SkipDigits(secondStart.Value);
-
-                if (
-                    !secondEnd.HasValue ||
-                    secondEnd.Value - secondStart.Value > 2
-                )
-                    return null;
-
-                offset = secondEnd.Value;
-
-                if (_source[secondEnd.Value + 1] == '.')
-                {
-                    nanoSecondStart = secondEnd.Value + 1;
-                    nanoSecondEnd = SkipDigits(nanoSecondStart.Value);
-
-                    if (
-                        !nanoSecondEnd.HasValue ||
-                        nanoSecondEnd.Value - nanoSecondStart.Value > 7
-                    )
-                        return null;
-
-                    offset = nanoSecondEnd.Value;
-                }
-            }
-
-            int year = int.Parse(_source.Substring(yearStart, yearEnd.Value - yearStart));
-            int month = int.Parse(_source.Substring(monthStart, monthEnd.Value - monthStart));
-            int day = int.Parse(_source.Substring(dayStart, dayEnd.Value - dayStart));
-            int hour = int.Parse(_source.Substring(hourStart, hourEnd.Value - hourStart));
-            int minute = int.Parse(_source.Substring(minuteStart, minuteEnd.Value - minuteStart));
-
-            int second = 0;
-            int nanoSecond = 0;
-
-            if (secondStart.HasValue)
-                second = int.Parse(_source.Substring(secondStart.Value, secondEnd.Value - secondStart.Value));
-            if (nanoSecondStart.HasValue)
-                nanoSecond = int.Parse(_source.Substring(nanoSecondStart.Value, nanoSecondEnd.Value - nanoSecondStart.Value));
-
-            if (month == 0 || month > 12)
-                return null;
-            if (day == 0 || day > 31)
-                return null;
-            if (minute > 59)
-                return null;
-            if (second > 59)
-                return null;
-
-            _offset = offset;
-
-            // Nanoseconds are truncated because DateTime expects milliseconds.
-
-            return new LiteralToken(new DateTime(year, month, day, hour, minute, second, nanoSecond / 1000));
-        }
-
         private int? SkipDigits(int current)
         {
             if (!Char.IsDigit(_source[current]))
@@ -438,7 +314,169 @@ namespace NHibernate.OData
 
             _offset = _current;
 
+            if (_offset < _source.Length)
+            {
+                StringType stringType;
+
+                switch (name)
+                {
+                    case "X": stringType = StringType.CaseSensitiveBinary; break;
+                    case "binary": stringType = StringType.Binary; break;
+                    case "datetime": stringType = StringType.DateTime; break;
+                    case "guid": stringType = StringType.Guid; break;
+                    case "time": stringType = StringType.Time; break;
+                    case "datetimeoffset": stringType = StringType.DateTimeOffset; break;
+                    default: stringType = StringType.None; break;
+                }
+
+                if (stringType != StringType.None && _source[_offset] == '\'')
+                {
+                    var content = ParseString();
+
+                    return ParseSpecialString((string)content.Value, stringType);
+                }
+            }
+
             return new NameToken(name);
+        }
+
+        private Token ParseSpecialString(string value, StringType stringType)
+        {
+            switch (stringType)
+            {
+                case StringType.Binary:
+                case StringType.CaseSensitiveBinary:
+                    return ParseBinaryString(value, stringType == StringType.CaseSensitiveBinary);
+
+                case StringType.DateTime:
+                    return ParseDateTimeString(value);
+
+                case StringType.DateTimeOffset:
+                    return ParseDateTimeOffsetString(value);
+
+                case StringType.Guid:
+                    return ParseGuidString(value);
+
+                case StringType.Time:
+                    return ParseTimeString(value);
+
+                default:
+                    throw new ArgumentOutOfRangeException("stringType");
+            }
+        }
+
+        private Token ParseBinaryString(string value, bool caseSensitive)
+        {
+            if (value.Length % 2 == 0)
+            {
+                byte[] result = new byte[value.Length / 2];
+
+                for (int i = 0; i < result.Length; i++)
+                {
+                    if (HttpUtil.IsHex(value[i * 2], caseSensitive) && HttpUtil.IsHex(value[i * 2 + 1], caseSensitive))
+                    {
+                        result[i] = (byte)(HttpUtil.HexToInt(value[i * 2]) * 16 + HttpUtil.HexToInt(value[i * 2 + 1]));
+                    }
+                    else
+                    {
+                        throw new ODataException(String.Format(
+                            ErrorMessages.Lexer_InvalidBinaryFormat, _offset
+                        ));
+                    }
+                }
+
+                return new LiteralToken(result);
+            }
+            else
+            {
+                throw new ODataException(String.Format(
+                    ErrorMessages.Lexer_InvalidBinaryFormat, _offset
+                ));
+            }
+        }
+
+        private Token ParseDateTimeString(string value)
+        {
+            // We parse this date/time because we want to take care of the optional
+            // seconds and nanoseconds.
+
+            var match = DateTimeRegex.Match(value);
+
+            if (match.Success)
+            {
+                int year = int.Parse(match.Groups[1].Value);
+                int month = int.Parse(match.Groups[2].Value);
+                int day = int.Parse(match.Groups[3].Value);
+                int hour = int.Parse(match.Groups[4].Value);
+                int minute = int.Parse(match.Groups[5].Value);
+                int second = match.Groups[6].Value.Length > 0 ? int.Parse(match.Groups[6].Value) : 0;
+                int nanoSecond = match.Groups[7].Value.Length > 0 ? int.Parse(match.Groups[7].Value) : 0;
+
+                // We let DateTime take care of validating the input.
+
+                return new LiteralToken(new DateTime(year, month, day, hour, minute, second, nanoSecond / 1000));
+            }
+            else
+            {
+                throw new ODataException(String.Format(
+                    ErrorMessages.Lexer_InvalidDateTimeFormat, _offset
+                ));
+            }
+        }
+
+        private Token ParseDateTimeOffsetString(string value)
+        {
+            // Let DateTime take care of validating the input. "o" should be the
+            // XMLSchema date/time with timezone format.
+
+            return new LiteralToken(DateTime.ParseExact(value, "o", CultureInfo.InvariantCulture));
+        }
+
+        private Token ParseGuidString(string value)
+        {
+            if (!GuidRegex.IsMatch(value))
+            {
+                throw new ODataException(String.Format(
+                    ErrorMessages.Lexer_InvalidGuidFormat, _offset
+                ));
+            }
+
+            return new LiteralToken(new Guid(value));
+        }
+
+        private Token ParseTimeString(string value)
+        {
+            var match = DurationRegex.Match(value);
+
+            if (match.Success)
+            {
+                bool negative = match.Groups[1].Value == "-";
+                int year = match.Groups[2].Value.Length > 0 ? int.Parse(match.Groups[2].Value) : 0;
+                int month = match.Groups[3].Value.Length > 0 ? int.Parse(match.Groups[2].Value) : 0;
+                int day = match.Groups[4].Value.Length > 0 ? int.Parse(match.Groups[2].Value) : 0;
+                int hour = match.Groups[5].Value.Length > 0 ? int.Parse(match.Groups[2].Value) : 0;
+                int minute = match.Groups[6].Value.Length > 0 ? int.Parse(match.Groups[2].Value) : 0;
+                double second = match.Groups[7].Value.Length > 0 ? double.Parse(match.Groups[2].Value) : 0;
+
+                return new LiteralToken(new XmlTimeSpan(!negative, year, month, day, hour, minute, second));
+            }
+            else
+            {
+                throw new ODataException(String.Format(
+                    ErrorMessages.Lexer_InvalidDurationFormat, _offset
+                ));
+            }
+        }
+
+        private enum StringType
+        {
+            None,
+            Binary,
+            CaseSensitiveBinary,
+            DateTime,
+            Guid,
+            Time,
+            DateTimeOffset
         }
     }
 }

@@ -42,7 +42,12 @@ namespace NHibernate.OData
             return sb.ToString();
         }
 
-        private static bool IsHex(char value)
+        public static bool IsHex(char value)
+        {
+            return IsHex(value, false);
+        }
+
+        public static bool IsHex(char value, bool forceUpperCase)
         {
             switch (value)
             {
@@ -56,12 +61,6 @@ namespace NHibernate.OData
                 case '7':
                 case '8':
                 case '9':
-                case 'a':
-                case 'b':
-                case 'c':
-                case 'd':
-                case 'e':
-                case 'f':
                 case 'A':
                 case 'B':
                 case 'C':
@@ -70,12 +69,20 @@ namespace NHibernate.OData
                 case 'F':
                     return true;
 
+                case 'a':
+                case 'b':
+                case 'c':
+                case 'd':
+                case 'e':
+                case 'f':
+                    return !forceUpperCase;
+
                 default:
                     return false;
             }
         }
 
-        private static int HexToInt(char value)
+        public static int HexToInt(char value)
         {
             switch (value)
             {
