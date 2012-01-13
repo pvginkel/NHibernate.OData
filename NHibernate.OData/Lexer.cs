@@ -5,13 +5,13 @@ using System.Text;
 
 namespace NHibernate.OData
 {
-    internal class Tokenizer
+    internal class Lexer
     {
         private readonly string _source;
         private int _offset;
         private int _current;
 
-        public Tokenizer(string source)
+        public Lexer(string source)
         {
             if (source == null)
                 throw new ArgumentNullException("source");
