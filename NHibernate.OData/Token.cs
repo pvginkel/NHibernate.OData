@@ -42,9 +42,15 @@ namespace NHibernate.OData
 
     internal class SyntaxToken : Token
     {
+        public static readonly SyntaxToken Minus = new SyntaxToken('-');
+        public static readonly SyntaxToken ParenOpen = new SyntaxToken('(');
+        public static readonly SyntaxToken ParenClose = new SyntaxToken(')');
+        public static readonly SyntaxToken Slash = new SyntaxToken('/');
+        public static readonly SyntaxToken Comma = new SyntaxToken(',');
+
         public char Syntax { get; private set; }
 
-        public SyntaxToken(char syntax)
+        private SyntaxToken(char syntax)
             : base(TokenType.Syntax)
         {
             Syntax = syntax;

@@ -47,6 +47,7 @@ namespace NHibernate.OData
                 case '(':
                 case ')':
                 case ',':
+                case '/':
                     return ParseSyntax();
 
                 default:
@@ -92,7 +93,7 @@ namespace NHibernate.OData
             if (Char.IsDigit(c))
                 return ParseNumeric();
             else
-                return new SyntaxToken('-');
+                return SyntaxToken.Minus;
         }
 
         private Token ParseString()
@@ -406,7 +407,17 @@ namespace NHibernate.OData
 
         private Token ParseSyntax()
         {
-            var token = new SyntaxToken(_source[_current]);
+            SyntaxToken token;
+
+            switch (_source[_current])
+            {
+                case '-': token = SyntaxToken.Minus; break;
+                case '(': token = SyntaxToken.ParenOpen; break;
+                case ')': token = SyntaxToken.ParenClose; break;
+                case '/': token = SyntaxToken.Slash; break;
+                case ',': token = SyntaxToken.Comma; break;
+                default: throw new InvalidOperationException("Unknown token");
+            }
 
             _offset = _current + 1;
 
