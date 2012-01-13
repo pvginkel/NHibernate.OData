@@ -1,36 +1,23 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
 [assembly: AssemblyTitle("NHibernate.OData")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("HP")]
+[assembly: AssemblyCompany("Pieter van Ginkel")]
 [assembly: AssemblyProduct("NHibernate.OData")]
-[assembly: AssemblyCopyright("Copyright © HP 2012")]
+[assembly: AssemblyCopyright("Pieter van Ginkel © 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
+[assembly: CLSCompliant(true)]
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("f4445e2b-6ea7-4345-92f0-735896f146c7")]
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers 
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyFileVersion("0.1.0.0")]
+
+[assembly: InternalsVisibleTo("NHibernate.OData.Test, PublicKey=00240000048000009400000006020000002400005253413100040000010001008b991378bef1e1a5c96b0e78df58f2f35f83b6ae7b8801f62b2328eb87e46e2bbab94576b54bb944c36b5007bb6e15bc5eff66e8f8019f061c07e2448175cb22f32f2c2145e9c905121d5730fab810e70f0d6bd9cfaf260487a80c388468546cc8fcdb5777ff56e3ef35eb5bf03f8cc62a7059597f665ff3cf85847cac4849eb")]
