@@ -158,5 +158,95 @@ namespace NHibernate.OData {
                 return ResourceManager.GetString("ODataExpression_SkipTopMustBePositive", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected empty expression..
+        /// </summary>
+        internal static string Parser_EmptySource {
+            get {
+                return ResourceManager.GetString("Parser_EmptySource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected boolean expression..
+        /// </summary>
+        internal static string Parser_ExpectedBooleanExpression {
+            get {
+                return ResourceManager.GetString("Parser_ExpectedBooleanExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected boolean literal..
+        /// </summary>
+        internal static string Parser_ExpectedBooleanLiteral {
+            get {
+                return ResourceManager.GetString("Parser_ExpectedBooleanLiteral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected identifier..
+        /// </summary>
+        internal static string Parser_ExpectedIdentifier {
+            get {
+                return ResourceManager.GetString("Parser_ExpectedIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected keyword..
+        /// </summary>
+        internal static string Parser_ExpectedKeyword {
+            get {
+                return ResourceManager.GetString("Parser_ExpectedKeyword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected literal..
+        /// </summary>
+        internal static string Parser_ExpectedLiteral {
+            get {
+                return ResourceManager.GetString("Parser_ExpectedLiteral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected syntax..
+        /// </summary>
+        internal static string Parser_ExpectedSyntax {
+            get {
+                return ResourceManager.GetString("Parser_ExpectedSyntax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected {0}..
+        /// </summary>
+        internal static string Parser_ExpectedToken {
+            get {
+                return ResourceManager.GetString("Parser_ExpectedToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected trailing tokens..
+        /// </summary>
+        internal static string Parser_TrailingTokens {
+            get {
+                return ResourceManager.GetString("Parser_TrailingTokens", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected end..
+        /// </summary>
+        internal static string Parser_UnexpectedEnd {
+            get {
+                return ResourceManager.GetString("Parser_UnexpectedEnd", resourceCulture);
+            }
+        }
     }
 }

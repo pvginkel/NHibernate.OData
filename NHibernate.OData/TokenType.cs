@@ -7,7 +7,7 @@ namespace NHibernate.OData
 {
     internal enum TokenType
     {
-        Name,
+        Identifier,
         Literal,
         Syntax
     }

@@ -44,11 +44,6 @@ namespace NHibernate.OData
 
         public static bool IsHex(char value)
         {
-            return IsHex(value, false);
-        }
-
-        public static bool IsHex(char value, bool forceUpperCase)
-        {
             switch (value)
             {
                 case '0':
@@ -67,15 +62,13 @@ namespace NHibernate.OData
                 case 'D':
                 case 'E':
                 case 'F':
-                    return true;
-
                 case 'a':
                 case 'b':
                 case 'c':
                 case 'd':
                 case 'e':
                 case 'f':
-                    return !forceUpperCase;
+                    return true;
 
                 default:
                     return false;

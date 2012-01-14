@@ -9,6 +9,7 @@ namespace NHibernate.OData
 {
     internal class Lexer
     {
+        private static readonly CultureInfo ParseCulture = CultureInfo.InvariantCulture;
         private static readonly Regex DateTimeRegex = new Regex("^(\\d{4})-(\\d{1,2})-(\\d{1,2})T(\\d{1,22}):(\\d{2})(?::(\\d{2})(?:\\.(\\d{7}))?)?$");
         private static readonly Regex GuidRegex = new Regex("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$");
         private static readonly Regex DurationRegex = new Regex("^(-)?P(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)D)?T?(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d*)?)S)?$");
@@ -24,12 +25,28 @@ namespace NHibernate.OData
             _source = source;
         }
 
-        public Token GetNext()
+        public IList<Token> ToList()
+        {
+            _offset = 0;
+            _current = 0;
+
+            var result = new List<Token>();
+            Token token;
+
+            while ((token = GetNext()) != null)
+            {
+                result.Add(token);
+            }
+
+            return result;
+        }
+
+        private Token GetNext()
         {
             if (_offset >= _source.Length)
                 return null;
 
-            while (Char.IsWhiteSpace(_source[_offset]))
+            while (_offset < _source.Length && Char.IsWhiteSpace(_source[_offset]))
             {
                 _offset++;
             }
@@ -60,9 +77,9 @@ namespace NHibernate.OData
                     {
                         return ParseNumeric();
                     }
-                    else if (IsNameStartChar(c))
+                    else if (IsIdentifierStartChar(c))
                     {
-                        return ParseName();
+                        return ParseIdentifier(false);
                     }
                     else
                     {
@@ -73,7 +90,7 @@ namespace NHibernate.OData
             }
         }
 
-        private bool IsNameStartChar(char c)
+        private bool IsIdentifierStartChar(char c)
         {
             // Definition for names taken from
             // http://msdn.microsoft.com/en-us/library/aa664670.aspx.
@@ -84,21 +101,19 @@ namespace NHibernate.OData
             return c == '_' || c == '$' || Char.IsLetter(c);
         }
 
-        private bool IsNameChar(char c)
+        private bool IsIdentifierChar(char c)
         {
-            return IsNameStartChar(c) || Char.IsDigit(c);
+            return IsIdentifierStartChar(c) || Char.IsDigit(c);
         }
 
         private Token ParseSign()
         {
             _current++;
 
-            char c = _source[_current];
-
-            if (Char.IsDigit(c))
+            if (Char.IsDigit(_source[_current]))
                 return ParseNumeric();
             else
-                return SyntaxToken.Minus;
+                return ParseIdentifier(true);
         }
 
         private LiteralToken ParseString()
@@ -229,39 +244,45 @@ namespace NHibernate.OData
                 {
                     case 'F':
                     case 'f':
-                        value = float.Parse(text);
+                        value = float.Parse(text, ParseCulture);
+                        _current++;
                         break;
 
                     case 'D':
                     case 'd':
-                        value = double.Parse(text);
+                        value = double.Parse(text, ParseCulture);
+                        _current++;
                         break;
 
                     case 'M':
                     case 'm':
-                        value = decimal.Parse(text);
+                        value = decimal.Parse(text, ParseCulture);
+                        _current++;
                         break;
 
                     case 'L':
                     case 'l':
-                        value = long.Parse(text);
+                        value = long.Parse(text, ParseCulture);
+                        _current++;
                         break;
 
                     default:
                         if (floating || haveExponent)
-                            value = double.Parse(text);
+                            value = double.Parse(text, ParseCulture);
                         else
-                            value = int.Parse(text);
+                            value = int.Parse(text, ParseCulture);
                         break;
                 }
             }
             else
             {
                 if (floating || haveExponent)
-                    value = double.Parse(text);
+                    value = double.Parse(text, ParseCulture);
                 else
-                    value = int.Parse(text);
+                    value = int.Parse(text, ParseCulture);
             }
+
+            _offset = _current;
 
             return new LiteralToken(value);
         }
@@ -287,7 +308,6 @@ namespace NHibernate.OData
 
             switch (_source[_current])
             {
-                case '-': token = SyntaxToken.Minus; break;
                 case '(': token = SyntaxToken.ParenOpen; break;
                 case ')': token = SyntaxToken.ParenClose; break;
                 case '/': token = SyntaxToken.Slash; break;
@@ -300,27 +320,63 @@ namespace NHibernate.OData
             return token;
         }
 
-        private Token ParseName()
+        private Token ParseIdentifier(bool minus)
         {
             for (_current++; _current < _source.Length; _current++)
             {
                 char c = _source[_current];
 
-                if (IsNameChar(c))
+                if (!IsIdentifierChar(c))
                     break;
             }
 
             string name = _source.Substring(_offset, _current - _offset);
 
+            int lastOffset = _offset;
             _offset = _current;
 
-            if (_offset < _source.Length)
+            switch (name)
+            {
+                case "INF":
+                    return LiteralToken.PositiveInfinity;
+
+                case "-INF":
+                    return LiteralToken.NegativeInfinity;
+
+                case "Nan":
+                    return LiteralToken.NaN;
+
+                case "true":
+                    return LiteralToken.True;
+
+                case "false":
+                    return LiteralToken.False;
+
+                case "null":
+                    return LiteralToken.Null;
+
+                case "-":
+                    return SyntaxToken.Negative;
+
+                default:
+                    if (minus)
+                    {
+                        // Reset the offset.
+
+                        _offset = lastOffset + 1;
+
+                        return SyntaxToken.Negative;
+                    }
+                    break;
+            }
+
+            if (_offset < _source.Length && _source[_offset] == '\'')
             {
                 StringType stringType;
 
                 switch (name)
                 {
-                    case "X": stringType = StringType.CaseSensitiveBinary; break;
+                    case "X": stringType = StringType.Binary; break;
                     case "binary": stringType = StringType.Binary; break;
                     case "datetime": stringType = StringType.DateTime; break;
                     case "guid": stringType = StringType.Guid; break;
@@ -337,7 +393,7 @@ namespace NHibernate.OData
                 }
             }
 
-            return new NameToken(name);
+            return new IdentifierToken(name);
         }
 
         private Token ParseSpecialString(string value, StringType stringType)
@@ -345,8 +401,7 @@ namespace NHibernate.OData
             switch (stringType)
             {
                 case StringType.Binary:
-                case StringType.CaseSensitiveBinary:
-                    return ParseBinaryString(value, stringType == StringType.CaseSensitiveBinary);
+                    return ParseBinaryString(value);
 
                 case StringType.DateTime:
                     return ParseDateTimeString(value);
@@ -365,7 +420,7 @@ namespace NHibernate.OData
             }
         }
 
-        private Token ParseBinaryString(string value, bool caseSensitive)
+        private Token ParseBinaryString(string value)
         {
             if (value.Length % 2 == 0)
             {
@@ -373,7 +428,7 @@ namespace NHibernate.OData
 
                 for (int i = 0; i < result.Length; i++)
                 {
-                    if (HttpUtil.IsHex(value[i * 2], caseSensitive) && HttpUtil.IsHex(value[i * 2 + 1], caseSensitive))
+                    if (HttpUtil.IsHex(value[i * 2]) && HttpUtil.IsHex(value[i * 2 + 1]))
                     {
                         result[i] = (byte)(HttpUtil.HexToInt(value[i * 2]) * 16 + HttpUtil.HexToInt(value[i * 2 + 1]));
                     }
@@ -404,13 +459,13 @@ namespace NHibernate.OData
 
             if (match.Success)
             {
-                int year = int.Parse(match.Groups[1].Value);
-                int month = int.Parse(match.Groups[2].Value);
-                int day = int.Parse(match.Groups[3].Value);
-                int hour = int.Parse(match.Groups[4].Value);
-                int minute = int.Parse(match.Groups[5].Value);
-                int second = match.Groups[6].Value.Length > 0 ? int.Parse(match.Groups[6].Value) : 0;
-                int nanoSecond = match.Groups[7].Value.Length > 0 ? int.Parse(match.Groups[7].Value) : 0;
+                int year = int.Parse(match.Groups[1].Value, ParseCulture);
+                int month = int.Parse(match.Groups[2].Value, ParseCulture);
+                int day = int.Parse(match.Groups[3].Value, ParseCulture);
+                int hour = int.Parse(match.Groups[4].Value, ParseCulture);
+                int minute = int.Parse(match.Groups[5].Value, ParseCulture);
+                int second = match.Groups[6].Value.Length > 0 ? int.Parse(match.Groups[6].Value, ParseCulture) : 0;
+                int nanoSecond = match.Groups[7].Value.Length > 0 ? int.Parse(match.Groups[7].Value, ParseCulture) : 0;
 
                 // We let DateTime take care of validating the input.
 
@@ -429,7 +484,7 @@ namespace NHibernate.OData
             // Let DateTime take care of validating the input. "o" should be the
             // XMLSchema date/time with timezone format.
 
-            return new LiteralToken(DateTime.ParseExact(value, "o", CultureInfo.InvariantCulture));
+            return new LiteralToken(DateTime.ParseExact(value, "o", ParseCulture));
         }
 
         private Token ParseGuidString(string value)
@@ -451,12 +506,12 @@ namespace NHibernate.OData
             if (match.Success)
             {
                 bool negative = match.Groups[1].Value == "-";
-                int year = match.Groups[2].Value.Length > 0 ? int.Parse(match.Groups[2].Value) : 0;
-                int month = match.Groups[3].Value.Length > 0 ? int.Parse(match.Groups[2].Value) : 0;
-                int day = match.Groups[4].Value.Length > 0 ? int.Parse(match.Groups[2].Value) : 0;
-                int hour = match.Groups[5].Value.Length > 0 ? int.Parse(match.Groups[2].Value) : 0;
-                int minute = match.Groups[6].Value.Length > 0 ? int.Parse(match.Groups[2].Value) : 0;
-                double second = match.Groups[7].Value.Length > 0 ? double.Parse(match.Groups[2].Value) : 0;
+                int year = match.Groups[2].Value.Length > 0 ? int.Parse(match.Groups[2].Value, ParseCulture) : 0;
+                int month = match.Groups[3].Value.Length > 0 ? int.Parse(match.Groups[2].Value, ParseCulture) : 0;
+                int day = match.Groups[4].Value.Length > 0 ? int.Parse(match.Groups[2].Value, ParseCulture) : 0;
+                int hour = match.Groups[5].Value.Length > 0 ? int.Parse(match.Groups[2].Value, ParseCulture) : 0;
+                int minute = match.Groups[6].Value.Length > 0 ? int.Parse(match.Groups[2].Value, ParseCulture) : 0;
+                double second = match.Groups[7].Value.Length > 0 ? double.Parse(match.Groups[2].Value, ParseCulture) : 0;
 
                 return new LiteralToken(new XmlTimeSpan(!negative, year, month, day, hour, minute, second));
             }
@@ -472,7 +527,6 @@ namespace NHibernate.OData
         {
             None,
             Binary,
-            CaseSensitiveBinary,
             DateTime,
             Guid,
             Time,

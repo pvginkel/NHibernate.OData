@@ -7,7 +7,7 @@ namespace NHibernate.OData
 {
     public static class ODataParser
     {
-        public static ICriteria Parse(ISession session, string entityName, string queryString)
+        public static ICriteria Parse(this ISession session, string entityName, string queryString)
         {
             if (session == null)
                 throw new ArgumentNullException("session");
@@ -21,7 +21,7 @@ namespace NHibernate.OData
             return expression.BuildCriteria(session, entityName);
         }
 
-        public static ICriteria Parse(ISession session, System.Type persistentClass, string queryString)
+        public static ICriteria Parse(this ISession session, System.Type persistentClass, string queryString)
         {
             if (session == null)
                 throw new ArgumentNullException("session");
@@ -33,6 +33,11 @@ namespace NHibernate.OData
             var expression = new ODataExpression(queryString);
 
             return expression.BuildCriteria(session, persistentClass);
+        }
+
+        public static ICriteria Parse<T>(this ISession session, string queryString)
+        {
+            return Parse(session, typeof(T), queryString);
         }
     }
 }

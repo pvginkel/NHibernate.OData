@@ -150,4 +150,34 @@
   <data name="ODataExpression_SkipTopMustBePositive" xml:space="preserve">
     <value>Query string parameter '{0}' must be a positive integer.</value>
   </data>
+  <data name="Parser_EmptySource" xml:space="preserve">
+    <value>Unexpected empty expression.</value>
+  </data>
+  <data name="Parser_ExpectedBooleanExpression" xml:space="preserve">
+    <value>Expected boolean expression.</value>
+  </data>
+  <data name="Parser_ExpectedBooleanLiteral" xml:space="preserve">
+    <value>Expected boolean literal.</value>
+  </data>
+  <data name="Parser_ExpectedIdentifier" xml:space="preserve">
+    <value>Expected identifier.</value>
+  </data>
+  <data name="Parser_ExpectedKeyword" xml:space="preserve">
+    <value>Expected keyword.</value>
+  </data>
+  <data name="Parser_ExpectedLiteral" xml:space="preserve">
+    <value>Expected literal.</value>
+  </data>
+  <data name="Parser_ExpectedSyntax" xml:space="preserve">
+    <value>Expected syntax.</value>
+  </data>
+  <data name="Parser_ExpectedToken" xml:space="preserve">
+    <value>Expected {0}.</value>
+  </data>
+  <data name="Parser_TrailingTokens" xml:space="preserve">
+    <value>Unexpected trailing tokens.</value>
+  </data>
+  <data name="Parser_UnexpectedEnd" xml:space="preserve">
+    <value>Unexpected end.</value>
+  </data>
 </root>

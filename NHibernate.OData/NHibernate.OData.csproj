@@ -53,11 +53,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ErrorMessages.resx</DependentUpon>
     </Compile>
+    <Compile Include="Expression.cs" />
+    <Compile Include="ExpressionType.cs" />
+    <Compile Include="FilterParser.cs" />
     <Compile Include="HttpUtil.cs" />
     <Compile Include="ODataException.cs" />
     <Compile Include="ODataExpression.cs" />
-    <Compile Include="ODataExtensions.cs" />
     <Compile Include="ODataParser.cs" />
+    <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="Lexer.cs" />

@@ -54,6 +54,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Lexer\Basics.cs" />
+    <Compile Include="Lexer\LexerTestFixture.cs" />
+    <Compile Include="Parser\Basics.cs" />
+    <Compile Include="Parser\Comparison.cs" />
+    <Compile Include="Parser\LiteralParsing.cs" />
+    <Compile Include="Parser\Logicals.cs" />
+    <Compile Include="Parser\Parens.cs" />
+    <Compile Include="Parser\ParserTestFixture.cs" />
+    <Compile Include="Parser\Singles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Lexer\LiteralParsing.cs" />
   </ItemGroup>
