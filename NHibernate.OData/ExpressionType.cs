@@ -8,6 +8,7 @@ namespace NHibernate.OData
     {
         Literal,
         Bool,
+        Comparison,
         Arithmic,
         Not,
         IsOf,

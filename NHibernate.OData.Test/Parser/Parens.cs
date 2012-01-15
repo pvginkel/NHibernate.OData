@@ -12,13 +12,13 @@ namespace NHibernate.OData.Test.Parser
         [Test]
         public void BoolParen()
         {
-            Verify("(true)", new BoolParenExpression(new LiteralExpression(LiteralType.Boolean, true)));
+            Verify("(true)", new ParenExpression(new LiteralExpression(true)));
         }
 
         [Test]
         public void NestedBoolParen()
         {
-            Verify("((true))", new BoolParenExpression(new BoolParenExpression(new LiteralExpression(LiteralType.Boolean, true))));
+            Verify("((true))", new ParenExpression(new ParenExpression(new LiteralExpression(true))));
         }
 
         [Test]

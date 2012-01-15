@@ -81,7 +81,7 @@ namespace NHibernate.OData
 
         protected bool AtPartialEnd
         {
-            get { return AtEnd || Current == SyntaxToken.ParenClose; }
+            get { return AtEnd || Current == SyntaxToken.ParenClose || Current == SyntaxToken.Comma; }
         }
 
         protected Token Previous
@@ -129,18 +129,66 @@ namespace NHibernate.OData
 
         protected Expression ParseBool()
         {
-            var result = ParseCommon();
-
-            if (!result.IsBool)
-                throw new ODataException(ErrorMessages.Parser_ExpectedBooleanExpression);
-
-            return result;
+            return ExpressionUtil.CoerceBoolExpression(ParseCommon());
         }
 
         protected Expression ParseCommon()
         {
-            Operator @operator;
+            var result = ParseCommonItem();
 
+            while (!AtPartialEnd)
+            {
+                var @operator = GetOperator(Current);
+
+                MoveNext();
+
+                ExpectAny();
+
+                var right = ParseCommon();
+
+                var binary = right as BinaryExpression;
+
+                // Apply operator precedence
+
+                if (binary != null && binary.Operator < @operator)
+                {
+                    result = CreateBinary(
+                        binary.Operator,
+                        CreateBinary(
+                            @operator,
+                            result,
+                            binary.Left
+                        ),
+                        binary.Right
+                    );
+                }
+                else
+                {
+                    result = CreateBinary(
+                        @operator,
+                        result,
+                        right
+                    );
+                }
+            }
+
+            return result;
+        }
+
+        private Expression CreateBinary(Operator @operator, Expression left, Expression right)
+        {
+            if (OperatorUtil.IsLogical(@operator))
+                return new LogicalExpression(@operator, left, right);
+            else if (OperatorUtil.IsCompare(@operator))
+                return new ComparisonExpression(@operator, left, right);
+            else if (OperatorUtil.IsArithmic(@operator))
+                return new ArithmicExpression(@operator, left, right);
+            else
+                throw new NotSupportedException();
+        }
+
+        private Expression ParseCommonItem()
+        {
             switch (Current.Type)
             {
                 case TokenType.Literal:
@@ -148,42 +196,14 @@ namespace NHibernate.OData
 
                     MoveNext();
 
-                    if (AtPartialEnd)
-                        return CreateBoolLiteral(value);
-
-                    @operator = GetOperator(Current);
-
-                    MoveNext();
-
-                    ExpectAny();
-
-                    if (IsLogical(@operator))
-                    {
-                        return new BoolExpression(
-                            @operator,
-                            CreateBoolLiteral(value),
-                            ParseBool()
-                        );
-                    }
-                    else if (IsCompare(@operator))
-                    {
-                        return new BoolExpression(
-                            @operator,
-                            new LiteralExpression(LiteralType.Normal, value),
-                            ParseCommon()
-                        );
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
+                    return new LiteralExpression(value);
 
                 case TokenType.Syntax:
                     if (Current == SyntaxToken.Negative)
                     {
                         MoveNext();
 
-                        return new ArithmicUnaryExpression(Operator.Negative, ParseCommon());
+                        return new ArithmicUnaryExpression(Operator.Negative, ParseCommonItem());
                     }
                     if (Current == SyntaxToken.ParenOpen)
                     {
@@ -191,7 +211,7 @@ namespace NHibernate.OData
 
                         ExpectAny();
 
-                        var result = new ParenExpression(ParseBool());
+                        var result = new ParenExpression(ParseCommon());
 
                         Expect(SyntaxToken.ParenClose);
 
@@ -209,49 +229,13 @@ namespace NHibernate.OData
 
                         MoveNext();
 
-                        if (AtPartialEnd)
-                        {
-                            if (!methodCall.IsBool)
-                                throw new ODataException(ErrorMessages.Parser_ExpectedBooleanExpression);
-
-                            return methodCall;
-                        }
-
-                        @operator = GetOperator(Current);
-
-                        if (IsLogical(@operator))
-                        {
-                            if (!methodCall.IsBool)
-                                throw new ODataException(ErrorMessages.Parser_ExpectedBooleanExpression);
-
-                            return new BoolExpression(
-                                @operator,
-                                methodCall,
-                                ParseBool()
-                            );
-                        }
-                        else if (IsCompare(@operator))
-                        {
-                            return new BoolExpression(
-                                @operator,
-                                methodCall,
-                                ParseCommon()
-                            );
-                        }
-                        else
-                        {
-                            return new ArithmicExpression(
-                                @operator,
-                                methodCall,
-                                ParseCommon()
-                            );
-                        }
+                        return methodCall;
                     }
                     else if (CurrentIdentifier == "not")
                     {
                         MoveNext();
 
-                        return new BoolUnaryExpression(Operator.Not, ParseBool());
+                        return new BoolUnaryExpression(Operator.Not, ParseCommonItem());
                     }
                     else
                     {
@@ -270,100 +254,11 @@ namespace NHibernate.OData
                             MoveNext();
                         }
 
-                        if (AtPartialEnd)
-                            return new MemberExpression(MemberType.Boolean, members);
-
-                        @operator = GetOperator(Current);
-
-                        if (IsLogical(@operator) || IsCompare(@operator))
-                        {
-                            return new BoolExpression(
-                                @operator,
-                                new MemberExpression(MemberType.Normal, members),
-                                ParseCommon()
-                            );
-                        }
-                        else
-                        {
-                            return new ArithmicExpression(
-                                @operator,
-                                new MemberExpression(MemberType.Normal, members),
-                                ParseCommon()
-                            );
-                        }
+                        return new MemberExpression(MemberType.Normal, members);
                     }
-            }
-
-            throw new NotImplementedException();
-        }
-
-        private LiteralExpression CreateBoolLiteral(object value)
-        {
-            if (value is bool)
-            {
-                return new LiteralExpression(LiteralType.Boolean, value);
-            }
-            else
-            {
-                if (value is int)
-                {
-                    switch ((int)value)
-                    {
-                        case 0:
-                            return new LiteralExpression(LiteralType.Boolean, false);
-
-                        case 1:
-                            return new LiteralExpression(LiteralType.Boolean, true);
-                    }
-                }
-            }
-
-            throw new ODataException(ErrorMessages.Parser_ExpectedBooleanLiteral);
-        }
-
-        private bool IsLogical(Operator @operator)
-        {
-            switch (@operator)
-            {
-                case Operator.And:
-                case Operator.Or:
-                    return true;
 
                 default:
-                    return false;
-            }
-        }
-
-        private bool IsCompare(Operator @operator)
-        {
-            switch (@operator)
-            {
-                case Operator.Eq:
-                case Operator.Ge:
-                case Operator.Gt:
-                case Operator.Le:
-                case Operator.Lt:
-                case Operator.Ne:
-                    return true;
-
-                default:
-                    return false;
-            }
-        }
-
-        private bool IsArithmic(Operator @operator)
-        {
-            switch (@operator)
-            {
-                case Operator.Add:
-                case Operator.Div:
-                case Operator.Mod:
-                case Operator.Mul:
-                case Operator.Sub:
-                    return true;
-
-                default:
-                    return false;
+                    throw new NotSupportedException();
             }
         }
 

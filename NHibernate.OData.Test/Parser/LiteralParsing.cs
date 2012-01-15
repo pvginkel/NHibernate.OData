@@ -12,10 +12,10 @@ namespace NHibernate.OData.Test.Parser
         [Test]
         public void Bool()
         {
-            Verify("true", TrueLiteral);
-            Verify("false", FalseLiteral);
-            Verify("0", FalseLiteral);
-            Verify("1", TrueLiteral);
+            VerifyBool("true", TrueLiteral);
+            VerifyBool("false", FalseLiteral);
+            VerifyBool("0", FalseLiteral);
+            VerifyBool("1", TrueLiteral);
         }
     }
 }

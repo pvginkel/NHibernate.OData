@@ -14,7 +14,7 @@ namespace NHibernate.OData.Test.Parser
         {
             Verify(
                 "true and true",
-                new BoolExpression(Operator.And, TrueLiteral, TrueLiteral)
+                new LogicalExpression(Operator.And, TrueLiteral, TrueLiteral)
             );
 
             VerifyThrows("true and");
@@ -25,7 +25,7 @@ namespace NHibernate.OData.Test.Parser
         {
             Verify(
                 "true or true",
-                new BoolExpression(Operator.Or, TrueLiteral, TrueLiteral)
+                new LogicalExpression(Operator.Or, TrueLiteral, TrueLiteral)
             );
 
             VerifyThrows("true or");
@@ -35,11 +35,32 @@ namespace NHibernate.OData.Test.Parser
         public void Nested()
         {
             Verify(
-                "true or true and true",
-                new BoolExpression(
-                    Operator.Or,
+                "true and true or true",
+                new LogicalExpression(
+                    Operator.And,
                     TrueLiteral,
-                    new BoolExpression(Operator.And, TrueLiteral, TrueLiteral)
+                    new LogicalExpression(Operator.Or, TrueLiteral, TrueLiteral)
+                )
+            );
+        }
+
+        [Test]
+        public void MultipleNested()
+        {
+            Verify(
+                "true and true or true or true",
+                new LogicalExpression(
+                    Operator.And,
+                    TrueLiteral,
+                    new LogicalExpression(
+                        Operator.Or,
+                        TrueLiteral,
+                        new LogicalExpression(
+                            Operator.Or,
+                            TrueLiteral,
+                            TrueLiteral
+                        )
+                    )
                 )
             );
         }
@@ -49,10 +70,10 @@ namespace NHibernate.OData.Test.Parser
         {
             Verify(
                 "(true and true) or true",
-                new BoolExpression(
+                new LogicalExpression(
                     Operator.Or,
-                    new BoolParenExpression(
-                        new BoolExpression(Operator.And, TrueLiteral, TrueLiteral)
+                    new ParenExpression(
+                        new LogicalExpression(Operator.And, TrueLiteral, TrueLiteral)
                     ),
                     TrueLiteral
                 )
@@ -64,11 +85,11 @@ namespace NHibernate.OData.Test.Parser
         {
             Verify(
                 "true or (true and true)",
-                new BoolExpression(
+                new LogicalExpression(
                     Operator.Or,
                     TrueLiteral,
-                    new BoolParenExpression(
-                        new BoolExpression(Operator.And, TrueLiteral, TrueLiteral)
+                    new ParenExpression(
+                        new LogicalExpression(Operator.And, TrueLiteral, TrueLiteral)
                     )
                 )
             );

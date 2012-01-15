@@ -24,19 +24,16 @@ namespace NHibernate.OData
 
     internal class LiteralExpression : Expression
     {
-        public LiteralType LiteralType { get; private set; }
-
         public object Value { get; private set; }
 
         public override bool IsBool
         {
-            get { return LiteralType == LiteralType.Boolean; }
+            get { return Value is bool; }
         }
 
-        public LiteralExpression(LiteralType type, object value)
+        public LiteralExpression(object value)
             : base(ExpressionType.Literal)
         {
-            LiteralType = type;
             Value = value;
         }
 
@@ -49,7 +46,6 @@ namespace NHibernate.OData
 
             return
                 other != null &&
-                LiteralType == other.LiteralType &&
                 Equals(Value, other.Value);
         }
 
@@ -57,12 +53,6 @@ namespace NHibernate.OData
         {
             return Value == null ? "null" : Value.ToString();
         }
-    }
-
-    internal enum LiteralType
-    {
-        Normal,
-        Boolean
     }
 
     internal class MemberExpression : Expression
@@ -144,6 +134,18 @@ namespace NHibernate.OData
         {
             return "(" + Expression + ")";
         }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            var other = obj as ParenExpression;
+
+            return
+                other != null &&
+                Expression.Equals(other.Expression);
+        }
     }
 
     internal abstract class OperatorExpression : Expression
@@ -180,6 +182,7 @@ namespace NHibernate.OData
             return
                 other != null &&
                 GetType() == other.GetType() &&
+                Operator == other.Operator &&
                 Expression.Equals(other.Expression);
         }
 
@@ -197,15 +200,8 @@ namespace NHibernate.OData
         }
 
         public BoolUnaryExpression(Operator @operator, Expression expression)
-            : base(ExpressionType.Bool, expression, @operator)
+            : base(ExpressionType.Bool, ExpressionUtil.CoerceBoolExpression(expression), @operator)
         {
-        }
-
-        public override bool Equals(object obj)
-        {
-            return
-                base.Equals(obj) &&
-                Operator == ((BoolUnaryExpression)obj).Operator;
         }
     }
 
@@ -219,13 +215,6 @@ namespace NHibernate.OData
         public ArithmicUnaryExpression(Operator @operator, Expression expression)
             : base(ExpressionType.ArithmicUnary, expression, @operator)
         {
-        }
-
-        public override bool Equals(object obj)
-        {
-            return
-                base.Equals(obj) &&
-                Operator == ((ArithmicUnaryExpression)obj).Operator;
         }
     }
 
@@ -257,6 +246,7 @@ namespace NHibernate.OData
             return
                 other != null &&
                 GetType() == other.GetType() &&
+                Operator == other.Operator &&
                 Left.Equals(other.Left) &&
                 Right.Equals(other.Right);
         }
@@ -267,23 +257,29 @@ namespace NHibernate.OData
         }
     }
 
-    internal class BoolExpression : BinaryExpression
+    internal class LogicalExpression : BinaryExpression
     {
         public override bool IsBool
         {
             get { return true; }
         }
 
-        public BoolExpression(Operator @operator, Expression left, Expression right)
-            : base(ExpressionType.Bool, @operator, left, right)
+        public LogicalExpression(Operator @operator, Expression left, Expression right)
+            : base(ExpressionType.Bool, @operator, ExpressionUtil.CoerceBoolExpression(left), ExpressionUtil.CoerceBoolExpression(right))
         {
         }
+    }
 
-        public override bool Equals(object obj)
+    internal class ComparisonExpression : BinaryExpression
+    {
+        public override bool IsBool
         {
-            return
-                base.Equals(obj) &&
-                ((BoolExpression)obj).Operator == Operator;
+            get { return true; }
+        }
+
+        public ComparisonExpression(Operator @operator, Expression left, Expression right)
+            : base(ExpressionType.Comparison, @operator, left, right)
+        {
         }
     }
 
@@ -298,40 +294,6 @@ namespace NHibernate.OData
             : base(ExpressionType.Arithmic, @operator, left, right)
         {
         }
-
-        public override bool Equals(object obj)
-        {
-            return
-                base.Equals(obj) &&
-                Operator == ((ArithmicExpression)obj).Operator;
-        }
-    }
-
-    // Precedence taken from http://msdn.microsoft.com/en-us/library/Aa691323
-    internal enum Operator
-    {
-        // Unary
-        Negative,
-        Not,
-        // Multiplicative
-        Mul,
-        Div,
-        Mod,
-        // Additive
-        Add,
-        Sub,
-        // Relational and type testing
-        Lt,
-        Le,
-        Gt,
-        Ge,
-        // Equality
-        Eq,
-        Ne,
-        // Conditional AND
-        And,
-        // Conditional OR
-        Or
     }
 
     internal class MethodCallExpression : Expression

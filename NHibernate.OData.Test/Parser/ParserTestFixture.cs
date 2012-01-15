@@ -8,14 +8,24 @@ namespace NHibernate.OData.Test.Parser
 {
     internal abstract class ParserTestFixture
     {
-        protected static readonly LiteralExpression TrueLiteral = new LiteralExpression(LiteralType.Boolean, true);
-        protected static readonly LiteralExpression FalseLiteral = new LiteralExpression(LiteralType.Boolean, false);
-        protected static readonly LiteralExpression ZeroLiteral = new LiteralExpression(LiteralType.Normal, 0);
-        protected static readonly LiteralExpression OneLiteral = new LiteralExpression(LiteralType.Normal, 1);
+        protected static readonly LiteralExpression TrueLiteral = new LiteralExpression(true);
+        protected static readonly LiteralExpression FalseLiteral = new LiteralExpression(false);
+        protected static readonly LiteralExpression ZeroLiteral = new LiteralExpression(0);
+        protected static readonly LiteralExpression OneLiteral = new LiteralExpression(1);
 
         protected void Verify(string source, Expression expression)
         {
-            Assert.AreEqual(expression, new Parser(source).Parse());
+            Verify(new Parser(source).Parse(), expression);
+        }
+
+        protected void VerifyBool(string source, Expression expression)
+        {
+            Verify(new BoolParser(source).Parse(), expression);
+        }
+
+        private void Verify(Expression actual, Expression expected)
+        {
+            Assert.AreEqual(expected, actual);
         }
 
         protected void VerifyThrows(string source)
@@ -44,6 +54,23 @@ namespace NHibernate.OData.Test.Parser
         private class Parser : OData.Parser
         {
             public Parser(string source)
+                : base(source)
+            {
+            }
+
+            public override Expression Parse()
+            {
+                var result = ParseCommon();
+
+                ExpectAtEnd();
+
+                return result;
+            }
+        }
+
+        private class BoolParser : OData.Parser
+        {
+            public BoolParser(string source)
                 : base(source)
             {
             }
