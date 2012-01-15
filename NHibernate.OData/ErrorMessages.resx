@@ -162,11 +162,11 @@
   <data name="Parser_ExpectedIdentifier" xml:space="preserve">
     <value>Expected identifier.</value>
   </data>
-  <data name="Parser_ExpectedKeyword" xml:space="preserve">
-    <value>Expected keyword.</value>
-  </data>
   <data name="Parser_ExpectedLiteral" xml:space="preserve">
     <value>Expected literal.</value>
+  </data>
+  <data name="Parser_ExpectedOperator" xml:space="preserve">
+    <value>Expected operator.</value>
   </data>
   <data name="Parser_ExpectedSyntax" xml:space="preserve">
     <value>Expected syntax.</value>

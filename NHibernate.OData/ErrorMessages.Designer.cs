@@ -196,20 +196,20 @@ namespace NHibernate.OData {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected keyword..
-        /// </summary>
-        internal static string Parser_ExpectedKeyword {
-            get {
-                return ResourceManager.GetString("Parser_ExpectedKeyword", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Expected literal..
         /// </summary>
         internal static string Parser_ExpectedLiteral {
             get {
                 return ResourceManager.GetString("Parser_ExpectedLiteral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected operator..
+        /// </summary>
+        internal static string Parser_ExpectedOperator {
+            get {
+                return ResourceManager.GetString("Parser_ExpectedOperator", resourceCulture);
             }
         }
         

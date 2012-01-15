@@ -129,7 +129,17 @@ namespace NHibernate.OData
 
         protected Expression ParseBool()
         {
-            Operator keyword;
+            var result = ParseCommon();
+
+            if (!result.IsBool)
+                throw new ODataException(ErrorMessages.Parser_ExpectedBooleanExpression);
+
+            return result;
+        }
+
+        protected Expression ParseCommon()
+        {
+            Operator @operator;
 
             switch (Current.Type)
             {
@@ -141,24 +151,24 @@ namespace NHibernate.OData
                     if (AtPartialEnd)
                         return CreateBoolLiteral(value);
 
-                    keyword = GetKeyword(Current);
+                    @operator = GetOperator(Current);
 
                     MoveNext();
 
                     ExpectAny();
 
-                    if (IsLogical(keyword))
+                    if (IsLogical(@operator))
                     {
                         return new BoolExpression(
-                            keyword,
+                            @operator,
                             CreateBoolLiteral(value),
                             ParseBool()
                         );
                     }
-                    else if (IsCompare(keyword))
+                    else if (IsCompare(@operator))
                     {
                         return new BoolExpression(
-                            keyword,
+                            @operator,
                             new LiteralExpression(LiteralType.Normal, value),
                             ParseCommon()
                         );
@@ -181,7 +191,7 @@ namespace NHibernate.OData
 
                         ExpectAny();
 
-                        var result = new BoolParenExpression(ParseBool());
+                        var result = new ParenExpression(ParseBool());
 
                         Expect(SyntaxToken.ParenClose);
 
@@ -207,23 +217,23 @@ namespace NHibernate.OData
                             return methodCall;
                         }
 
-                        keyword = GetKeyword(Current);
+                        @operator = GetOperator(Current);
 
-                        if (IsLogical(keyword))
+                        if (IsLogical(@operator))
                         {
                             if (!methodCall.IsBool)
                                 throw new ODataException(ErrorMessages.Parser_ExpectedBooleanExpression);
 
                             return new BoolExpression(
-                                keyword,
+                                @operator,
                                 methodCall,
                                 ParseBool()
                             );
                         }
-                        else if (IsCompare(keyword))
+                        else if (IsCompare(@operator))
                         {
                             return new BoolExpression(
-                                keyword,
+                                @operator,
                                 methodCall,
                                 ParseCommon()
                             );
@@ -231,7 +241,7 @@ namespace NHibernate.OData
                         else
                         {
                             return new ArithmicExpression(
-                                keyword,
+                                @operator,
                                 methodCall,
                                 ParseCommon()
                             );
@@ -263,12 +273,12 @@ namespace NHibernate.OData
                         if (AtPartialEnd)
                             return new MemberExpression(MemberType.Boolean, members);
 
-                        keyword = GetKeyword(Current);
+                        @operator = GetOperator(Current);
 
-                        if (IsLogical(keyword) || IsCompare(keyword))
+                        if (IsLogical(@operator) || IsCompare(@operator))
                         {
                             return new BoolExpression(
-                                keyword,
+                                @operator,
                                 new MemberExpression(MemberType.Normal, members),
                                 ParseCommon()
                             );
@@ -276,7 +286,7 @@ namespace NHibernate.OData
                         else
                         {
                             return new ArithmicExpression(
-                                keyword,
+                                @operator,
                                 new MemberExpression(MemberType.Normal, members),
                                 ParseCommon()
                             );
@@ -311,9 +321,9 @@ namespace NHibernate.OData
             throw new ODataException(ErrorMessages.Parser_ExpectedBooleanLiteral);
         }
 
-        private bool IsLogical(Operator keyword)
+        private bool IsLogical(Operator @operator)
         {
-            switch (keyword)
+            switch (@operator)
             {
                 case Operator.And:
                 case Operator.Or:
@@ -324,9 +334,9 @@ namespace NHibernate.OData
             }
         }
 
-        private bool IsCompare(Operator keyword)
+        private bool IsCompare(Operator @operator)
         {
-            switch (keyword)
+            switch (@operator)
             {
                 case Operator.Eq:
                 case Operator.Ge:
@@ -341,9 +351,9 @@ namespace NHibernate.OData
             }
         }
 
-        private bool IsArithmic(Operator keyword)
+        private bool IsArithmic(Operator @operator)
         {
-            switch (keyword)
+            switch (@operator)
             {
                 case Operator.Add:
                 case Operator.Div:
@@ -357,7 +367,7 @@ namespace NHibernate.OData
             }
         }
 
-        private Operator GetKeyword(Token token)
+        private Operator GetOperator(Token token)
         {
             var identifier = token as IdentifierToken;
 
@@ -381,15 +391,10 @@ namespace NHibernate.OData
                 }
             }
 
-            throw new ODataException(ErrorMessages.Parser_ExpectedKeyword);
+            throw new ODataException(ErrorMessages.Parser_ExpectedOperator);
         }
 
         private MethodCallExpression ParseMethodCall()
-        {
-            throw new NotImplementedException();
-        }
-
-        private Expression ParseCommon()
         {
             throw new NotImplementedException();
         }
