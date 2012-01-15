@@ -60,6 +60,7 @@
     <Compile Include="Parser\Comparison.cs" />
     <Compile Include="Parser\LiteralParsing.cs" />
     <Compile Include="Parser\Logicals.cs" />
+    <Compile Include="Parser\Members.cs" />
     <Compile Include="Parser\Parens.cs" />
     <Compile Include="Parser\ParserTestFixture.cs" />
     <Compile Include="Parser\Precedence.cs" />

@@ -240,9 +240,11 @@ namespace NHibernate.OData
 
                         MoveNext();
 
-                        while (Current == SyntaxToken.Slash)
+                        while (!AtEnd && Current == SyntaxToken.Slash)
                         {
                             MoveNext();
+
+                            ExpectAny();
 
                             members.Add(CurrentIdentifier);
 

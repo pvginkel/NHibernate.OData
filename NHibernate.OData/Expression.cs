@@ -65,6 +65,11 @@ namespace NHibernate.OData
             get { return MemberType == MemberType.Boolean; }
         }
 
+        public MemberExpression(MemberType type, params string[] members)
+            : this(type, (IList<string>)members)
+        {
+        }
+
         public MemberExpression(MemberType type, IList<string> members)
             : base(ExpressionType.Member)
         {
