@@ -169,6 +169,15 @@ namespace NHibernate.OData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expected binary operator..
+        /// </summary>
+        internal static string Parser_ExpectedBinaryOperator {
+            get {
+                return ResourceManager.GetString("Parser_ExpectedBinaryOperator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expected boolean expression..
         /// </summary>
         internal static string Parser_ExpectedBooleanExpression {

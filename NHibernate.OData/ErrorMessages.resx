@@ -153,6 +153,9 @@
   <data name="Parser_EmptySource" xml:space="preserve">
     <value>Unexpected empty expression.</value>
   </data>
+  <data name="Parser_ExpectedBinaryOperator" xml:space="preserve">
+    <value>Expected binary operator.</value>
+  </data>
   <data name="Parser_ExpectedBooleanExpression" xml:space="preserve">
     <value>Expected boolean expression.</value>
   </data>

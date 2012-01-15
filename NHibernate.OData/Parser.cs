@@ -135,6 +135,11 @@ namespace NHibernate.OData
             {
                 var @operator = GetOperator(Current);
 
+                if (!@operator.HasValue)
+                    throw new ODataException(ErrorMessages.Parser_ExpectedOperator);
+                else if (!OperatorUtil.IsBinary(@operator.Value))
+                    throw new ODataException(ErrorMessages.Parser_ExpectedBinaryOperator);
+
                 MoveNext();
 
                 ExpectAny();
@@ -145,12 +150,12 @@ namespace NHibernate.OData
 
                 var binary = right as BinaryExpression;
 
-                if (binary != null && binary.Operator < @operator)
+                if (binary != null && binary.Operator < @operator.Value)
                 {
                     result = CreateBinary(
                         binary.Operator,
                         CreateBinary(
-                            @operator,
+                            @operator.Value,
                             result,
                             binary.Left
                         ),
@@ -160,7 +165,7 @@ namespace NHibernate.OData
                 else
                 {
                     result = CreateBinary(
-                        @operator,
+                        @operator.Value,
                         result,
                         right
                     );
@@ -218,7 +223,7 @@ namespace NHibernate.OData
                     }
 
                 case TokenType.Identifier:
-                    if (Next == SyntaxToken.ParenOpen)
+                    if (Next == SyntaxToken.ParenOpen && !GetOperator(Current).HasValue)
                     {
                         var methodCall = ParseMethodCall();
 
@@ -259,7 +264,7 @@ namespace NHibernate.OData
             }
         }
 
-        private Operator GetOperator(Token token)
+        private Operator? GetOperator(Token token)
         {
             var identifier = token as IdentifierToken;
 
@@ -280,10 +285,11 @@ namespace NHibernate.OData
                     case "mul": return Operator.Mul;
                     case "div": return Operator.Div;
                     case "mod": return Operator.Mod;
+                    case "not": return Operator.Not;
                 }
             }
 
-            throw new ODataException(ErrorMessages.Parser_ExpectedOperator);
+            return null;
         }
 
         private MethodCallExpression ParseMethodCall()

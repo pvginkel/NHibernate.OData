@@ -52,5 +52,10 @@ namespace NHibernate.OData
                     return false;
             }
         }
+
+        internal static bool IsBinary(Operator @operator)
+        {
+            return @operator != Operator.Not;
+        }
     }
 }

@@ -14,5 +14,27 @@ namespace NHibernate.OData.Test.Parser
         {
             Verify("not true", new BoolUnaryExpression(Operator.Not, TrueLiteral));
         }
+
+        [Test]
+        public void NoMethodCall()
+        {
+            Verify(
+                "true and not (true)",
+                new LogicalExpression(
+                    Operator.And,
+                    TrueLiteral,
+                    new BoolUnaryExpression(
+                        Operator.Not,
+                        new ParenExpression(TrueLiteral)
+                    )
+                )
+            );
+        }
+
+        [Test]
+        public void IllegalUnary()
+        {
+            VerifyThrows("true not false");
+        }
     }
 }
