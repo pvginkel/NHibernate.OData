@@ -4,7 +4,7 @@ using System;
 
 namespace NHibernate.OData
 {
-    // Precedence taken from http://msdn.microsoft.com/en-us/library/Aa691323
+    // Specification at 2.2.3.6.1.1.2
     internal enum Operator
     {
         // Unary
@@ -19,8 +19,8 @@ namespace NHibernate.OData
         Sub,
         // Relational and type testing
         Lt,
-        Le,
         Gt,
+        Le,
         Ge,
         // Equality
         Eq,
