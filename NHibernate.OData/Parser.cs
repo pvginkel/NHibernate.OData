@@ -79,11 +79,6 @@ namespace NHibernate.OData
             get { return _offset >= Count; }
         }
 
-        protected bool AtPartialEnd
-        {
-            get { return AtEnd || Current == SyntaxToken.ParenClose || Current == SyntaxToken.Comma; }
-        }
-
         protected Token Previous
         {
             get { return AtStart ? null : _tokens[_offset - 1]; }
@@ -136,7 +131,7 @@ namespace NHibernate.OData
         {
             var result = ParseCommonItem();
 
-            while (!AtPartialEnd)
+            while (!(AtEnd || Current == SyntaxToken.ParenClose || Current == SyntaxToken.Comma))
             {
                 var @operator = GetOperator(Current);
 
@@ -146,9 +141,9 @@ namespace NHibernate.OData
 
                 var right = ParseCommon();
 
-                var binary = right as BinaryExpression;
-
                 // Apply operator precedence
+
+                var binary = right as BinaryExpression;
 
                 if (binary != null && binary.Operator < @operator)
                 {
