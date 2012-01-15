@@ -122,11 +122,11 @@ namespace NHibernate.OData
         Boolean
     }
 
-    internal abstract class SingleExpression : Expression
+    internal abstract class UnaryExpression : Expression
     {
         public Expression Expression { get; private set; }
 
-        protected SingleExpression(ExpressionType type, Expression expression)
+        protected UnaryExpression(ExpressionType type, Expression expression)
             : base(type)
         {
             if (expression == null)
@@ -140,7 +140,7 @@ namespace NHibernate.OData
             if (ReferenceEquals(this, obj))
                 return true;
 
-            var other = obj as SingleExpression;
+            var other = obj as UnaryExpression;
 
             return
                 other != null &&
@@ -149,7 +149,7 @@ namespace NHibernate.OData
         }
     }
 
-    internal class BoolParenExpression : SingleExpression
+    internal class BoolParenExpression : UnaryExpression
     {
         public override bool IsBool
         {
@@ -167,7 +167,7 @@ namespace NHibernate.OData
         }
     }
 
-    internal class ParenExpression : SingleExpression
+    internal class ParenExpression : UnaryExpression
     {
         public override bool IsBool
         {
@@ -185,7 +185,7 @@ namespace NHibernate.OData
         }
     }
 
-    internal class BoolSingleExpression : SingleExpression
+    internal class BoolUnaryExpression : UnaryExpression
     {
         public KeywordType KeywordType { get; private set; }
 
@@ -194,7 +194,7 @@ namespace NHibernate.OData
             get { return true; }
         }
 
-        public BoolSingleExpression(KeywordType type, Expression expression)
+        public BoolUnaryExpression(KeywordType type, Expression expression)
             : base(ExpressionType.Bool, expression)
         {
             KeywordType = type;
@@ -204,7 +204,7 @@ namespace NHibernate.OData
         {
             return
                 base.Equals(obj) &&
-                KeywordType == ((BoolSingleExpression)obj).KeywordType;
+                KeywordType == ((BoolUnaryExpression)obj).KeywordType;
         }
 
         public override string ToString()
@@ -213,7 +213,7 @@ namespace NHibernate.OData
         }
     }
 
-    internal class ArithmicSingleExpression : SingleExpression
+    internal class ArithmicUnaryExpression : UnaryExpression
     {
         public KeywordType KeywordType { get; private set; }
 
@@ -222,8 +222,8 @@ namespace NHibernate.OData
             get { return false; }
         }
 
-        public ArithmicSingleExpression(KeywordType type, Expression expression)
-            : base(ExpressionType.ArithmicSingle, expression)
+        public ArithmicUnaryExpression(KeywordType type, Expression expression)
+            : base(ExpressionType.ArithmicUnary, expression)
         {
             KeywordType = type;
         }
@@ -232,7 +232,7 @@ namespace NHibernate.OData
         {
             return
                 base.Equals(obj) &&
-                KeywordType == ((ArithmicSingleExpression)obj).KeywordType;
+                KeywordType == ((ArithmicUnaryExpression)obj).KeywordType;
         }
 
         public override string ToString()
@@ -241,13 +241,13 @@ namespace NHibernate.OData
         }
     }
 
-    internal abstract class TupleExpression : Expression
+    internal abstract class BinaryExpression : Expression
     {
         public Expression Left { get; private set; }
 
         public Expression Right { get; private set; }
 
-        protected TupleExpression(ExpressionType type, Expression left, Expression right)
+        protected BinaryExpression(ExpressionType type, Expression left, Expression right)
             : base(type)
         {
             if (left == null)
@@ -264,7 +264,7 @@ namespace NHibernate.OData
             if (ReferenceEquals(this, obj))
                 return true;
 
-            var other = obj as TupleExpression;
+            var other = obj as BinaryExpression;
 
             return
                 other != null &&
@@ -274,7 +274,7 @@ namespace NHibernate.OData
         }
     }
 
-    internal class BoolExpression : TupleExpression
+    internal class BoolExpression : BinaryExpression
     {
         public KeywordType KeywordType { get; private set; }
 
@@ -302,7 +302,7 @@ namespace NHibernate.OData
         }
     }
 
-    internal class ArithmicExpression : TupleExpression
+    internal class ArithmicExpression : BinaryExpression
     {
         public KeywordType KeywordType { get; private set; }
 

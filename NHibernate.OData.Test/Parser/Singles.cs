@@ -12,7 +12,7 @@ namespace NHibernate.OData.Test.Parser
         [Test]
         public void Not()
         {
-            Verify("not true", new BoolSingleExpression(KeywordType.Not, TrueLiteral));
+            Verify("not true", new BoolUnaryExpression(KeywordType.Not, TrueLiteral));
         }
     }
 }

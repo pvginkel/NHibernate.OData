@@ -173,7 +173,7 @@ namespace NHibernate.OData
                     {
                         MoveNext();
 
-                        return new ArithmicSingleExpression(KeywordType.Negative, ParseCommon());
+                        return new ArithmicUnaryExpression(KeywordType.Negative, ParseCommon());
                     }
                     if (Current == SyntaxToken.ParenOpen)
                     {
@@ -241,7 +241,7 @@ namespace NHibernate.OData
                     {
                         MoveNext();
 
-                        return new BoolSingleExpression(KeywordType.Not, ParseBool());
+                        return new BoolUnaryExpression(KeywordType.Not, ParseBool());
                     }
                     else
                     {
