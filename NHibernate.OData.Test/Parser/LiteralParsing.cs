@@ -16,6 +16,7 @@ namespace NHibernate.OData.Test.Parser
             VerifyBool("false", FalseLiteral);
             VerifyBool("0", FalseLiteral);
             VerifyBool("1", TrueLiteral);
+            VerifyBool("(1)", new ParenExpression(TrueLiteral));
         }
     }
 }
