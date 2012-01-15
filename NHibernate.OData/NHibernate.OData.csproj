@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgumentType.cs" />
     <Compile Include="ErrorMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -58,6 +59,8 @@
     <Compile Include="ExpressionUtil.cs" />
     <Compile Include="FilterParser.cs" />
     <Compile Include="HttpUtil.cs" />
+    <Compile Include="Method.cs" />
+    <Compile Include="MethodType.cs" />
     <Compile Include="ODataException.cs" />
     <Compile Include="ODataExpression.cs" />
     <Compile Include="ODataParser.cs" />

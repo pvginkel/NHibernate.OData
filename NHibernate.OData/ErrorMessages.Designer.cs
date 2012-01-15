@@ -160,6 +160,24 @@ namespace NHibernate.OData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Argument {1} of method &apos;{0}&apos; must be a string literal..
+        /// </summary>
+        internal static string Parser_ArgumentMustBeStringLiteral {
+            get {
+                return ResourceManager.GetString("Parser_ArgumentMustBeStringLiteral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot parse argument list..
+        /// </summary>
+        internal static string Parser_CannotParseArgumentList {
+            get {
+                return ResourceManager.GetString("Parser_CannotParseArgumentList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected empty expression..
         /// </summary>
         internal static string Parser_EmptySource {
@@ -241,6 +259,24 @@ namespace NHibernate.OData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; expectes {1} arguments..
+        /// </summary>
+        internal static string Parser_IllegalArgumentCount {
+            get {
+                return ResourceManager.GetString("Parser_IllegalArgumentCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; expects between {1} and {2} arguments..
+        /// </summary>
+        internal static string Parser_IllegalVarArgumentCount {
+            get {
+                return ResourceManager.GetString("Parser_IllegalVarArgumentCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected trailing tokens..
         /// </summary>
         internal static string Parser_TrailingTokens {
@@ -255,6 +291,15 @@ namespace NHibernate.OData {
         internal static string Parser_UnexpectedEnd {
             get {
                 return ResourceManager.GetString("Parser_UnexpectedEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown method &apos;{0}&apos;..
+        /// </summary>
+        internal static string Parser_UnknownMethod {
+            get {
+                return ResourceManager.GetString("Parser_UnknownMethod", resourceCulture);
             }
         }
     }

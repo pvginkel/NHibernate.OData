@@ -304,25 +304,30 @@ namespace NHibernate.OData
     internal class MethodCallExpression : Expression
     {
         public MethodCallType MethodCallType { get; private set; }
-        public string Method { get; private set; }
-        public IList<Expression> Expressions { get; private set; }
+        public Method Method { get; private set; }
+        public IList<Expression> Arguments { get; private set; }
 
         public override bool IsBool
         {
-            get { return MethodCallType == MethodCallType.Boolean || MethodCallType == MethodCallType.BooleanCast; }
+            get { return MethodCallType == MethodCallType.Boolean; }
         }
 
-        public MethodCallExpression(MethodCallType type, string method, IList<Expression> expressions)
+        public MethodCallExpression(MethodCallType type, Method method, params Expression[] arguments)
+            : this(type, method, (IList<Expression>)arguments)
+        {
+        }
+
+        public MethodCallExpression(MethodCallType type, Method method, IList<Expression> arguments)
             : base(ExpressionType.MethodCall)
         {
             if (method == null)
                 throw new ArgumentNullException("method");
-            if (expressions == null)
-                throw new ArgumentNullException("expressions");
+            if (arguments == null)
+                throw new ArgumentNullException("arguments");
 
             MethodCallType = type;
             Method = method;
-            Expressions = expressions;
+            Arguments = arguments;
         }
 
         public override bool Equals(object obj)
@@ -336,13 +341,13 @@ namespace NHibernate.OData
                 other == null ||
                 MethodCallType != other.MethodCallType ||
                 Method != other.Method ||
-                Expressions.Count != other.Expressions.Count
+                Arguments.Count != other.Arguments.Count
             )
                 return false;
 
-            for (int i = 0; i < Expressions.Count; i++)
+            for (int i = 0; i < Arguments.Count; i++)
             {
-                if (!Expressions[i].Equals(other.Expressions[i]))
+                if (!Arguments[i].Equals(other.Arguments[i]))
                     return false;
             }
 
@@ -353,15 +358,15 @@ namespace NHibernate.OData
         {
             var sb = new StringBuilder();
 
-            sb.Append(Method);
+            sb.Append(Method.MethodType);
             sb.Append("(");
 
-            for (int i = 0; i < Expressions.Count; i++)
+            for (int i = 0; i < Arguments.Count; i++)
             {
                 if (i > 0)
                     sb.Append(", ");
 
-                sb.Append(Expressions[i]);
+                sb.Append(Arguments[i]);
             }
 
             sb.Append(")");
@@ -372,9 +377,7 @@ namespace NHibernate.OData
 
     internal enum MethodCallType
     {
-        Boolean,
-        Cast,
-        BooleanCast,
-        Other
+        Normal,
+        Boolean
     }
 }

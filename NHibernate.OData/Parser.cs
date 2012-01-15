@@ -225,13 +225,9 @@ namespace NHibernate.OData
                 case TokenType.Identifier:
                     if (Next == SyntaxToken.ParenOpen && !GetOperator(Current).HasValue)
                     {
-                        var methodCall = ParseMethodCall();
-
-                        MoveNext();
-
-                        return methodCall;
+                        return ParseMethodCall();
                     }
-                    else if (CurrentIdentifier == "not")
+                    else if (GetOperator(Current) == Operator.Not)
                     {
                         MoveNext();
 
@@ -294,7 +290,110 @@ namespace NHibernate.OData
 
         private MethodCallExpression ParseMethodCall()
         {
-            throw new NotImplementedException();
+            var method = Method.FindMethodByName(CurrentIdentifier);
+
+            if (method == null)
+            {
+                throw new ODataException(String.Format(
+                    ErrorMessages.Parser_UnknownMethod, CurrentIdentifier
+                ));
+            }
+
+            MoveNext();
+
+            Expect(SyntaxToken.ParenOpen);
+
+            var arguments = ParseMethodCallArgumentList(method);
+
+            bool isBool = false;
+
+            switch (method.MethodType)
+            {
+                case MethodType.StartsWith:
+                case MethodType.EndsWith:
+                case MethodType.SubStringOf:
+                case MethodType.IsOf:
+                    isBool = true;
+                    break;
+
+                case MethodType.Cast:
+                    if ((string)((LiteralExpression)arguments[1]).Value == "Edm.Boolean")
+                        isBool = true;
+                    break;
+            }
+
+            return new MethodCallExpression(
+                isBool ? MethodCallType.Boolean : MethodCallType.Normal,
+                method,
+                arguments
+            );
+        }
+
+        private List<Expression> ParseMethodCallArgumentList(Method method)
+        {
+            var arguments = new List<Expression>();
+
+            while (true)
+            {
+                arguments.Add(ParseCommon());
+
+                ExpectAny();
+
+                if (Current == SyntaxToken.Comma)
+                {
+                    MoveNext();
+                }
+                else if (Current == SyntaxToken.ParenClose)
+                {
+                    MoveNext();
+
+                    break;
+                }
+                else
+                {
+                    throw new ODataException(ErrorMessages.Parser_CannotParseArgumentList);
+                }
+            }
+
+            if (arguments.Count < method.ArgumentCount || arguments.Count > method.MaxArgumentCount)
+            {
+                if (method.ArgumentCount == method.MaxArgumentCount)
+                {
+                    throw new ODataException(String.Format(
+                        ErrorMessages.Parser_IllegalArgumentCount,
+                        method.MethodType,
+                        method.ArgumentCount
+                        ));
+                }
+                else
+                {
+                    throw new ODataException(String.Format(
+                        ErrorMessages.Parser_IllegalVarArgumentCount,
+                        method.MethodType,
+                        method.ArgumentCount,
+                        method.MaxArgumentCount
+                        ));
+                }
+            }
+
+            for (int i = 0; i < arguments.Count; i++)
+            {
+                if (method.ArgumentTypes[i] == ArgumentType.StringLiteral)
+                {
+                    var literal = arguments[i] as LiteralExpression;
+
+                    if (literal == null || !(literal.Value is string))
+                    {
+                        throw new ODataException(String.Format(
+                            ErrorMessages.Parser_ArgumentMustBeStringLiteral,
+                            method.MethodType,
+                            i + 1
+                            ));
+                    }
+                }
+            }
+
+            return arguments;
         }
     }
 }

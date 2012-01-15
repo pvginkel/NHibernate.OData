@@ -150,6 +150,12 @@
   <data name="ODataExpression_SkipTopMustBePositive" xml:space="preserve">
     <value>Query string parameter '{0}' must be a positive integer.</value>
   </data>
+  <data name="Parser_ArgumentMustBeStringLiteral" xml:space="preserve">
+    <value>Argument {1} of method '{0}' must be a string literal.</value>
+  </data>
+  <data name="Parser_CannotParseArgumentList" xml:space="preserve">
+    <value>Cannot parse argument list.</value>
+  </data>
   <data name="Parser_EmptySource" xml:space="preserve">
     <value>Unexpected empty expression.</value>
   </data>
@@ -177,10 +183,19 @@
   <data name="Parser_ExpectedToken" xml:space="preserve">
     <value>Expected {0}.</value>
   </data>
+  <data name="Parser_IllegalArgumentCount" xml:space="preserve">
+    <value>Method '{0}' expectes {1} arguments.</value>
+  </data>
+  <data name="Parser_IllegalVarArgumentCount" xml:space="preserve">
+    <value>Method '{0}' expects between {1} and {2} arguments.</value>
+  </data>
   <data name="Parser_TrailingTokens" xml:space="preserve">
     <value>Unexpected trailing tokens.</value>
   </data>
   <data name="Parser_UnexpectedEnd" xml:space="preserve">
     <value>Unexpected end.</value>
+  </data>
+  <data name="Parser_UnknownMethod" xml:space="preserve">
+    <value>Unknown method '{0}'.</value>
   </data>
 </root>
