@@ -335,6 +335,8 @@ namespace NHibernate.OData
 
             while (true)
             {
+                ExpectAny();
+
                 arguments.Add(ParseCommon());
 
                 ExpectAny();

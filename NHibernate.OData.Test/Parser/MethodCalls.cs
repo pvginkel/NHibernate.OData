@@ -69,5 +69,15 @@ namespace NHibernate.OData.Test.Parser
             VerifyThrows("concat()");
             VerifyThrows("concat('a', 'b', 'c')");
         }
+
+        [Test]
+        public void IllegalConstructs()
+        {
+            VerifyThrows("concat(");
+            VerifyThrows("concat)");
+            VerifyThrows("concat(,");
+            VerifyThrows("concat('a',");
+            VerifyThrows("concat('a',)");
+        }
     }
 }
