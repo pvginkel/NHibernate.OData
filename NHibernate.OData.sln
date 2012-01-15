@@ -5,6 +5,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.OData", "NHibern
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.OData.Test", "NHibernate.OData.Test\NHibernate.OData.Test.csproj", "{309BB275-F76A-4799-A690-30AE2241FC5D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support", "Support", "{4E45D34C-6F0D-430D-8577-1E8C3C09E6E3}"
+	ProjectSection(SolutionItems) = preProject
+		Support\PartCover External Tool.bat = Support\PartCover External Tool.bat
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

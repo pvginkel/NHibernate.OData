@@ -30,10 +30,10 @@ namespace NHibernate.OData
                     switch ((int)literal.Value)
                     {
                         case 0:
-                            return new LiteralExpression(false);
+                            return new LiteralExpression(false, LiteralType.Boolean);
 
                         case 1:
-                            return new LiteralExpression(true);
+                            return new LiteralExpression(true, LiteralType.Boolean);
                     }
                 }
 

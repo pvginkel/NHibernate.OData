@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
-namespace NHibernate.OData.Test.Lexer
+namespace NHibernate.OData.Test.Support
 {
     internal class LexerTestFixture
     {

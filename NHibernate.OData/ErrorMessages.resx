@@ -117,6 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Expression_CannotCompareTypes" xml:space="preserve">
+    <value>Cannot compare values of type '{0}'.</value>
+  </data>
+  <data name="Expression_CannotInverse" xml:space="preserve">
+    <value>Cannot inverse literal of type '{0}'.</value>
+  </data>
+  <data name="Expression_CannotNegate" xml:space="preserve">
+    <value>Cannot negate literal of type '{0}'.</value>
+  </data>
+  <data name="Expression_IncompatibleTypes" xml:space="preserve">
+    <value>Operation '{0}' is not supported on type '{1}'.</value>
+  </data>
   <data name="Lexer_DecimalCannotHaveExponent" xml:space="preserve">
     <value>Unexpected exponent for decimal literal at {0}.</value>
   </data>
@@ -143,6 +155,18 @@
   </data>
   <data name="Lexer_UnterminatedString" xml:space="preserve">
     <value>Unterminated string starting at {0}.</value>
+  </data>
+  <data name="LiteralUtil_IncompatibleTypes" xml:space="preserve">
+    <value>Operation is not compatible on types '{0}' and '{1}'.</value>
+  </data>
+  <data name="LiteralUtil_UnknownEdmType" xml:space="preserve">
+    <value>Unknown EDM type '{0}'.</value>
+  </data>
+  <data name="Method_CannotCast" xml:space="preserve">
+    <value>Cannot cast value to '{0}'.</value>
+  </data>
+  <data name="Method_InvalidArgumentType" xml:space="preserve">
+    <value>Argument {1} of method '{0}' must be of type '{2}'.</value>
   </data>
   <data name="ODataExpression_InvalidQueryStringElement" xml:space="preserve">
     <value>Cannot understand query string element '{0}'.</value>

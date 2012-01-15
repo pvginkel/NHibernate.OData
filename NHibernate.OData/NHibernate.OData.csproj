@@ -59,6 +59,8 @@
     <Compile Include="ExpressionUtil.cs" />
     <Compile Include="FilterParser.cs" />
     <Compile Include="HttpUtil.cs" />
+    <Compile Include="LiteralType.cs" />
+    <Compile Include="LiteralUtil.cs" />
     <Compile Include="Method.cs" />
     <Compile Include="MethodType.cs" />
     <Compile Include="ODataException.cs" />

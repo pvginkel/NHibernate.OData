@@ -85,5 +85,10 @@ namespace NHibernate.OData
         {
             return !(a == b);
         }
+
+        public static XmlTimeSpan operator -(XmlTimeSpan value)
+        {
+            return new XmlTimeSpan(!value.Positive, value.Years, value.Months, value.Days, value.Hours, value.Minutes, value.Seconds);
+        }
     }
 }

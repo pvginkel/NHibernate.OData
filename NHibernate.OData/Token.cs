@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -50,19 +51,29 @@ namespace NHibernate.OData
 
     internal class LiteralToken : Token
     {
-        public static readonly LiteralToken PositiveInfinity = new LiteralToken(double.PositiveInfinity);
-        public static readonly LiteralToken NegativeInfinity = new LiteralToken(double.NegativeInfinity);
-        public static readonly LiteralToken NaN = new LiteralToken(double.NaN);
-        public static readonly LiteralToken True = new LiteralToken(true);
-        public static readonly LiteralToken False = new LiteralToken(false);
-        public static readonly LiteralToken Null = new LiteralToken(null);
+        public static readonly LiteralToken PositiveInfinity = new LiteralToken(double.PositiveInfinity, LiteralType.Double);
+        public static readonly LiteralToken NegativeInfinity = new LiteralToken(double.NegativeInfinity, LiteralType.Double);
+        public static readonly LiteralToken NaN = new LiteralToken(double.NaN, LiteralType.Double);
+        public static readonly LiteralToken True = new LiteralToken(true, LiteralType.Boolean);
+        public static readonly LiteralToken False = new LiteralToken(false, LiteralType.Boolean);
+        public static readonly LiteralToken Null = new LiteralToken(null, LiteralType.Null);
 
         public object Value { get; private set; }
+        public LiteralType LiteralType { get; private set; }
 
         public LiteralToken(object value)
+            : this(value, LiteralUtil.GetLiteralType(value))
+        {
+            // This overload is here just for unit testing.
+        }
+
+        public LiteralToken(object value, LiteralType literalType)
             : base(TokenType.Literal)
         {
             Value = value;
+            LiteralType = literalType;
+
+            Debug.Assert(literalType == LiteralUtil.GetLiteralType(value));
         }
 
         public override bool Equals(object obj)
@@ -79,18 +90,7 @@ namespace NHibernate.OData
             var otherBytes = other.Value as byte[];
 
             if (bytes != null && otherBytes != null)
-            {
-                if (bytes.Length != otherBytes.Length)
-                    return false;
-
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    if (bytes[i] != otherBytes[i])
-                        return false;
-                }
-
-                return true;
-            }
+                return LiteralUtil.ByteArrayEquals(bytes, otherBytes);
 
             return Equals(Value, other.Value);
         }

@@ -54,8 +54,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HttpUtil\HttpUtil.cs" />
     <Compile Include="Lexer\Basics.cs" />
-    <Compile Include="Lexer\LexerTestFixture.cs" />
+    <Compile Include="Normalization\Arithmics.cs" />
+    <Compile Include="Normalization\Casting.cs" />
+    <Compile Include="Normalization\Comparisons.cs" />
+    <Compile Include="Normalization\DateParts.cs" />
+    <Compile Include="Normalization\IsOfs.cs" />
+    <Compile Include="Normalization\Logicals.cs" />
+    <Compile Include="Normalization\Removals.cs" />
+    <Compile Include="Normalization\Strings.cs" />
+    <Compile Include="Support\LexerTestFixture.cs" />
     <Compile Include="Parser\Basics.cs" />
     <Compile Include="Parser\Comparison.cs" />
     <Compile Include="Parser\LiteralParsing.cs" />
@@ -63,7 +72,8 @@
     <Compile Include="Parser\Members.cs" />
     <Compile Include="Parser\MethodCalls.cs" />
     <Compile Include="Parser\Parens.cs" />
-    <Compile Include="Parser\ParserTestFixture.cs" />
+    <Compile Include="Support\NormalizedTestFixture.cs" />
+    <Compile Include="Support\ParserTestFixture.cs" />
     <Compile Include="Parser\Precedence.cs" />
     <Compile Include="Parser\Unaries.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -80,6 +90,7 @@
       <Link>Key.snk</Link>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -162,7 +162,7 @@ namespace NHibernate.OData
 
             _offset = _current + 1;
 
-            return new LiteralToken(sb.ToString());
+            return new LiteralToken(sb.ToString(), LiteralType.String);
         }
 
         private Token ParseNumeric()
@@ -235,6 +235,7 @@ namespace NHibernate.OData
 
             string text = _source.Substring(_offset, _current - _offset);
             object value;
+            LiteralType type;
 
             if (_current < _source.Length)
             {
@@ -245,46 +246,62 @@ namespace NHibernate.OData
                     case 'F':
                     case 'f':
                         value = float.Parse(text, ParseCulture);
+                        type = LiteralType.Single;
                         _current++;
                         break;
 
                     case 'D':
                     case 'd':
                         value = double.Parse(text, ParseCulture);
+                        type = LiteralType.Double;
                         _current++;
                         break;
 
                     case 'M':
                     case 'm':
                         value = decimal.Parse(text, ParseCulture);
+                        type = LiteralType.Decimal;
                         _current++;
                         break;
 
                     case 'L':
                     case 'l':
                         value = long.Parse(text, ParseCulture);
+                        type = LiteralType.Long;
                         _current++;
                         break;
 
                     default:
                         if (floating || haveExponent)
+                        {
                             value = double.Parse(text, ParseCulture);
+                            type = LiteralType.Double;
+                        }
                         else
+                        {
                             value = int.Parse(text, ParseCulture);
+                            type = LiteralType.Int;
+                        }
                         break;
                 }
             }
             else
             {
                 if (floating || haveExponent)
+                {
                     value = double.Parse(text, ParseCulture);
+                    type = LiteralType.Double;
+                }
                 else
+                {
                     value = int.Parse(text, ParseCulture);
+                    type = LiteralType.Int;
+                }
             }
 
             _offset = _current;
 
-            return new LiteralToken(value);
+            return new LiteralToken(value, type);
         }
 
         private int? SkipDigits(int current)
@@ -440,7 +457,7 @@ namespace NHibernate.OData
                     }
                 }
 
-                return new LiteralToken(result);
+                return new LiteralToken(result, LiteralType.Binary);
             }
             else
             {
@@ -469,7 +486,7 @@ namespace NHibernate.OData
 
                 // We let DateTime take care of validating the input.
 
-                return new LiteralToken(new DateTime(year, month, day, hour, minute, second, nanoSecond / 1000));
+                return new LiteralToken(new DateTime(year, month, day, hour, minute, second, nanoSecond / 1000), LiteralType.DateTime);
             }
             else
             {
@@ -484,7 +501,7 @@ namespace NHibernate.OData
             // Let DateTime take care of validating the input. "o" should be the
             // XMLSchema date/time with timezone format.
 
-            return new LiteralToken(DateTime.ParseExact(value, "o", ParseCulture));
+            return new LiteralToken(DateTime.ParseExact(value, "o", ParseCulture), LiteralType.DateTime);
         }
 
         private Token ParseGuidString(string value)
@@ -496,7 +513,7 @@ namespace NHibernate.OData
                 ));
             }
 
-            return new LiteralToken(new Guid(value));
+            return new LiteralToken(new Guid(value), LiteralType.Guid);
         }
 
         private Token ParseTimeString(string value)
@@ -507,13 +524,13 @@ namespace NHibernate.OData
             {
                 bool negative = match.Groups[1].Value == "-";
                 int year = match.Groups[2].Value.Length > 0 ? int.Parse(match.Groups[2].Value, ParseCulture) : 0;
-                int month = match.Groups[3].Value.Length > 0 ? int.Parse(match.Groups[2].Value, ParseCulture) : 0;
-                int day = match.Groups[4].Value.Length > 0 ? int.Parse(match.Groups[2].Value, ParseCulture) : 0;
-                int hour = match.Groups[5].Value.Length > 0 ? int.Parse(match.Groups[2].Value, ParseCulture) : 0;
-                int minute = match.Groups[6].Value.Length > 0 ? int.Parse(match.Groups[2].Value, ParseCulture) : 0;
-                double second = match.Groups[7].Value.Length > 0 ? double.Parse(match.Groups[2].Value, ParseCulture) : 0;
+                int month = match.Groups[3].Value.Length > 0 ? int.Parse(match.Groups[3].Value, ParseCulture) : 0;
+                int day = match.Groups[4].Value.Length > 0 ? int.Parse(match.Groups[4].Value, ParseCulture) : 0;
+                int hour = match.Groups[5].Value.Length > 0 ? int.Parse(match.Groups[5].Value, ParseCulture) : 0;
+                int minute = match.Groups[6].Value.Length > 0 ? int.Parse(match.Groups[6].Value, ParseCulture) : 0;
+                double second = match.Groups[7].Value.Length > 0 ? double.Parse(match.Groups[7].Value, ParseCulture) : 0;
 
-                return new LiteralToken(new XmlTimeSpan(!negative, year, month, day, hour, minute, second));
+                return new LiteralToken(new XmlTimeSpan(!negative, year, month, day, hour, minute, second), LiteralType.Duration);
             }
             else
             {

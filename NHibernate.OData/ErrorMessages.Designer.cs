@@ -61,6 +61,42 @@ namespace NHibernate.OData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot compare values of type &apos;{0}&apos;..
+        /// </summary>
+        internal static string Expression_CannotCompareTypes {
+            get {
+                return ResourceManager.GetString("Expression_CannotCompareTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot inverse literal of type &apos;{0}&apos;..
+        /// </summary>
+        internal static string Expression_CannotInverse {
+            get {
+                return ResourceManager.GetString("Expression_CannotInverse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot negate literal of type &apos;{0}&apos;..
+        /// </summary>
+        internal static string Expression_CannotNegate {
+            get {
+                return ResourceManager.GetString("Expression_CannotNegate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation &apos;{0}&apos; is not supported on type &apos;{1}&apos;..
+        /// </summary>
+        internal static string Expression_IncompatibleTypes {
+            get {
+                return ResourceManager.GetString("Expression_IncompatibleTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected exponent for decimal literal at {0}..
         /// </summary>
         internal static string Lexer_DecimalCannotHaveExponent {
@@ -138,6 +174,42 @@ namespace NHibernate.OData {
         internal static string Lexer_UnterminatedString {
             get {
                 return ResourceManager.GetString("Lexer_UnterminatedString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation is not compatible on types &apos;{0}&apos; and &apos;{1}&apos;..
+        /// </summary>
+        internal static string LiteralUtil_IncompatibleTypes {
+            get {
+                return ResourceManager.GetString("LiteralUtil_IncompatibleTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown EDM type &apos;{0}&apos;..
+        /// </summary>
+        internal static string LiteralUtil_UnknownEdmType {
+            get {
+                return ResourceManager.GetString("LiteralUtil_UnknownEdmType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot cast value to &apos;{0}&apos;..
+        /// </summary>
+        internal static string Method_CannotCast {
+            get {
+                return ResourceManager.GetString("Method_CannotCast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argument {1} of method &apos;{0}&apos; must be of type &apos;{2}&apos;..
+        /// </summary>
+        internal static string Method_InvalidArgumentType {
+            get {
+                return ResourceManager.GetString("Method_InvalidArgumentType", resourceCulture);
             }
         }
         

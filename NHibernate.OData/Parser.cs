@@ -192,11 +192,11 @@ namespace NHibernate.OData
             switch (Current.Type)
             {
                 case TokenType.Literal:
-                    object value = CurrentLiteral;
+                    var literal = (LiteralToken)Current;
 
                     MoveNext();
 
-                    return new LiteralExpression(value);
+                    return new LiteralExpression(literal.Value, literal.LiteralType);
 
                 case TokenType.Syntax:
                     if (Current == SyntaxToken.Negative)
@@ -390,7 +390,7 @@ namespace NHibernate.OData
                             ErrorMessages.Parser_ArgumentMustBeStringLiteral,
                             method.MethodType,
                             i + 1
-                            ));
+                        ));
                     }
                 }
             }
