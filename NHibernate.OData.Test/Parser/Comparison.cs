@@ -14,7 +14,7 @@ namespace NHibernate.OData.Test.Parser
         {
             Verify(
                 "1 eq 1",
-                new BoolExpression(KeywordType.Eq, OneLiteral, OneLiteral)
+                new BoolExpression(Operator.Eq, OneLiteral, OneLiteral)
             );
         }
     }

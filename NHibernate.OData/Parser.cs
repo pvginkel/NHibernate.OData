@@ -129,7 +129,7 @@ namespace NHibernate.OData
 
         protected Expression ParseBool()
         {
-            KeywordType keyword;
+            Operator keyword;
 
             switch (Current.Type)
             {
@@ -173,7 +173,7 @@ namespace NHibernate.OData
                     {
                         MoveNext();
 
-                        return new ArithmicUnaryExpression(KeywordType.Negative, ParseCommon());
+                        return new ArithmicUnaryExpression(Operator.Negative, ParseCommon());
                     }
                     if (Current == SyntaxToken.ParenOpen)
                     {
@@ -241,7 +241,7 @@ namespace NHibernate.OData
                     {
                         MoveNext();
 
-                        return new BoolUnaryExpression(KeywordType.Not, ParseBool());
+                        return new BoolUnaryExpression(Operator.Not, ParseBool());
                     }
                     else
                     {
@@ -311,12 +311,12 @@ namespace NHibernate.OData
             throw new ODataException(ErrorMessages.Parser_ExpectedBooleanLiteral);
         }
 
-        private bool IsLogical(KeywordType keyword)
+        private bool IsLogical(Operator keyword)
         {
             switch (keyword)
             {
-                case KeywordType.And:
-                case KeywordType.Or:
+                case Operator.And:
+                case Operator.Or:
                     return true;
 
                 default:
@@ -324,16 +324,16 @@ namespace NHibernate.OData
             }
         }
 
-        private bool IsCompare(KeywordType keyword)
+        private bool IsCompare(Operator keyword)
         {
             switch (keyword)
             {
-                case KeywordType.Eq:
-                case KeywordType.Ge:
-                case KeywordType.Gt:
-                case KeywordType.Le:
-                case KeywordType.Lt:
-                case KeywordType.Ne:
+                case Operator.Eq:
+                case Operator.Ge:
+                case Operator.Gt:
+                case Operator.Le:
+                case Operator.Lt:
+                case Operator.Ne:
                     return true;
 
                 default:
@@ -341,15 +341,15 @@ namespace NHibernate.OData
             }
         }
 
-        private bool IsArithmic(KeywordType keyword)
+        private bool IsArithmic(Operator keyword)
         {
             switch (keyword)
             {
-                case KeywordType.Add:
-                case KeywordType.Div:
-                case KeywordType.Mod:
-                case KeywordType.Mul:
-                case KeywordType.Sub:
+                case Operator.Add:
+                case Operator.Div:
+                case Operator.Mod:
+                case Operator.Mul:
+                case Operator.Sub:
                     return true;
 
                 default:
@@ -357,7 +357,7 @@ namespace NHibernate.OData
             }
         }
 
-        private KeywordType GetKeyword(Token token)
+        private Operator GetKeyword(Token token)
         {
             var identifier = token as IdentifierToken;
 
@@ -365,19 +365,19 @@ namespace NHibernate.OData
             {
                 switch (identifier.Identifier)
                 {
-                    case "and": return KeywordType.And;
-                    case "or": return KeywordType.Or;
-                    case "eq": return KeywordType.Eq;
-                    case "ne": return KeywordType.Ne;
-                    case "lt": return KeywordType.Lt;
-                    case "le": return KeywordType.Le;
-                    case "gt": return KeywordType.Gt;
-                    case "ge": return KeywordType.Ge;
-                    case "add": return KeywordType.Add;
-                    case "sub": return KeywordType.Sub;
-                    case "mul": return KeywordType.Mul;
-                    case "div": return KeywordType.Div;
-                    case "mod": return KeywordType.Mod;
+                    case "and": return Operator.And;
+                    case "or": return Operator.Or;
+                    case "eq": return Operator.Eq;
+                    case "ne": return Operator.Ne;
+                    case "lt": return Operator.Lt;
+                    case "le": return Operator.Le;
+                    case "gt": return Operator.Gt;
+                    case "ge": return Operator.Ge;
+                    case "add": return Operator.Add;
+                    case "sub": return Operator.Sub;
+                    case "mul": return Operator.Mul;
+                    case "div": return Operator.Div;
+                    case "mod": return Operator.Mod;
                 }
             }
 

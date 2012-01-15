@@ -122,12 +122,47 @@ namespace NHibernate.OData
         Boolean
     }
 
-    internal abstract class UnaryExpression : Expression
+    internal class ParenExpression : Expression
     {
         public Expression Expression { get; private set; }
 
-        protected UnaryExpression(ExpressionType type, Expression expression)
+        public override bool IsBool
+        {
+            get { return Expression.IsBool; }
+        }
+
+        public ParenExpression(Expression expression)
+            : base(ExpressionType.Paren)
+        {
+            if (expression == null)
+                throw new ArgumentNullException("expression");
+
+            Expression = expression;
+        }
+
+        public override string ToString()
+        {
+            return "(" + Expression + ")";
+        }
+    }
+
+    internal abstract class OperatorExpression : Expression
+    {
+        public Operator Operator { get; private set; }
+
+        protected OperatorExpression(ExpressionType type, Operator @operator)
             : base(type)
+        {
+            Operator = @operator;
+        }
+    }
+
+    internal abstract class UnaryExpression : OperatorExpression
+    {
+        public Expression Expression { get; private set; }
+
+        protected UnaryExpression(ExpressionType type, Expression expression, Operator @operator)
+            : base(type, @operator)
         {
             if (expression == null)
                 throw new ArgumentNullException("expression");
@@ -147,108 +182,61 @@ namespace NHibernate.OData
                 GetType() == other.GetType() &&
                 Expression.Equals(other.Expression);
         }
-    }
-
-    internal class BoolParenExpression : UnaryExpression
-    {
-        public override bool IsBool
-        {
-            get { return true; }
-        }
-
-        public BoolParenExpression(Expression expression)
-            : base(ExpressionType.BoolParen, expression)
-        {
-        }
 
         public override string ToString()
         {
-            return "(" + Expression + ")";
-        }
-    }
-
-    internal class ParenExpression : UnaryExpression
-    {
-        public override bool IsBool
-        {
-            get { return false; }
-        }
-
-        public ParenExpression(Expression expression)
-            : base(ExpressionType.Paren, expression)
-        {
-        }
-
-        public override string ToString()
-        {
-            return "(" + Expression + ")";
+            return Operator + " " + Expression;
         }
     }
 
     internal class BoolUnaryExpression : UnaryExpression
     {
-        public KeywordType KeywordType { get; private set; }
-
         public override bool IsBool
         {
             get { return true; }
         }
 
-        public BoolUnaryExpression(KeywordType type, Expression expression)
-            : base(ExpressionType.Bool, expression)
+        public BoolUnaryExpression(Operator @operator, Expression expression)
+            : base(ExpressionType.Bool, expression, @operator)
         {
-            KeywordType = type;
         }
 
         public override bool Equals(object obj)
         {
             return
                 base.Equals(obj) &&
-                KeywordType == ((BoolUnaryExpression)obj).KeywordType;
-        }
-
-        public override string ToString()
-        {
-            return KeywordType + " " + Expression;
+                Operator == ((BoolUnaryExpression)obj).Operator;
         }
     }
 
     internal class ArithmicUnaryExpression : UnaryExpression
     {
-        public KeywordType KeywordType { get; private set; }
-
         public override bool IsBool
         {
             get { return false; }
         }
 
-        public ArithmicUnaryExpression(KeywordType type, Expression expression)
-            : base(ExpressionType.ArithmicUnary, expression)
+        public ArithmicUnaryExpression(Operator @operator, Expression expression)
+            : base(ExpressionType.ArithmicUnary, expression, @operator)
         {
-            KeywordType = type;
         }
 
         public override bool Equals(object obj)
         {
             return
                 base.Equals(obj) &&
-                KeywordType == ((ArithmicUnaryExpression)obj).KeywordType;
-        }
-
-        public override string ToString()
-        {
-            return KeywordType + " " + Expression;
+                Operator == ((ArithmicUnaryExpression)obj).Operator;
         }
     }
 
-    internal abstract class BinaryExpression : Expression
+    internal abstract class BinaryExpression : OperatorExpression
     {
         public Expression Left { get; private set; }
 
         public Expression Right { get; private set; }
 
-        protected BinaryExpression(ExpressionType type, Expression left, Expression right)
-            : base(type)
+        protected BinaryExpression(ExpressionType type, Operator @operator, Expression left, Expression right)
+            : base(type, @operator)
         {
             if (left == null)
                 throw new ArgumentNullException("left");
@@ -272,81 +260,78 @@ namespace NHibernate.OData
                 Left.Equals(other.Left) &&
                 Right.Equals(other.Right);
         }
+
+        public override string ToString()
+        {
+            return Left + " " + Operator + " " + Right;
+        }
     }
 
     internal class BoolExpression : BinaryExpression
     {
-        public KeywordType KeywordType { get; private set; }
-
         public override bool IsBool
         {
             get { return true; }
         }
 
-        public BoolExpression(KeywordType type, Expression left, Expression right)
-            : base(ExpressionType.Bool, left, right)
+        public BoolExpression(Operator @operator, Expression left, Expression right)
+            : base(ExpressionType.Bool, @operator, left, right)
         {
-            KeywordType = type;
         }
 
         public override bool Equals(object obj)
         {
             return
                 base.Equals(obj) &&
-                ((BoolExpression)obj).KeywordType == KeywordType;
-        }
-
-        public override string ToString()
-        {
-            return Left + " " + KeywordType + " " + Right;
+                ((BoolExpression)obj).Operator == Operator;
         }
     }
 
     internal class ArithmicExpression : BinaryExpression
     {
-        public KeywordType KeywordType { get; private set; }
-
         public override bool IsBool
         {
             get { return false; }
         }
 
-        public ArithmicExpression(KeywordType type, Expression left, Expression right)
-            : base(ExpressionType.Arithmic, left, right)
+        public ArithmicExpression(Operator @operator, Expression left, Expression right)
+            : base(ExpressionType.Arithmic, @operator, left, right)
         {
-            KeywordType = type;
         }
 
         public override bool Equals(object obj)
         {
             return
                 base.Equals(obj) &&
-                KeywordType == ((ArithmicExpression)obj).KeywordType;
-        }
-
-        public override string ToString()
-        {
-            return Left + " " + KeywordType + " " + Right;
+                Operator == ((ArithmicExpression)obj).Operator;
         }
     }
 
-    internal enum KeywordType
+    // Precedence taken from http://msdn.microsoft.com/en-us/library/Aa691323
+    internal enum Operator
     {
+        // Unary
         Negative,
         Not,
-        And,
-        Or,
-        Eq,
-        Ne,
+        // Multiplicative
+        Mul,
+        Div,
+        Mod,
+        // Additive
+        Add,
+        Sub,
+        // Relational and type testing
         Lt,
         Le,
         Gt,
         Ge,
-        Add,
-        Sub,
-        Mul,
-        Div,
-        Mod,
+        // Equality
+        Eq,
+        Ne,
+        // Conditional AND
+        And,
+        // Conditional OR
+        Or
     }
 
     internal class MethodCallExpression : Expression

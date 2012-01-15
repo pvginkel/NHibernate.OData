@@ -7,12 +7,12 @@ using NUnit.Framework;
 namespace NHibernate.OData.Test.Parser
 {
     [TestFixture]
-    internal class Singles : ParserTestFixture
+    internal class Unaries : ParserTestFixture
     {
         [Test]
         public void Not()
         {
-            Verify("not true", new BoolUnaryExpression(KeywordType.Not, TrueLiteral));
+            Verify("not true", new BoolUnaryExpression(Operator.Not, TrueLiteral));
         }
     }
 }

@@ -14,7 +14,7 @@ namespace NHibernate.OData.Test.Parser
         {
             Verify(
                 "true and true",
-                new BoolExpression(KeywordType.And, TrueLiteral, TrueLiteral)
+                new BoolExpression(Operator.And, TrueLiteral, TrueLiteral)
             );
 
             VerifyThrows("true and");
@@ -25,7 +25,7 @@ namespace NHibernate.OData.Test.Parser
         {
             Verify(
                 "true or true",
-                new BoolExpression(KeywordType.Or, TrueLiteral, TrueLiteral)
+                new BoolExpression(Operator.Or, TrueLiteral, TrueLiteral)
             );
 
             VerifyThrows("true or");
@@ -37,9 +37,9 @@ namespace NHibernate.OData.Test.Parser
             Verify(
                 "true or true and true",
                 new BoolExpression(
-                    KeywordType.Or,
+                    Operator.Or,
                     TrueLiteral,
-                    new BoolExpression(KeywordType.And, TrueLiteral, TrueLiteral)
+                    new BoolExpression(Operator.And, TrueLiteral, TrueLiteral)
                 )
             );
         }
@@ -50,9 +50,9 @@ namespace NHibernate.OData.Test.Parser
             Verify(
                 "(true and true) or true",
                 new BoolExpression(
-                    KeywordType.Or,
+                    Operator.Or,
                     new BoolParenExpression(
-                        new BoolExpression(KeywordType.And, TrueLiteral, TrueLiteral)
+                        new BoolExpression(Operator.And, TrueLiteral, TrueLiteral)
                     ),
                     TrueLiteral
                 )
@@ -65,10 +65,10 @@ namespace NHibernate.OData.Test.Parser
             Verify(
                 "true or (true and true)",
                 new BoolExpression(
-                    KeywordType.Or,
+                    Operator.Or,
                     TrueLiteral,
                     new BoolParenExpression(
-                        new BoolExpression(KeywordType.And, TrueLiteral, TrueLiteral)
+                        new BoolExpression(Operator.And, TrueLiteral, TrueLiteral)
                     )
                 )
             );

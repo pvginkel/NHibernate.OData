@@ -13,7 +13,6 @@ namespace NHibernate.OData
         IsOf,
         BoolCast,
         MethodCall,
-        BoolParen,
         Negative,
         Member,
         Paren,
