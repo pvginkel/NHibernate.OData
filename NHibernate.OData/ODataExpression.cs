@@ -12,8 +12,7 @@ namespace NHibernate.OData
 
         public ODataExpression(string queryString)
         {
-            if (queryString == null)
-                throw new ArgumentNullException("queryString");
+            Require.NotNull(queryString, "queryString");
 
             ParseQueryString(queryString);
         }

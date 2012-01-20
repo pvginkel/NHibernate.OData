@@ -12,8 +12,7 @@ namespace NHibernate.OData
 
         protected Parser(string source)
         {
-            if (source == null)
-                throw new ArgumentNullException("source");
+            Require.NotNull(source, "source");
 
             _tokens = new Lexer(source).ToList();
 
@@ -99,8 +98,7 @@ namespace NHibernate.OData
 
         protected void Expect(Token token)
         {
-            if (token == null)
-                throw new ArgumentNullException("token");
+            Require.NotNull(token, "token");
 
             if (AtEnd || !Equals(Current, token))
                 throw new ODataException(String.Format(ErrorMessages.Parser_ExpectedToken, token));

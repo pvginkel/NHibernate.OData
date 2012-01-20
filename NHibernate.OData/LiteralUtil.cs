@@ -210,8 +210,7 @@ namespace NHibernate.OData
 
         public static System.Type GetCompatibleType(string edmType)
         {
-            if (edmType == null)
-                throw new ArgumentNullException("edmType");
+            Require.NotNull(edmType, "edmType");
 
             System.Type result;
 

@@ -9,8 +9,7 @@ namespace NHibernate.OData
     {
         public static string UriDecode(string value)
         {
-            if (value == null)
-                throw new ArgumentNullException("value");
+            Require.NotNull(value, "value");
 
             var sb = new StringBuilder();
 

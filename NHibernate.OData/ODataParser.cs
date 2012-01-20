@@ -9,12 +9,9 @@ namespace NHibernate.OData
     {
         public static ICriteria Parse(this ISession session, string entityName, string queryString)
         {
-            if (session == null)
-                throw new ArgumentNullException("session");
-            if (entityName == null)
-                throw new ArgumentNullException("entityName");
-            if (queryString == null)
-                throw new ArgumentNullException("queryString");
+            Require.NotNull(session, "session");
+            Require.NotNull(entityName, "entityName");
+            Require.NotNull(queryString, "queryString");
 
             var expression = new ODataExpression(queryString);
 
@@ -23,12 +20,9 @@ namespace NHibernate.OData
 
         public static ICriteria Parse(this ISession session, System.Type persistentClass, string queryString)
         {
-            if (session == null)
-                throw new ArgumentNullException("session");
-            if (persistentClass == null)
-                throw new ArgumentNullException("persistentClass");
-            if (queryString == null)
-                throw new ArgumentNullException("queryString");
+            Require.NotNull(session, "session");
+            Require.NotNull(persistentClass, "persistentClass");
+            Require.NotNull(queryString, "queryString");
 
             var expression = new ODataExpression(queryString);
 

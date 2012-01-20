@@ -9,8 +9,7 @@ namespace NHibernate.OData
     {
         public static Expression CoerceBoolExpression(Expression expression)
         {
-            if (expression == null)
-                throw new ArgumentNullException("expression");
+            Require.NotNull(expression, "expression");
 
             if (!expression.IsBool)
             {

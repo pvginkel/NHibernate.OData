@@ -91,8 +91,7 @@ namespace NHibernate.OData
         public MemberExpression(MemberType type, IList<string> members)
             : base(ExpressionType.Member)
         {
-            if (members == null)
-                throw new ArgumentNullException("members");
+            Require.NotNull(members, "members");
 
             Debug.Assert(members.Count > 0);
 
@@ -152,8 +151,7 @@ namespace NHibernate.OData
         public ParenExpression(Expression expression)
             : base(ExpressionType.Paren)
         {
-            if (expression == null)
-                throw new ArgumentNullException("expression");
+            Require.NotNull(expression, "expression");
 
             Expression = expression;
         }
@@ -199,8 +197,7 @@ namespace NHibernate.OData
         protected UnaryExpression(ExpressionType type, Expression expression, Operator @operator)
             : base(type, @operator)
         {
-            if (expression == null)
-                throw new ArgumentNullException("expression");
+            Require.NotNull(expression, "expression");
 
             Expression = expression;
         }
@@ -338,10 +335,8 @@ namespace NHibernate.OData
         protected BinaryExpression(ExpressionType type, Operator @operator, Expression left, Expression right)
             : base(type, @operator)
         {
-            if (left == null)
-                throw new ArgumentNullException("left");
-            if (right == null)
-                throw new ArgumentNullException("right");
+            Require.NotNull(left, "left");
+            Require.NotNull(right, "right");
 
             Left = left;
             Right = right;
@@ -663,10 +658,8 @@ namespace NHibernate.OData
         public MethodCallExpression(MethodCallType type, Method method, IList<Expression> arguments)
             : base(ExpressionType.MethodCall)
         {
-            if (method == null)
-                throw new ArgumentNullException("method");
-            if (arguments == null)
-                throw new ArgumentNullException("arguments");
+            Require.NotNull(method, "method");
+            Require.NotNull(arguments, "arguments");
 
             MethodCallType = type;
             Method = method;

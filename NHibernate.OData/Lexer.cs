@@ -19,8 +19,7 @@ namespace NHibernate.OData
 
         public Lexer(string source)
         {
-            if (source == null)
-                throw new ArgumentNullException("source");
+            Require.NotNull(source, "source");
 
             _source = source;
         }

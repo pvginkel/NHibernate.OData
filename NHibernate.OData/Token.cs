@@ -27,8 +27,7 @@ namespace NHibernate.OData
         public IdentifierToken(string name)
             : base(TokenType.Identifier)
         {
-            if (name == null)
-                throw new ArgumentNullException("name");
+            Require.NotNull(name, "name");
 
             Identifier = name;
         }

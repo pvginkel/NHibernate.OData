@@ -79,8 +79,7 @@ namespace NHibernate.OData
 
         protected Method(MethodType methodType, params ArgumentType[] argumentTypes)
         {
-            if (argumentTypes == null)
-                throw new ArgumentNullException("argumentTypes");
+            Require.NotNull(argumentTypes, "argumentTypes");
 
             MethodType = methodType;
             ArgumentTypes = argumentTypes;
@@ -105,8 +104,7 @@ namespace NHibernate.OData
 
         public static Method FindMethodByName(string methodName)
         {
-            if (methodName == null)
-                throw new ArgumentNullException("methodName");
+            Require.NotNull(methodName, "methodName");
 
             MethodType methodType;
 
