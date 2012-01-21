@@ -70,9 +70,6 @@ namespace NHibernate.OData.Test.Support
 
                 ExpectAtEnd();
 
-                result.ToString();
-                result.GetHashCode();
-
                 return result;
             }
         }
@@ -89,9 +86,6 @@ namespace NHibernate.OData.Test.Support
                 var result = ParseBool();
 
                 ExpectAtEnd();
-
-                result.ToString();
-                result.GetHashCode();
 
                 return result;
             }
