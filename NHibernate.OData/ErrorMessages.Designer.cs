@@ -232,6 +232,15 @@ namespace NHibernate.OData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expected end, comma, asc or desc..
+        /// </summary>
+        internal static string OrderByParser_ExpectedNextOrEnd {
+            get {
+                return ResourceManager.GetString("OrderByParser_ExpectedNextOrEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Argument {1} of method &apos;{0}&apos; must be a string literal..
         /// </summary>
         internal static string Parser_ArgumentMustBeStringLiteral {

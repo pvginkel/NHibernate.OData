@@ -114,7 +114,7 @@ namespace NHibernate.OData
             return null;
         }
 
-        public abstract Expression Normalize(LiteralExpression[] arguments);
+        public abstract TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg);
     }
 
     internal class IsOfMethod : Method
@@ -124,13 +124,9 @@ namespace NHibernate.OData
         {
         }
 
-        public override Expression Normalize(LiteralExpression[] arguments)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            Debug.Assert(arguments[1].LiteralType == LiteralType.String);
-
-            var type = LiteralUtil.GetCompatibleType((string)arguments[1].Value);
-
-            return new LiteralExpression(type.IsInstanceOfType(arguments[0].Value), LiteralType.Boolean);
+            return visitor.IsOfMethod(this, arg);
         }
     }
 
@@ -141,28 +137,9 @@ namespace NHibernate.OData
         {
         }
 
-        public override Expression Normalize(LiteralExpression[] arguments)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            Debug.Assert(arguments[1].LiteralType == LiteralType.String);
-
-            if (arguments[0].LiteralType == LiteralType.Null)
-                return arguments[0];
-
-            var type = LiteralUtil.GetCompatibleType((string)arguments[1].Value);
-
-            try
-            {
-                return new LiteralExpression(Convert.ChangeType(arguments[0].Value, type, CultureInfo.InvariantCulture));
-            }
-            catch (Exception ex)
-            {
-                throw new ODataException(
-                    String.Format(
-                        ErrorMessages.Method_CannotCast, arguments[1].Value
-                    ),
-                    ex
-                );
-            }
+            return visitor.CastMethod(this, arg);
         }
     }
 
@@ -173,23 +150,9 @@ namespace NHibernate.OData
         {
         }
 
-        public override Expression Normalize(LiteralExpression[] arguments)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            bool result;
-
-            if (LiteralUtil.IsAnyNull(arguments))
-            {
-                result = false;
-            }
-            else
-            {
-                result = LiteralUtil.CoerceString(arguments[0]).EndsWith(
-                    LiteralUtil.CoerceString(arguments[1]),
-                    StringComparison.InvariantCultureIgnoreCase
-                );
-            }
-
-            return new LiteralExpression(result, LiteralType.Boolean);
+            return visitor.EndsWithMethod(this, arg);
         }
     }
 
@@ -200,23 +163,9 @@ namespace NHibernate.OData
         {
         }
 
-        public override Expression Normalize(LiteralExpression[] arguments)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            int result;
-
-            if (LiteralUtil.IsAnyNull(arguments))
-            {
-                result = -1;
-            }
-            else
-            {
-                result = LiteralUtil.CoerceString(arguments[0]).IndexOf(
-                    LiteralUtil.CoerceString(arguments[1]),
-                    StringComparison.InvariantCultureIgnoreCase
-                );
-            }
-
-            return new LiteralExpression(result, LiteralType.Int);
+            return visitor.IndexOfMethod(this, arg);
         }
     }
 
@@ -227,21 +176,9 @@ namespace NHibernate.OData
         {
         }
 
-        public override Expression Normalize(LiteralExpression[] arguments)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            if (LiteralUtil.IsAnyNull(arguments))
-            {
-                return new LiteralExpression(null, LiteralType.Null);
-            }
-            else
-            {
-                string result = LiteralUtil.CoerceString(arguments[0]).Replace(
-                    LiteralUtil.CoerceString(arguments[1]),
-                    LiteralUtil.CoerceString(arguments[2])
-                );
-
-                return new LiteralExpression(result, LiteralType.String);
-            }
+            return visitor.ReplaceMethod(this, arg);
         }
     }
 
@@ -252,23 +189,9 @@ namespace NHibernate.OData
         {
         }
 
-        public override Expression Normalize(LiteralExpression[] arguments)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            bool result;
-
-            if (LiteralUtil.IsAnyNull(arguments))
-            {
-                result = false;
-            }
-            else
-            {
-                result = LiteralUtil.CoerceString(arguments[0]).StartsWith(
-                    LiteralUtil.CoerceString(arguments[1]),
-                    StringComparison.InvariantCultureIgnoreCase
-                );
-            }
-
-            return new LiteralExpression(result, LiteralType.Boolean);
+            return visitor.StartsWithMethod(this, arg);
         }
     }
 
@@ -279,18 +202,9 @@ namespace NHibernate.OData
         {
         }
 
-        public override Expression Normalize(LiteralExpression[] arguments)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            if (LiteralUtil.IsAnyNull(arguments))
-            {
-                return new LiteralExpression(null, LiteralType.Null);
-            }
-            else
-            {
-                string result = LiteralUtil.CoerceString(arguments[0]).ToLowerInvariant();
-
-                return new LiteralExpression(result, LiteralType.String);
-            }
+            return visitor.ToLowerMethod(this, arg);
         }
     }
 
@@ -301,18 +215,9 @@ namespace NHibernate.OData
         {
         }
 
-        public override Expression Normalize(LiteralExpression[] arguments)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            if (LiteralUtil.IsAnyNull(arguments))
-            {
-                return new LiteralExpression(null, LiteralType.Null);
-            }
-            else
-            {
-                string result = LiteralUtil.CoerceString(arguments[0]).ToUpperInvariant();
-
-                return new LiteralExpression(result, LiteralType.String);
-            }
+            return visitor.ToUpperMethod(this, arg);
         }
     }
 
@@ -323,18 +228,9 @@ namespace NHibernate.OData
         {
         }
 
-        public override Expression Normalize(LiteralExpression[] arguments)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            if (LiteralUtil.IsAnyNull(arguments))
-            {
-                return new LiteralExpression(null, LiteralType.Null);
-            }
-            else
-            {
-                string result = LiteralUtil.CoerceString(arguments[0]).Trim();
-
-                return new LiteralExpression(result, LiteralType.String);
-            }
+            return visitor.TrimMethod(this, arg);
         }
     }
 
@@ -347,45 +243,9 @@ namespace NHibernate.OData
             // with the third optional; not two with the second optional.
         }
 
-        public override Expression Normalize(LiteralExpression[] arguments)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            if (arguments[0].LiteralType == LiteralType.Null)
-            {
-                return arguments[0];
-            }
-            else
-            {
-                int startIndex;
-                int length;
-                string result;
-
-                if (!LiteralUtil.TryCoerceInt(arguments[1], out startIndex))
-                {
-                    throw new ODataException(String.Format(
-                        ErrorMessages.Method_InvalidArgumentType,
-                        MethodType, 2, "Edm.Int32"
-                    ));
-                }
-
-                if (arguments.Length == 3)
-                {
-                    if (!LiteralUtil.TryCoerceInt(arguments[2], out length))
-                    {
-                        throw new ODataException(String.Format(
-                            ErrorMessages.Method_InvalidArgumentType,
-                            MethodType, 3, "Edm.Int32"
-                        ));
-                    }
-
-                    result = LiteralUtil.CoerceString(arguments[0]).Substring(startIndex, length);
-                }
-                else
-                {
-                    result = LiteralUtil.CoerceString(arguments[0]).Substring(startIndex);
-                }
-
-                return new LiteralExpression(result, LiteralType.String);
-            }
+            return visitor.SubStringMethod(this, arg);
         }
     }
 
@@ -398,30 +258,9 @@ namespace NHibernate.OData
             // will remove this method when the second parameter is omitted.
         }
 
-        public override Expression Normalize(LiteralExpression[] arguments)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            if (arguments.Length == 1)
-            {
-                return arguments[0];
-            }
-            else
-            {
-                bool result;
-
-                if (LiteralUtil.IsAnyNull(arguments))
-                {
-                    result = false;
-                }
-                else
-                {
-                    result = LiteralUtil.CoerceString(arguments[0]).IndexOf(
-                        LiteralUtil.CoerceString(arguments[1]),
-                        StringComparison.InvariantCultureIgnoreCase
-                    ) != -1;
-                }
-
-                return new LiteralExpression(result, LiteralType.Boolean);
-            }
+            return visitor.SubStringOfMethod(this, arg);
         }
     }
 
@@ -434,31 +273,9 @@ namespace NHibernate.OData
             // will remove this method when the second parameter is omitted.
         }
 
-        public override Expression Normalize(LiteralExpression[] arguments)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            if (arguments.Length == 1)
-            {
-                return arguments[0];
-            }
-            else if (arguments[0].LiteralType == LiteralType.Null)
-            {
-                if (arguments[1].LiteralType == LiteralType.Null)
-                    return new LiteralExpression(null, LiteralType.Null);
-                else
-                    return arguments[1];
-            }
-            else if (arguments[1].LiteralType == LiteralType.Null)
-            {
-                return arguments[0];
-            }
-            else
-            {
-                string result =
-                    LiteralUtil.CoerceString(arguments[0]) +
-                    LiteralUtil.CoerceString(arguments[1]);
-
-                return new LiteralExpression(result, LiteralType.String);
-            }
+            return visitor.ConcatMethod(this, arg);
         }
     }
 
@@ -469,18 +286,9 @@ namespace NHibernate.OData
         {
         }
 
-        public override Expression Normalize(LiteralExpression[] arguments)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            if (LiteralUtil.IsAnyNull(arguments))
-            {
-                return new LiteralExpression(null, LiteralType.Null);
-            }
-            else
-            {
-                int result = LiteralUtil.CoerceString(arguments[0]).Length;
-
-                return new LiteralExpression(result, LiteralType.Int);
-            }
+            return visitor.LengthMethod(this, arg);
         }
     }
 
@@ -490,29 +298,6 @@ namespace NHibernate.OData
             : base(methodType, argumentTypes)
         {
         }
-
-        public override Expression Normalize(LiteralExpression[] arguments)
-        {
-            if (LiteralUtil.IsAnyNull(arguments))
-            {
-                return new LiteralExpression(null, LiteralType.Null);
-            }
-            else if (arguments[0].LiteralType != LiteralType.DateTime)
-            {
-                throw new ODataException(String.Format(
-                    ErrorMessages.Method_InvalidArgumentType,
-                    MethodType, 1, "Edm.DateTime"
-                ));
-            }
-            else
-            {
-                int result = GetDatePart((DateTime)arguments[0].Value);
-
-                return new LiteralExpression(result, LiteralType.Int);
-            }
-        }
-
-        protected abstract int GetDatePart(DateTime value);
     }
 
     internal class YearMethod : DatePartMethod
@@ -522,9 +307,9 @@ namespace NHibernate.OData
         {
         }
 
-        protected override int GetDatePart(DateTime value)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            return value.Year;
+            return visitor.YearMethod(this, arg);
         }
     }
 
@@ -535,9 +320,9 @@ namespace NHibernate.OData
         {
         }
 
-        protected override int GetDatePart(DateTime value)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            return value.Month;
+            return visitor.MonthMethod(this, arg);
         }
     }
 
@@ -548,9 +333,9 @@ namespace NHibernate.OData
         {
         }
 
-        protected override int GetDatePart(DateTime value)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            return value.Day;
+            return visitor.DayMethod(this, arg);
         }
     }
 
@@ -561,9 +346,9 @@ namespace NHibernate.OData
         {
         }
 
-        protected override int GetDatePart(DateTime value)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            return value.Hour;
+            return visitor.HourMethod(this, arg);
         }
     }
 
@@ -574,9 +359,9 @@ namespace NHibernate.OData
         {
         }
 
-        protected override int GetDatePart(DateTime value)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            return value.Minute;
+            return visitor.MinuteMethod(this, arg);
         }
     }
 
@@ -587,9 +372,9 @@ namespace NHibernate.OData
         {
         }
 
-        protected override int GetDatePart(DateTime value)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            return value.Second;
+            return visitor.SecondMethod(this, arg);
         }
     }
 
@@ -599,45 +384,6 @@ namespace NHibernate.OData
             : base(methodType, argumentTypes)
         {
         }
-
-        public override Expression Normalize(LiteralExpression[] arguments)
-        {
-            object result;
-
-            switch (arguments[0].LiteralType)
-            {
-                case LiteralType.Null:
-                case LiteralType.Int:
-                case LiteralType.Long:
-                    return arguments[0];
-
-                case LiteralType.Decimal:
-                    result = Perform((decimal)arguments[0].Value);
-                    break;
-
-                case LiteralType.Double:
-                    result = Perform((double)arguments[0].Value);
-                    break;
-
-                case LiteralType.Single:
-                    result = Perform((float)arguments[0].Value);
-                    break;
-
-                default:
-                    throw new ODataException(String.Format(
-                        ErrorMessages.Method_InvalidArgumentType,
-                        MethodType, 1, "Edm.Double"
-                    ));
-            }
-
-            return new LiteralExpression(result, arguments[0].LiteralType);
-        }
-
-        protected abstract decimal Perform(decimal value);
-
-        protected abstract double Perform(double value);
-
-        protected abstract float Perform(float value);
     }
 
     internal class RoundMethod : FloatingPointMethod
@@ -647,19 +393,9 @@ namespace NHibernate.OData
         {
         }
 
-        protected override decimal Perform(decimal value)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            return Math.Round(value);
-        }
-
-        protected override double Perform(double value)
-        {
-            return Math.Round(value);
-        }
-
-        protected override float Perform(float value)
-        {
-            return (float)Math.Round(value);
+            return visitor.RoundMethod(this, arg);
         }
     }
 
@@ -670,19 +406,9 @@ namespace NHibernate.OData
         {
         }
 
-        protected override decimal Perform(decimal value)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            return Math.Floor(value);
-        }
-
-        protected override double Perform(double value)
-        {
-            return Math.Floor(value);
-        }
-
-        protected override float Perform(float value)
-        {
-            return (float)Math.Floor(value);
+            return visitor.FloorMethod(this, arg);
         }
     }
 
@@ -693,19 +419,9 @@ namespace NHibernate.OData
         {
         }
 
-        protected override decimal Perform(decimal value)
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            return Math.Ceiling(value);
-        }
-
-        protected override double Perform(double value)
-        {
-            return Math.Ceiling(value);
-        }
-
-        protected override float Perform(float value)
-        {
-            return (float)Math.Ceiling(value);
+            return visitor.CeilingMethod(this, arg);
         }
     }
 }

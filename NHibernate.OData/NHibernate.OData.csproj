@@ -49,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgumentType.cs" />
+    <Compile Include="CriterionMethodVisitor.cs" />
+    <Compile Include="CriterionVisitor.cs" />
     <Compile Include="ErrorMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -57,19 +59,34 @@
     <Compile Include="Expression.cs" />
     <Compile Include="ExpressionType.cs" />
     <Compile Include="ExpressionUtil.cs" />
+    <Compile Include="Extensions\ArithmeticOperatorProjection.cs" />
+    <Compile Include="Extensions\BitwiseOperatorProjection.cs" />
+    <Compile Include="Extensions\OperatorProjection.cs" />
     <Compile Include="FilterParser.cs" />
     <Compile Include="HttpUtil.cs" />
+    <Compile Include="IMethodVisitor.cs" />
+    <Compile Include="OrderBy.cs" />
+    <Compile Include="OrderByDirection.cs" />
+    <Compile Include="OrderByParser.cs" />
+    <Compile Include="QueryMethodVisitorBase.cs" />
+    <Compile Include="ProjectionMethodVisitor.cs" />
+    <Compile Include="NormalizeMethodVisitor.cs" />
+    <Compile Include="QueryNotSupportException.cs" />
+    <Compile Include="IVisitor.cs" />
     <Compile Include="LiteralType.cs" />
     <Compile Include="LiteralUtil.cs" />
     <Compile Include="Method.cs" />
     <Compile Include="MethodType.cs" />
+    <Compile Include="NormalizeVisitor.cs" />
     <Compile Include="ODataException.cs" />
     <Compile Include="ODataExpression.cs" />
     <Compile Include="ODataParser.cs" />
     <Compile Include="Operator.cs" />
     <Compile Include="OperatorUtil.cs" />
     <Compile Include="Parser.cs" />
+    <Compile Include="ProjectionVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueryVisitorBase.cs" />
     <Compile Include="Require.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="Lexer.cs" />

@@ -16,13 +16,13 @@ namespace NHibernate.OData.Test.Parser
             Verify(
                 "1 mul 2 add 3",
                 new ArithmicExpression(
-                    Operator.Mul,
-                    new LiteralExpression(1),
+                    Operator.Add,
                     new ArithmicExpression(
-                        Operator.Add,
-                        new LiteralExpression(2),
-                        new LiteralExpression(3)
-                    )
+                        Operator.Mul,
+                        new LiteralExpression(1),
+                        new LiteralExpression(2)
+                    ),
+                    new LiteralExpression(3)
                 )
             );
         }
@@ -68,6 +68,27 @@ namespace NHibernate.OData.Test.Parser
                     Operator.Eq,
                     new ArithmicUnaryExpression(Operator.Negative, ZeroLiteral),
                     OneLiteral
+                )
+            );
+        }
+
+        [Test]
+        public void AndAndComparison()
+        {
+            Verify(
+                "1 gt 2 and 3 gt 4",
+                new LogicalExpression(
+                    Operator.And,
+                    new ComparisonExpression(
+                        Operator.Gt,
+                        new LiteralExpression(1),
+                        new LiteralExpression(2)
+                    ),
+                    new ComparisonExpression(
+                        Operator.Gt,
+                        new LiteralExpression(3),
+                        new LiteralExpression(4)
+                    )
                 )
             );
         }

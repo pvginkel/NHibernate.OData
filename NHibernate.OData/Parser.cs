@@ -106,8 +106,6 @@ namespace NHibernate.OData
             MoveNext();
         }
 
-        public abstract Expression Parse();
-
         protected void ExpectAtEnd()
         {
             if (!AtEnd)
@@ -127,9 +125,12 @@ namespace NHibernate.OData
 
         protected Expression ParseCommon()
         {
-            var result = ParseCommonItem();
+            return ParseCommon(ParseCommonItem());
+        }
 
-            while (!(AtEnd || Current == SyntaxToken.ParenClose || Current == SyntaxToken.Comma))
+        protected Expression ParseCommon(Expression result)
+        {
+            while (!(AtEnd || Current == SyntaxToken.ParenClose || Current == SyntaxToken.Comma || GetOrderByDirection(Current).HasValue))
             {
                 var @operator = GetOperator(Current);
 
@@ -142,22 +143,18 @@ namespace NHibernate.OData
 
                 ExpectAny();
 
-                var right = ParseCommon();
+                var right = ParseCommonItem();
 
                 // Apply operator precedence
 
-                var binary = right as BinaryExpression;
+                var binary = result as BinaryExpression;
 
                 if (binary != null && binary.Operator < @operator.Value)
                 {
                     result = CreateBinary(
-                        binary.Operator,
-                        CreateBinary(
-                            @operator.Value,
-                            result,
-                            binary.Left
-                        ),
-                        binary.Right
+                        @operator.Value,
+                        result,
+                        ParseCommon(right)
                     );
                 }
                 else
@@ -286,6 +283,22 @@ namespace NHibernate.OData
             return null;
         }
 
+        protected OrderByDirection? GetOrderByDirection(Token token)
+        {
+            var identifier = token as IdentifierToken;
+
+            if (identifier != null)
+            {
+                switch (identifier.Identifier)
+                {
+                    case "asc": return OrderByDirection.Ascending;
+                    case "desc": return OrderByDirection.Descending;
+                }
+            }
+
+            return null;
+        }
+
         private MethodCallExpression ParseMethodCall()
         {
             var method = Method.FindMethodByName(CurrentIdentifier);
@@ -327,7 +340,7 @@ namespace NHibernate.OData
             );
         }
 
-        private List<Expression> ParseMethodCallArgumentList(Method method)
+        private Expression[] ParseMethodCallArgumentList(Method method)
         {
             var arguments = new List<Expression>();
 
@@ -393,7 +406,7 @@ namespace NHibernate.OData
                 }
             }
 
-            return arguments;
+            return arguments.ToArray();
         }
     }
 }

@@ -22,23 +22,23 @@ namespace NHibernate.OData.Test.Normalization
         [Test]
         public void SubString()
         {
-            Verify("substring('abc', 1)", "bc");
-            Verify("substring('abc', 1, 1)", "b");
-            Verify("substring('abc', 1l)", "bc");
-            Verify("substring(null, 1)", null);
+            Verify("substring('abc', 2)", "bc");
+            Verify("substring('abc', 2, 1)", "b");
+            Verify("substring('abc', 2l)", "bc");
+            Verify("substring(null, 2)", null);
             Verify("substring(null, null)", null);
             VerifyThrows("substring('a', 'b')");
-            Verify("substring(X'00', 1)", "ystem.Byte[]");
-            VerifyThrows("substring('a', 1, 'b')");
+            Verify("substring(X'00', 2)", "ystem.Byte[]");
+            VerifyThrows("substring('a', 2, 'b')");
         }
 
         [Test]
         public void IndexOf()
         {
-            Verify("indexof('abc', 'b')", 1);
-            Verify("indexof('abc', 'd')", -1);
-            Verify("indexof(null, 'a')", -1);
-            Verify("indexof(X'00', 'a')", -1);
+            Verify("indexof('abc', 'b')", 2);
+            Verify("indexof('abc', 'd')", null);
+            Verify("indexof(null, 'a')", null);
+            Verify("indexof(X'00', 'a')", null);
         }
 
         [Test]

@@ -12,9 +12,13 @@ namespace NHibernate.OData
         {
         }
 
-        public override Expression Parse()
+        public Expression Parse()
         {
-            throw new NotImplementedException();
+            var result = ParseBool();
+
+            ExpectAtEnd();
+
+            return result;
         }
     }
 }

@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -48,14 +50,32 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\Libraries\SQLite\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HttpUtil\HttpUtil.cs" />
+    <Compile Include="Criterions\Arithmics.cs" />
+    <Compile Include="Criterions\Casting.cs" />
+    <Compile Include="Criterions\Comparisons.cs" />
+    <Compile Include="Criterions\DateParts.cs" />
+    <Compile Include="Criterions\IsOfs.cs" />
+    <Compile Include="Criterions\Logicals.cs" />
+    <Compile Include="Criterions\NestedMembers.cs" />
+    <Compile Include="Criterions\QueryTest.cs" />
+    <Compile Include="Criterions\Strings.cs" />
+    <Compile Include="Domain\IEntity.cs" />
+    <Compile Include="Interface\EntityNameInterface.cs" />
+    <Compile Include="SupportFixtures\HttpUtil.cs" />
+    <Compile Include="Interface\IllegalQueryString.cs" />
+    <Compile Include="Interface\NoFilter.cs" />
     <Compile Include="Lexer\Basics.cs" />
+    <Compile Include="Domain\Child.cs" />
+    <Compile Include="Domain\Parent.cs" />
     <Compile Include="Normalization\Arithmics.cs" />
     <Compile Include="Normalization\Casting.cs" />
     <Compile Include="Normalization\Comparisons.cs" />
@@ -64,6 +84,9 @@
     <Compile Include="Normalization\Logicals.cs" />
     <Compile Include="Normalization\Removals.cs" />
     <Compile Include="Normalization\Strings.cs" />
+    <Compile Include="OrderBys\OrderBy.cs" />
+    <Compile Include="Pagings\Paging.cs" />
+    <Compile Include="Support\DomainTestFixture.cs" />
     <Compile Include="Support\LexerTestFixture.cs" />
     <Compile Include="Parser\Basics.cs" />
     <Compile Include="Parser\Comparison.cs" />
@@ -78,6 +101,7 @@
     <Compile Include="Parser\Unaries.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Lexer\LiteralParsing.cs" />
+    <Compile Include="Support\SQLiteDialectEx.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NHibernate.OData\NHibernate.OData.csproj">
@@ -86,9 +110,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Libraries\NHibernate\nhibernate-mapping.xsd">
+      <Link>nhibernate-mapping.xsd</Link>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="..\NHibernate.OData\Key.snk">
       <Link>Key.snk</Link>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Domain\Model.hbm.xml" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

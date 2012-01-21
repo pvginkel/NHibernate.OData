@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NHibernate.Criterion;
 
 namespace NHibernate.OData
 {
@@ -9,6 +10,9 @@ namespace NHibernate.OData
     {
         private int? _top;
         private int? _skip;
+        private ICriterion _criterion;
+        private OrderBy[] _orderBys;
+        private readonly NormalizeVisitor _normalizeVisitor = new NormalizeVisitor();
 
         public ODataExpression(string queryString)
         {
@@ -53,12 +57,14 @@ namespace NHibernate.OData
 
         private void ProcessFilter(string value)
         {
-            throw new NotImplementedException();
+            _criterion = CriterionVisitor.CreateCriterion(
+                new FilterParser(value).Parse().Visit(_normalizeVisitor)
+            );
         }
 
         private void ProcessOrderBy(string value)
         {
-            throw new NotImplementedException();
+            _orderBys = new OrderByParser(value, _normalizeVisitor).Parse();
         }
 
         private void ProcessTop(string value)
@@ -87,12 +93,40 @@ namespace NHibernate.OData
 
         internal ICriteria BuildCriteria(ISession session, string entityName)
         {
-            throw new NotImplementedException();
+            return BuildCriteria(session.CreateCriteria(entityName));
         }
 
         internal ICriteria BuildCriteria(ISession session, System.Type persistentClass)
         {
-            throw new NotImplementedException();
+            return BuildCriteria(session.CreateCriteria(persistentClass));
+        }
+
+        private ICriteria BuildCriteria(ICriteria criteria)
+        {
+            foreach (var alias in _normalizeVisitor.Aliases)
+            {
+                criteria.CreateAlias(alias.Key, alias.Value);
+            }
+
+            if (_criterion != null)
+                criteria = criteria.Add(_criterion);
+            if (_skip.HasValue)
+                criteria = criteria.SetFirstResult(_skip.Value);
+            if (_top.HasValue)
+                criteria = criteria.SetMaxResults(_top.Value);
+
+            if (_orderBys != null)
+            {
+                foreach (var orderBy in _orderBys)
+                {
+                    if (orderBy.Direction == OrderByDirection.Ascending)
+                        criteria = criteria.AddOrder(Order.Asc(orderBy.Projection));
+                    else
+                        criteria = criteria.AddOrder(Order.Desc(orderBy.Projection));
+                }
+            }
+
+            return criteria;
         }
     }
 }

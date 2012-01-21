@@ -17,6 +17,7 @@ namespace NHibernate.OData
         Negative,
         Member,
         Paren,
-        ArithmicUnary
+        ArithmicUnary,
+        AliasedMember
     }
 }

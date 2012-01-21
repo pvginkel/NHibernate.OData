@@ -38,9 +38,9 @@ namespace NHibernate.OData.Test.Parser
             Verify(
                 "true and true or true",
                 new LogicalExpression(
-                    Operator.And,
-                    TrueLiteral,
-                    new LogicalExpression(Operator.Or, TrueLiteral, TrueLiteral)
+                    Operator.Or,
+                    new LogicalExpression(Operator.And, TrueLiteral, TrueLiteral),
+                    TrueLiteral
                 )
             );
         }
@@ -51,16 +51,16 @@ namespace NHibernate.OData.Test.Parser
             Verify(
                 "true and true or true or true",
                 new LogicalExpression(
-                    Operator.And,
-                    TrueLiteral,
+                    Operator.Or,
+                    new LogicalExpression(
+                        Operator.And,
+                        TrueLiteral,
+                        TrueLiteral
+                    ),
                     new LogicalExpression(
                         Operator.Or,
                         TrueLiteral,
-                        new LogicalExpression(
-                            Operator.Or,
-                            TrueLiteral,
-                            TrueLiteral
-                        )
+                        TrueLiteral
                     )
                 )
             );

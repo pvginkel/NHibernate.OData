@@ -64,7 +64,7 @@ namespace NHibernate.OData.Test.Support
             {
             }
 
-            public override Expression Parse()
+            public Expression Parse()
             {
                 var result = ParseCommon();
 
@@ -84,7 +84,7 @@ namespace NHibernate.OData.Test.Support
             {
             }
 
-            public override Expression Parse()
+            public Expression Parse()
             {
                 var result = ParseBool();
 
