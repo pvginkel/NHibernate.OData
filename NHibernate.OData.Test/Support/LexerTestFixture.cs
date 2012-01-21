@@ -25,7 +25,15 @@ namespace NHibernate.OData.Test.Support
 
         protected void Verify(string source, params Token[] tokens)
         {
-            Assert.AreEqual(tokens, new OData.Lexer(source).ToList().ToArray());
+            Assert.AreEqual(tokens, new OData.Lexer(source).ToList().Select(CallUnTested).ToArray());
+        }
+
+        private Token CallUnTested(Token token)
+        {
+            token.ToString();
+            token.GetHashCode();
+
+            return token;
         }
 
         protected void VerifyThrows(string source)
