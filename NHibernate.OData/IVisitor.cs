@@ -15,16 +15,16 @@ namespace NHibernate.OData
 
         T BoolUnaryExpression(BoolUnaryExpression expression);
 
-        T ArithmicUnaryExpression(ArithmicUnaryExpression expression);
+        T ArithmeticUnaryExpression(ArithmeticUnaryExpression expression);
 
         T LogicalExpression(LogicalExpression expression);
 
         T ComparisonExpression(ComparisonExpression expression);
 
-        T ArithmicExpression(ArithmicExpression expression);
+        T ArithmeticExpression(ArithmeticExpression expression);
 
         T MethodCallExpression(MethodCallExpression expression);
 
-        T AliasedMemberExpression(AliasedMemberExpression expression);
+        T ResolvedMemberExpression(ResolvedMemberExpression expression);
     }
 }

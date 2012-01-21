@@ -27,7 +27,7 @@ namespace NHibernate.OData.Test.Normalization
                 new MethodCallExpression(
                     MethodCallType.Boolean,
                     Method.IsOfMethod,
-                    new MemberExpression(MemberType.Normal, "A"),
+                    new ResolvedMemberExpression(MemberType.Normal, "A"),
                     new LiteralExpression("Edm.Int32")
                 )
             );

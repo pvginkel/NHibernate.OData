@@ -176,8 +176,8 @@ namespace NHibernate.OData
                 return new LogicalExpression(@operator, left, right);
             else if (OperatorUtil.IsCompare(@operator))
                 return new ComparisonExpression(@operator, left, right);
-            else if (OperatorUtil.IsArithmic(@operator))
-                return new ArithmicExpression(@operator, left, right);
+            else if (OperatorUtil.IsArithmetic(@operator))
+                return new ArithmeticExpression(@operator, left, right);
             else
                 throw new NotSupportedException();
         }
@@ -198,7 +198,7 @@ namespace NHibernate.OData
                     {
                         MoveNext();
 
-                        return new ArithmicUnaryExpression(Operator.Negative, ParseCommonItem());
+                        return new ArithmeticUnaryExpression(Operator.Negative, ParseCommonItem());
                     }
                     if (Current == SyntaxToken.ParenOpen)
                     {

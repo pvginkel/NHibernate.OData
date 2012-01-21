@@ -37,7 +37,7 @@ namespace NHibernate.OData
             }
         }
 
-        public static bool IsArithmic(Operator @operator)
+        public static bool IsArithmetic(Operator @operator)
         {
             switch (@operator)
             {

@@ -23,7 +23,7 @@ namespace NHibernate.OData
         public Expression MemberExpression(MemberExpression expression)
         {
             if (expression.Members.Count == 1)
-                return new AliasedMemberExpression(expression.Members[0], expression.IsBool);
+                return new ResolvedMemberExpression(expression.MemberType, expression.Members[0]);
 
             var sb = new StringBuilder();
             string alias = null;
@@ -45,15 +45,15 @@ namespace NHibernate.OData
                 }
             }
 
-            return new AliasedMemberExpression(
-                alias + "." + expression.Members[expression.Members.Count - 1],
-                expression.IsBool
+            return new ResolvedMemberExpression(
+                expression.MemberType,
+                alias + "." + expression.Members[expression.Members.Count - 1]
             );
         }
 
         public Expression ParenExpression(ParenExpression expression)
         {
-            return expression.Expression;
+            return expression.Expression.Visit(this);
         }
 
         public Expression BoolUnaryExpression(BoolUnaryExpression expression)
@@ -68,6 +68,7 @@ namespace NHibernate.OData
             return new BoolUnaryExpression(expression.Operator, result);
         }
 
+
         private Expression ResolveBoolUnaryLiteral(BoolUnaryExpression expression, LiteralExpression literal)
         {
             if (expression.Operator != Operator.Not)
@@ -80,19 +81,19 @@ namespace NHibernate.OData
             return new LiteralExpression(!(bool)literal.Value, LiteralType.Boolean);
         }
 
-        public Expression ArithmicUnaryExpression(ArithmicUnaryExpression expression)
+        public Expression ArithmeticUnaryExpression(ArithmeticUnaryExpression expression)
         {
             var result = expression.Expression.Visit(this);
 
             var literal = result as LiteralExpression;
 
             if (literal != null)
-                return ResolveArithmicUnaryLiteral(expression, literal);
+                return ResolveArithmeticUnaryLiteral(expression, literal);
 
-            return new ArithmicUnaryExpression(Operator.Negative, result);
+            return new ArithmeticUnaryExpression(Operator.Negative, result);
         }
 
-        private Expression ResolveArithmicUnaryLiteral(ArithmicUnaryExpression expression, LiteralExpression literal)
+        private Expression ResolveArithmeticUnaryLiteral(ArithmeticUnaryExpression expression, LiteralExpression literal)
         {
             if (expression.Operator != Operator.Negative)
                 throw new NotSupportedException();
@@ -257,7 +258,7 @@ namespace NHibernate.OData
                 return Equals(left, right);
         }
 
-        public Expression ArithmicExpression(ArithmicExpression expression)
+        public Expression ArithmeticExpression(ArithmeticExpression expression)
         {
             var left = expression.Left.Visit(this);
             var right = expression.Right.Visit(this);
@@ -266,12 +267,12 @@ namespace NHibernate.OData
             var rightLiteral = right as LiteralExpression;
 
             if (leftLiteral != null && rightLiteral != null)
-                return ResolveArithmicLiterals(expression, leftLiteral, rightLiteral);
+                return ResolveArithmeticLiterals(expression, leftLiteral, rightLiteral);
 
-            return new ArithmicExpression(expression.Operator, left, right);
+            return new ArithmeticExpression(expression.Operator, left, right);
         }
 
-        private Expression ResolveArithmicLiterals(ArithmicExpression expression, LiteralExpression leftLiteral, LiteralExpression rightLiteral)
+        private Expression ResolveArithmeticLiterals(ArithmeticExpression expression, LiteralExpression leftLiteral, LiteralExpression rightLiteral)
         {
             object left = leftLiteral.Value;
             object right = rightLiteral.Value;
@@ -405,7 +406,7 @@ namespace NHibernate.OData
             return new MethodCallExpression(expression.MethodCallType, expression.Method, arguments);
         }
 
-        public Expression AliasedMemberExpression(AliasedMemberExpression expression)
+        public Expression ResolvedMemberExpression(ResolvedMemberExpression expression)
         {
             throw new InvalidOperationException();
         }

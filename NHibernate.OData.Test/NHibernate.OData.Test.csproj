@@ -59,7 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Criterions\Arithmics.cs" />
+    <Compile Include="Criterions\Arithmetics.cs" />
     <Compile Include="Criterions\Casting.cs" />
     <Compile Include="Criterions\Comparisons.cs" />
     <Compile Include="Criterions\DateParts.cs" />
@@ -76,7 +76,7 @@
     <Compile Include="Lexer\Basics.cs" />
     <Compile Include="Domain\Child.cs" />
     <Compile Include="Domain\Parent.cs" />
-    <Compile Include="Normalization\Arithmics.cs" />
+    <Compile Include="Normalization\Arithmetics.cs" />
     <Compile Include="Normalization\Casting.cs" />
     <Compile Include="Normalization\Comparisons.cs" />
     <Compile Include="Normalization\DateParts.cs" />

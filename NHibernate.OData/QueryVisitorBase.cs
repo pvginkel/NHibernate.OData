@@ -27,7 +27,7 @@ namespace NHibernate.OData
             throw new QueryNotSupportException();
         }
 
-        public virtual T ArithmicUnaryExpression(ArithmicUnaryExpression expression)
+        public virtual T ArithmeticUnaryExpression(ArithmeticUnaryExpression expression)
         {
             throw new QueryNotSupportException();
         }
@@ -42,7 +42,7 @@ namespace NHibernate.OData
             throw new QueryNotSupportException();
         }
 
-        public virtual T ArithmicExpression(ArithmicExpression expression)
+        public virtual T ArithmeticExpression(ArithmeticExpression expression)
         {
             throw new QueryNotSupportException();
         }
@@ -52,7 +52,7 @@ namespace NHibernate.OData
             throw new QueryNotSupportException();
         }
 
-        public virtual T AliasedMemberExpression(AliasedMemberExpression expression)
+        public virtual T ResolvedMemberExpression(ResolvedMemberExpression expression)
         {
             throw new QueryNotSupportException();
         }

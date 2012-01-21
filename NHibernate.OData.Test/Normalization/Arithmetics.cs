@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace NHibernate.OData.Test.Normalization
 {
     [TestFixture]
-    internal class Arithmics : NormalizedTestFixture
+    internal class Arithmetics : NormalizedTestFixture
     {
         [Test]
         public void Add()
@@ -130,17 +130,17 @@ namespace NHibernate.OData.Test.Normalization
         {
             Verify(
                 "A add B",
-                new ArithmicExpression(
+                new ArithmeticExpression(
                     Operator.Add,
-                    new MemberExpression(MemberType.Normal, "A"),
-                    new MemberExpression(MemberType.Normal, "B")
+                    new ResolvedMemberExpression(MemberType.Normal, "A"),
+                    new ResolvedMemberExpression(MemberType.Normal, "B")
                 )
             );
             Verify(
                 "- A",
-                new ArithmicUnaryExpression(
+                new ArithmeticUnaryExpression(
                     Operator.Negative,
-                    new MemberExpression(MemberType.Normal, "A")
+                    new ResolvedMemberExpression(MemberType.Normal, "A")
                 )
             );
         }

@@ -133,27 +133,47 @@ namespace NHibernate.OData
         }
     }
 
-    internal class AliasedMemberExpression : Expression
+    internal class ResolvedMemberExpression : Expression
     {
-        private readonly bool _isBool;
-
-        public AliasedMemberExpression(string member, bool isBool)
-            : base(ExpressionType.AliasedMember)
+        public ResolvedMemberExpression(MemberType memberType, string member)
+            : base(ExpressionType.ResolvedMember)
         {
+            Require.NotNull(member, "member");
+
             Member = member;
-            _isBool = isBool;
+            MemberType = memberType;
         }
 
         public string Member { get; private set; }
 
+        public MemberType MemberType { get; private set; }
+
         public override bool IsBool
         {
-            get { return _isBool; }
+            get { return MemberType == MemberType.Boolean; }
         }
 
         public override T Visit<T>(IVisitor<T> visitor)
         {
-            return visitor.AliasedMemberExpression(this);
+            return visitor.ResolvedMemberExpression(this);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            var other = obj as ResolvedMemberExpression;
+
+            return
+                other != null &&
+                Member == other.Member &&
+                IsBool == other.IsBool;
+        }
+
+        public override string ToString()
+        {
+            return Member;
         }
     }
 
@@ -264,21 +284,21 @@ namespace NHibernate.OData
         }
     }
 
-    internal class ArithmicUnaryExpression : UnaryExpression
+    internal class ArithmeticUnaryExpression : UnaryExpression
     {
         public override bool IsBool
         {
             get { return false; }
         }
 
-        public ArithmicUnaryExpression(Operator @operator, Expression expression)
-            : base(ExpressionType.ArithmicUnary, expression, @operator)
+        public ArithmeticUnaryExpression(Operator @operator, Expression expression)
+            : base(ExpressionType.ArithmeticUnary, expression, @operator)
         {
         }
 
         public override T Visit<T>(IVisitor<T> visitor)
         {
-            return visitor.ArithmicUnaryExpression(this);
+            return visitor.ArithmeticUnaryExpression(this);
         }
     }
 
@@ -355,21 +375,21 @@ namespace NHibernate.OData
         }
     }
 
-    internal class ArithmicExpression : BinaryExpression
+    internal class ArithmeticExpression : BinaryExpression
     {
         public override bool IsBool
         {
             get { return false; }
         }
 
-        public ArithmicExpression(Operator @operator, Expression left, Expression right)
-            : base(ExpressionType.Arithmic, @operator, left, right)
+        public ArithmeticExpression(Operator @operator, Expression left, Expression right)
+            : base(ExpressionType.Arithmetic, @operator, left, right)
         {
         }
 
         public override T Visit<T>(IVisitor<T> visitor)
         {
-            return visitor.ArithmicExpression(this);
+            return visitor.ArithmeticExpression(this);
         }
     }
 

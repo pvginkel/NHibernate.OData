@@ -9,7 +9,7 @@ namespace NHibernate.OData
         Literal,
         Bool,
         Comparison,
-        Arithmic,
+        Arithmetic,
         Not,
         IsOf,
         BoolCast,
@@ -17,7 +17,7 @@ namespace NHibernate.OData
         Negative,
         Member,
         Paren,
-        ArithmicUnary,
-        AliasedMember
+        ArithmeticUnary,
+        ResolvedMember
     }
 }

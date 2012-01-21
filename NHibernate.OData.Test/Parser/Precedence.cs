@@ -15,9 +15,9 @@ namespace NHibernate.OData.Test.Parser
         {
             Verify(
                 "1 mul 2 add 3",
-                new ArithmicExpression(
+                new ArithmeticExpression(
                     Operator.Add,
-                    new ArithmicExpression(
+                    new ArithmeticExpression(
                         Operator.Mul,
                         new LiteralExpression(1),
                         new LiteralExpression(2)
@@ -32,10 +32,10 @@ namespace NHibernate.OData.Test.Parser
         {
             Verify(
                 "(1 mul 2) add 3",
-                new ArithmicExpression(
+                new ArithmeticExpression(
                     Operator.Add,
                     new ParenExpression(
-                        new ArithmicExpression(
+                        new ArithmeticExpression(
                             Operator.Mul,
                             new LiteralExpression(1),
                             new LiteralExpression(2)
@@ -66,7 +66,7 @@ namespace NHibernate.OData.Test.Parser
                 "- 0 eq 1",
                 new ComparisonExpression(
                     Operator.Eq,
-                    new ArithmicUnaryExpression(Operator.Negative, ZeroLiteral),
+                    new ArithmeticUnaryExpression(Operator.Negative, ZeroLiteral),
                     OneLiteral
                 )
             );

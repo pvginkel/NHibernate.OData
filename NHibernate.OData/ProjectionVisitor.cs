@@ -27,7 +27,7 @@ namespace NHibernate.OData
             return Projections.Constant(expression.Value);
         }
 
-        public override IProjection AliasedMemberExpression(AliasedMemberExpression expression)
+        public override IProjection ResolvedMemberExpression(ResolvedMemberExpression expression)
         {
             return Projections.Property(expression.Member);
         }
@@ -37,7 +37,7 @@ namespace NHibernate.OData
             return ProjectionMethodVisitor.CreateProjection(expression.Method, expression.Arguments);
         }
 
-        public override IProjection ArithmicExpression(ArithmicExpression expression)
+        public override IProjection ArithmeticExpression(ArithmeticExpression expression)
         {
             var left = CreateProjection(expression.Left);
             var right = CreateProjection(expression.Right);
@@ -91,7 +91,7 @@ namespace NHibernate.OData
             }
         }
 
-        public override IProjection ArithmicUnaryExpression(ArithmicUnaryExpression expression)
+        public override IProjection ArithmeticUnaryExpression(ArithmeticUnaryExpression expression)
         {
             var projection = CreateProjection(expression.Expression);
 

@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace NHibernate.OData.Test.Criterions
 {
     [TestFixture]
-    internal class Arithmics : DomainTestFixture
+    internal class Arithmetics : DomainTestFixture
     {
         [Test]
         public void Add()
