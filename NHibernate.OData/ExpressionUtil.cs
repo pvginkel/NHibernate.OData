@@ -26,6 +26,9 @@ namespace NHibernate.OData
 
                     case ExpressionType.ResolvedMember:
                         return new ResolvedMemberExpression(MemberType.Boolean, ((ResolvedMemberExpression)expression).Member);
+
+                    default:
+                        throw new ODataException(ErrorMessages.Parser_ExpectedBooleanExpression);
                 }
             }
 
@@ -48,7 +51,7 @@ namespace NHibernate.OData
                 }
             }
 
-            return literal;
+            throw new ODataException(ErrorMessages.Parser_ExpectedBooleanExpression);
         }
     }
 }
