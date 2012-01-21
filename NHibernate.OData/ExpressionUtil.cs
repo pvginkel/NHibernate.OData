@@ -13,40 +13,42 @@ namespace NHibernate.OData
 
             if (!expression.IsBool)
             {
-                // Recurs into paren expressions.
-
-                var paren = expression as ParenExpression;
-
-                if (paren != null)
-                    return new ParenExpression(CoerceBoolExpression(paren.Expression));
-
-                // Force 0 and 1 literals to boolean.
-
-                var literal = expression as LiteralExpression;
-
-                if (literal != null && literal.Value is int)
+                switch (expression.Type)
                 {
-                    switch ((int)literal.Value)
-                    {
-                        case 0:
-                            return new LiteralExpression(false, LiteralType.Boolean);
+                    case ExpressionType.Paren:
+                        return new ParenExpression(CoerceBoolExpression(((ParenExpression)expression).Expression));
 
-                        case 1:
-                            return new LiteralExpression(true, LiteralType.Boolean);
-                    }
+                    case ExpressionType.Literal:
+                        return CoerceLiteralExpression((LiteralExpression)expression);
+
+                    case ExpressionType.Member:
+                        return new MemberExpression(MemberType.Boolean, ((MemberExpression)expression).Members);
+
+                    case ExpressionType.ResolvedMember:
+                        return new ResolvedMemberExpression(MemberType.Boolean, ((ResolvedMemberExpression)expression).Member);
                 }
-
-                // Coerce member expressions to boolean.
-
-                var member = expression as MemberExpression;
-
-                if (member != null)
-                    return new MemberExpression(MemberType.Boolean, member.Members);
-
-                throw new ODataException(ErrorMessages.Parser_ExpectedBooleanExpression);
             }
 
             return expression;
+        }
+
+        private static Expression CoerceLiteralExpression(LiteralExpression literal)
+        {
+            // Force 0 and 1 literals to boolean.
+
+            if (literal.Value is int)
+            {
+                switch ((int)literal.Value)
+                {
+                    case 0:
+                        return new LiteralExpression(false, LiteralType.Boolean);
+
+                    case 1:
+                        return new LiteralExpression(true, LiteralType.Boolean);
+                }
+            }
+
+            return literal;
         }
     }
 }
