@@ -10,7 +10,7 @@ using NHibernate.Util;
 namespace NHibernate.OData.Extensions
 {
     // From http://savale.blogspot.com/2011/04/nhibernate-and-missing.html
-    public abstract class OperatorProjection : SimpleProjection
+    internal abstract class OperatorProjection : SimpleProjection
     {
         private readonly IProjection[] args;
         private readonly IType returnType;

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Pieter van Ginkel")]
 [assembly: AssemblyProduct("NHibernate.OData")]
-[assembly: AssemblyCopyright("Pieter van Ginkel ? 2012")]
+[assembly: AssemblyCopyright("Pieter van Ginkel © 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
