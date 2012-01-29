@@ -11,12 +11,35 @@ using System.Collections;
 
 namespace NHibernate.OData
 {
+    /// <summary>
+    /// Represents an executed OData request.
+    /// </summary>
     public class ODataRequest
     {
         private readonly ODataService _service;
         private readonly ISession _session;
         private readonly string _path;
         private readonly string _queryString;
+
+        /// <summary>
+        /// Gets the data service version of the response. This must be set
+        /// to the HTTP header "DataServiceVersion" in the HTTP response.
+        /// </summary>
+        public string DataServiceVersion { get; private set; }
+
+        /// <summary>
+        /// Gets the response of the OData request.
+        /// </summary>
+        public string Response { get; private set; }
+
+        /// <summary>
+        /// Gets the content type of the OData request. This must be set to
+        /// the HTTP header "Content-Type" in the HTTP response.
+        /// </summary>
+        public string ContentType
+        {
+            get { return "application/xml;charset=utf-8"; }
+        }
 
         internal ODataRequest(ODataService service, ISession session, string path, string queryString)
         {
@@ -246,15 +269,6 @@ namespace NHibernate.OData
             }
 
             throw new ODataException(String.Format(ErrorMessages.ODataRequest_PropertyDoesNotExistOnParent, persister.EntityType.ReturnedClass.Name, propertyName));
-        }
-
-        public string DataServiceVersion { get; private set; }
-
-        public string Response { get; private set; }
-
-        public string ContentType
-        {
-            get { return "application/xml;charset=utf-8"; }
         }
     }
 }

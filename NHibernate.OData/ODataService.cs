@@ -10,6 +10,9 @@ using NHibernate.Type;
 
 namespace NHibernate.OData
 {
+    /// <summary>
+    /// Service for responding to OData queries.
+    /// </summary>
     public class ODataService
     {
         internal static readonly XNamespace NsAtom = "http://www.w3.org/2005/Atom";
@@ -21,21 +24,57 @@ namespace NHibernate.OData
 
         private readonly ISessionFactoryImplementor _sessionFactory;
 
+        /// <summary>
+        /// Gets the namespace the service is registered on.
+        /// </summary>
         public XNamespace ServiceNamespace { get; private set; }
 
+        /// <summary>
+        /// Gets the schema namespace.
+        /// </summary>
         public string SchemaNamespace { get; private set; }
 
+        /// <summary>
+        /// Gets the container namespace.
+        /// </summary>
         public string ContainerName { get; private set; }
 
         internal string ServiceResponse { get; private set; }
 
         internal string MetadataResponse { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ODataService"/> class
+        /// with the specified session factory, service namespace, schema namespace
+        /// and container name.
+        /// </summary>
+        /// <param name="sessionFactory">Session factory for which the service
+        /// is created.</param>
+        /// <param name="serviceNamespace">Namespace the service is registered
+        /// on. This is the web address through which the service can be reached
+        /// publicly.</param>
+        /// <param name="schemaNamespace">Namespace of the schema. This usually
+        /// is the name of the domain and is used to identify the schema.</param>
         public ODataService(ISessionFactory sessionFactory, XNamespace serviceNamespace, string schemaNamespace)
             : this(sessionFactory, serviceNamespace, schemaNamespace, schemaNamespace)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ODataService"/> class
+        /// with the specified session factory, service namespace, schema namespace
+        /// and container name.
+        /// </summary>
+        /// <param name="sessionFactory">Session factory for which the service
+        /// is created.</param>
+        /// <param name="serviceNamespace">Namespace the service is registered
+        /// on. This is the web address through which the service can be reached
+        /// publicly.</param>
+        /// <param name="schemaNamespace">Namespace of the schema. This usually
+        /// is the name of the domain and is used to identify the schema.</param>
+        /// <param name="containerName">Container name. This is used to identify
+        /// the current container and can e.g. be the name of the database.
+        /// Defaults to the schema namespace.</param>
         public ODataService(ISessionFactory sessionFactory, XNamespace serviceNamespace, string schemaNamespace, string containerName)
         {
             Require.NotNull(sessionFactory, "sessionFactory");
@@ -285,11 +324,27 @@ namespace NHibernate.OData
                 return _sessionFactory.GetEntityPersister(implementors[0]);
         }
 
+        /// <summary>
+        /// Executes an OData query with the specified session, path and
+        /// query string and returns a request object.
+        /// </summary>
+        /// <param name="session">Session to execute the query on.</param>
+        /// <param name="path">Path component of the OData request.</param>
+        /// <returns>Completed OData request.</returns>
         public ODataRequest Query(ISession session, string path)
         {
             return Query(session, path, null);
         }
 
+        /// <summary>
+        /// Executes an OData query with the specified session, path and
+        /// query string and returns a request object.
+        /// </summary>
+        /// <param name="session">Session to execute the query on.</param>
+        /// <param name="path">Path component of the OData request.</param>
+        /// <param name="queryString">Query string component of the OData
+        /// request.</param>
+        /// <returns>Completed OData request.</returns>
         public ODataRequest Query(ISession session, string path, string queryString)
         {
             return new ODataRequest(this, session, path, queryString);

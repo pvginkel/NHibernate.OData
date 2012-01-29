@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using FastMember;
 
-namespace NHibernate.OData.Demo
+namespace NHibernate.OData.Demo.Populator
 {
     internal class EntityBuilder
     {

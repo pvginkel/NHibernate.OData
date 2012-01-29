@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database.cs" />
+    <Compile Include="Populator\DatabasePopulator.cs" />
     <Compile Include="Domain\Category.cs" />
     <Compile Include="Domain\Customer.cs" />
     <Compile Include="Domain\Employee.cs" />
@@ -84,9 +85,7 @@
     <EmbeddedResource Include="LogConfiguration.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Compile Include="EntityBuilder.cs" />
-    <Compile Include="IdValueParser.cs" />
-    <Compile Include="ODataRequest.cs" />
+    <Compile Include="Populator\EntityBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -98,7 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Domain\SouthWind.hbm.xml" />
-    <EmbeddedResource Include="SouthWind.xml" />
+    <EmbeddedResource Include="Populator\SouthWind.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\NHibernate.OData\Key.snk">

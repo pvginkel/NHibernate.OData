@@ -120,7 +120,7 @@ namespace NHibernate.OData
 
             for (int i = 0; i < Members.Count; i++)
             {
-                if (Members[i] != other.Members[i])
+                if (!Equals(Members[i], other.Members[i]))
                     return false;
             }
 
