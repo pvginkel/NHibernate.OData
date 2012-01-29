@@ -39,7 +39,7 @@ session, OData path and OData query string.
 
 The demo application which is included in the ZIP file shows how such a service
 can be implemented with minimal effort. This demo application makes use of
-[http://github.com/pvginkel/NHttp](NHttp) so it can run without a web
+[NHttp](http://github.com/pvginkel/NHttp) so it can run without a web
 server available.
 
 ## Limitations
