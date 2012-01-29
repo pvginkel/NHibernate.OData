@@ -12,7 +12,7 @@ namespace NHibernate.OData
         private int? _skip;
         private ICriterion _criterion;
         private OrderBy[] _orderBys;
-        private readonly NormalizeVisitor _normalizeVisitor = new NormalizeVisitor();
+        private readonly AliasingNormalizeVisitor _normalizeVisitor = new AliasingNormalizeVisitor();
 
         public ODataExpression(string queryString)
         {

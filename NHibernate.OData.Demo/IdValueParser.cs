@@ -8,7 +8,7 @@ namespace NHibernate.OData.Demo
     internal class IdValueParser : Parser
     {
         public IdValueParser(string source)
-            : base(source)
+            : base(source, ParserMode.Normal)
         {
         }
 
@@ -18,7 +18,7 @@ namespace NHibernate.OData.Demo
 
             ExpectAtEnd();
 
-            result.Visit(new NormalizeVisitor());
+            result.Visit(new AliasingNormalizeVisitor());
 
             var literalExpression = result as LiteralExpression;
 

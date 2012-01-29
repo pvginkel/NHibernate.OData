@@ -9,10 +9,13 @@ namespace NHibernate.OData
     {
         private readonly IList<Token> _tokens;
         private int _offset;
+        private readonly ParserMode _mode;
 
-        protected Parser(string source)
+        protected Parser(string source, ParserMode mode)
         {
             Require.NotNull(source, "source");
+
+            _mode = mode;
 
             _tokens = new Lexer(source).ToList();
 
@@ -218,7 +221,7 @@ namespace NHibernate.OData
                     }
 
                 case TokenType.Identifier:
-                    if (Next == SyntaxToken.ParenOpen && !GetOperator(Current).HasValue)
+                    if (Next == SyntaxToken.ParenOpen && !GetOperator(Current).HasValue && _mode != ParserMode.Path)
                     {
                         return ParseMethodCall();
                     }
@@ -230,11 +233,9 @@ namespace NHibernate.OData
                     }
                     else
                     {
-                        var members = new List<string>();
+                        var members = new List<MemberExpressionComponent>();
 
-                        members.Add(CurrentIdentifier);
-
-                        MoveNext();
+                        ParseMember(members);
 
                         while (!AtEnd && Current == SyntaxToken.Slash)
                         {
@@ -242,9 +243,7 @@ namespace NHibernate.OData
 
                             ExpectAny();
 
-                            members.Add(CurrentIdentifier);
-
-                            MoveNext();
+                            ParseMember(members);
                         }
 
                         return new MemberExpression(MemberType.Normal, members);
@@ -253,6 +252,28 @@ namespace NHibernate.OData
                 default:
                     throw new NotSupportedException();
             }
+        }
+
+        private void ParseMember(List<MemberExpressionComponent> members)
+        {
+            string name = CurrentIdentifier;
+            LiteralExpression idExpression = null;
+
+            MoveNext();
+
+            if (!AtEnd && _mode == ParserMode.Path && Current == SyntaxToken.ParenOpen)
+            {
+                MoveNext();
+
+                idExpression = ParseCommon() as LiteralExpression;
+
+                if (idExpression == null)
+                    throw new ODataException(ErrorMessages.Parser_ExpectedLiteralExpression);
+
+                Expect(SyntaxToken.ParenClose);
+            }
+
+            members.Add(new MemberExpressionComponent(name, idExpression));
         }
 
         private Operator? GetOperator(Token token)

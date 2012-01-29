@@ -7,10 +7,10 @@ namespace NHibernate.OData
 {
     internal class OrderByParser : Parser
     {
-        private readonly NormalizeVisitor _normalizeVisitor;
+        private readonly AliasingNormalizeVisitor _normalizeVisitor;
 
-        public OrderByParser(string source, NormalizeVisitor normalizeVisitor)
-            : base(source)
+        public OrderByParser(string source, AliasingNormalizeVisitor normalizeVisitor)
+            : base(source, ParserMode.Normal)
         {
             Require.NotNull(normalizeVisitor, "normalizeVisitor");
 

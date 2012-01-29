@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -33,7 +34,9 @@ namespace NHibernate.OData.Demo
 
                 var ns = (XNamespace)("http://" + server.EndPoint + "/OData/");
 
-                server.RequestReceived += (s, e) => RequestReceived(database, e, ns);
+                var service = new ODataService(database.SessionFactory, ns, "SouthWind", "NHibernate");
+
+                server.RequestReceived += (s, e) => RequestReceived(database, service, e, ns);
 
                 Console.WriteLine(" done");
 
@@ -46,15 +49,15 @@ namespace NHibernate.OData.Demo
             }
         }
 
-        private static void RequestReceived(Database database, HttpRequestEventArgs e, XNamespace ns)
+        private static void RequestReceived(Database database, ODataService service, HttpRequestEventArgs e, XNamespace ns)
         {
             if (e.Request.Path.StartsWith("/odata", StringComparison.OrdinalIgnoreCase))
-                ProcessODataRequest(database, e, ns);
+                ProcessODataRequest(database, service, e, ns);
             else
                 ProcessStaticRequest(e);
         }
 
-        private static void ProcessODataRequest(Database database, HttpRequestEventArgs e, XNamespace ns)
+        private static void ProcessODataRequest(Database database, ODataService service, HttpRequestEventArgs e, XNamespace ns)
         {
             string[] parts = e.Request.RawUrl.Split(new[] { '?' }, 2);
 
@@ -63,22 +66,25 @@ namespace NHibernate.OData.Demo
 
             path = path.Substring(6).TrimStart('/');
 
-            ODataRequest request;
+            NHibernate.OData.ODataRequest request;
 
             using (var session = database.OpenSession())
             using (var transaction = session.BeginTransaction())
             {
                 session.FlushMode = FlushMode.Never;
 
-                request = new ODataRequest(database, session, path, filter, ns);
+                request = service.Query(session, path, filter);
 
-                request.GetResponse().Save(e.Response.OutputStream);
+                using (var writer = new StreamWriter(e.Response.OutputStream))
+                {
+                    writer.Write(request.Response);
+                }
 
                 session.Flush();
                 transaction.Commit();
             }
 
-            e.Response.ContentType = "application/xml;charset=utf-8";
+            e.Response.ContentType = request.ContentType;
             e.Response.Headers["DataServiceVersion"] = request.DataServiceVersion;
         }
 

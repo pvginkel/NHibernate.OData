@@ -34,8 +34,9 @@ namespace NHibernate.OData.Demo
             { "EmployeeTerritorie", "EmployeeTerritory" }
         };
 
+        public ISessionFactory SessionFactory { get; private set; }
+
         private bool _disposed;
-        private ISessionFactory _sessionFactory;
         private readonly Dictionary<string, EntityBuilder> _builders = new Dictionary<string, EntityBuilder>();
         private readonly Dictionary<System.Type, EntityBuilder> _buildersByType = new Dictionary<System.Type, EntityBuilder>();
         private Dictionary<System.Type, Dictionary<object, object>> _entityCache = new Dictionary<System.Type, Dictionary<object, object>>();
@@ -57,7 +58,7 @@ namespace NHibernate.OData.Demo
             if (!exists)
                 new SchemaExport(cfg).Execute(false, true, false);
 
-            _sessionFactory = cfg.BuildSessionFactory();
+            SessionFactory = cfg.BuildSessionFactory();
 
             if (!exists)
             {
@@ -220,17 +221,17 @@ namespace NHibernate.OData.Demo
 
         public ISession OpenSession()
         {
-            return _sessionFactory.OpenSession();
+            return SessionFactory.OpenSession();
         }
 
         public void Dispose()
         {
             if (!_disposed)
             {
-                if (_sessionFactory != null)
+                if (SessionFactory != null)
                 {
-                    _sessionFactory.Dispose();
-                    _sessionFactory = null;
+                    SessionFactory.Dispose();
+                    SessionFactory = null;
                 }
 
                 _disposed = true;

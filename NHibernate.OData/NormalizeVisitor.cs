@@ -1,54 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Diagnostics;
+using System.Text;
+using System.Collections.Generic;
+using System;
 
 namespace NHibernate.OData
 {
     internal class NormalizeVisitor : IVisitor<Expression>
     {
-        public NormalizeVisitor()
-        {
-            Aliases = new Dictionary<string, string>(StringComparer.Ordinal);
-        }
-
-        public IDictionary<string, string> Aliases { get; private set; }
-
         public Expression LiteralExpression(LiteralExpression expression)
         {
             return expression;
         }
 
-        public Expression MemberExpression(MemberExpression expression)
+        public virtual Expression MemberExpression(MemberExpression expression)
         {
-            if (expression.Members.Count == 1)
-                return new ResolvedMemberExpression(expression.MemberType, expression.Members[0]);
-
-            var sb = new StringBuilder();
-            string alias = null;
-
-            for (int i = 0; i < expression.Members.Count - 1; i++)
-            {
-                if (i > 0)
-                    sb.Append('.');
-
-                sb.Append(expression.Members[i]);
-
-                string path = sb.ToString();
-
-                if (!Aliases.TryGetValue(path, out alias))
-                {
-                    alias = "t" + (Aliases.Count + 1);
-
-                    Aliases.Add(path, alias);
-                }
-            }
-
-            return new ResolvedMemberExpression(
-                expression.MemberType,
-                alias + "." + expression.Members[expression.Members.Count - 1]
-            );
+            return expression;
         }
 
         public Expression ParenExpression(ParenExpression expression)
@@ -129,7 +95,7 @@ namespace NHibernate.OData
                 default:
                     throw new ODataException(String.Format(
                         ErrorMessages.Expression_CannotNegate, literal.LiteralType
-                    ));
+                        ));
             }
 
             return new LiteralExpression(value, literal.LiteralType);
@@ -239,7 +205,7 @@ namespace NHibernate.OData
                 case LiteralType.Null:
                     throw new ODataException(String.Format(
                         ErrorMessages.Expression_CannotCompareTypes, type
-                    ));
+                        ));
 
                 default:
                     var comparable = left as IComparable;
@@ -298,7 +264,7 @@ namespace NHibernate.OData
                     ErrorMessages.Expression_IncompatibleTypes,
                     expression.Operator,
                     type
-                ));
+                    ));
             }
 
             return new LiteralExpression(result, type);
@@ -310,7 +276,7 @@ namespace NHibernate.OData
             {
                 case LiteralType.Decimal: return (decimal)left + (decimal)right;
                 case LiteralType.Double: return (double)left + (double)right;
-                // case LiteralType.Duration: return (XmlTimeSpan)left + (XmlTimeSpan)right;
+                    // case LiteralType.Duration: return (XmlTimeSpan)left + (XmlTimeSpan)right;
                 case LiteralType.Int: return (int)left + (int)right;
                 case LiteralType.Long: return (long)left + (long)right;
                 case LiteralType.Single: return (float)left + (float)right;
@@ -325,7 +291,7 @@ namespace NHibernate.OData
             {
                 case LiteralType.Decimal: return (decimal)left - (decimal)right;
                 case LiteralType.Double: return (double)left - (double)right;
-                // case LiteralType.Duration: return (XmlTimeSpan)left - (XmlTimeSpan)right;
+                    // case LiteralType.Duration: return (XmlTimeSpan)left - (XmlTimeSpan)right;
                 case LiteralType.Int: return (int)left - (int)right;
                 case LiteralType.Long: return (long)left - (long)right;
                 case LiteralType.Single: return (float)left - (float)right;

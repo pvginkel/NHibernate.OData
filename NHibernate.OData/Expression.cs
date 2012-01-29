@@ -76,7 +76,7 @@ namespace NHibernate.OData
     internal class MemberExpression : Expression
     {
         public MemberType MemberType { get; private set; }
-        public IList<string> Members { get; private set; }
+        public IList<MemberExpressionComponent> Members { get; private set; }
 
         public override bool IsBool
         {
@@ -84,11 +84,11 @@ namespace NHibernate.OData
         }
 
         public MemberExpression(MemberType type, params string[] members)
-            : this(type, (IList<string>)members)
+            : this(type, members.Select(p => new MemberExpressionComponent(p, null)).ToArray())
         {
         }
 
-        public MemberExpression(MemberType type, IList<string> members)
+        public MemberExpression(MemberType type, IList<MemberExpressionComponent> members)
             : base(ExpressionType.Member)
         {
             Require.NotNull(members, "members");
@@ -129,7 +129,56 @@ namespace NHibernate.OData
 
         public override string ToString()
         {
-            return String.Join("/", Members.ToArray());
+            var sb = new StringBuilder();
+            bool hadOne = false;
+
+            foreach (var member in Members)
+            {
+                if (hadOne)
+                    sb.Append('/');
+                else
+                    hadOne = true;
+
+                sb.Append(member.ToString());
+            }
+
+            return sb.ToString();
+        }
+    }
+
+    internal class MemberExpressionComponent
+    {
+        public string Name { get; private set; }
+
+        public LiteralExpression IdExpression { get; private set; }
+
+        public MemberExpressionComponent(string name, LiteralExpression idExpression)
+        {
+            Require.NotNull(name, "name");
+
+            Name = name;
+            IdExpression = idExpression;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            var other = obj as MemberExpressionComponent;
+
+            return
+                other != null &&
+                Name == other.Name &&
+                Equals(IdExpression, other.IdExpression);
+        }
+
+        public override string ToString()
+        {
+            if (IdExpression == null)
+                return Name;
+            else
+                return Name + "(" + IdExpression + ")";
         }
     }
 

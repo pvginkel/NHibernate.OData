@@ -86,7 +86,6 @@
     </EmbeddedResource>
     <Compile Include="EntityBuilder.cs" />
     <Compile Include="IdValueParser.cs" />
-    <Compile Include="Inflector.cs" />
     <Compile Include="ODataRequest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

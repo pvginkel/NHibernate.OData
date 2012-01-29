@@ -232,6 +232,51 @@ namespace NHibernate.OData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not resolve entity name &apos;{0}&apos;..
+        /// </summary>
+        internal static string ODataRequest_AmbiguousEntityName {
+            get {
+                return ResourceManager.GetString("ODataRequest_AmbiguousEntityName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Entity &apos;{0}&apos; does not have a field &apos;{1}&apos;..
+        /// </summary>
+        internal static string ODataRequest_PropertyDoesNotExistOnParent {
+            get {
+                return ResourceManager.GetString("ODataRequest_PropertyDoesNotExistOnParent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property &apos;{0}&apos; of entity &apos;{1}&apos; is not a relationship..
+        /// </summary>
+        internal static string ODataRequest_PropertyNotARelationship {
+            get {
+                return ResourceManager.GetString("ODataRequest_PropertyNotARelationship", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Persister of type &apos;{0}&apos; does not have an identifier property..
+        /// </summary>
+        internal static string ODataService_PersisterMustHaveIdentifierProperty {
+            get {
+                return ResourceManager.GetString("ODataService_PersisterMustHaveIdentifierProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Persister of type &apos;{0}&apos; is not supported..
+        /// </summary>
+        internal static string ODataService_UnsupportedPersister {
+            get {
+                return ResourceManager.GetString("ODataService_UnsupportedPersister", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expected end, comma, asc or desc..
         /// </summary>
         internal static string OrderByParser_ExpectedNextOrEnd {
@@ -313,6 +358,15 @@ namespace NHibernate.OData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expected literal expression..
+        /// </summary>
+        internal static string Parser_ExpectedLiteralExpression {
+            get {
+                return ResourceManager.GetString("Parser_ExpectedLiteralExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expected operator..
         /// </summary>
         internal static string Parser_ExpectedOperator {
@@ -381,6 +435,15 @@ namespace NHibernate.OData {
         internal static string Parser_UnknownMethod {
             get {
                 return ResourceManager.GetString("Parser_UnknownMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not parse path..
+        /// </summary>
+        internal static string PathParser_InvalidPath {
+            get {
+                return ResourceManager.GetString("PathParser_InvalidPath", resourceCulture);
             }
         }
     }

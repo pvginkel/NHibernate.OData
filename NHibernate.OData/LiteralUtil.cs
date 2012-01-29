@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -7,7 +8,9 @@ namespace NHibernate.OData
 {
     internal static class LiteralUtil
     {
-        private static readonly Dictionary<string, System.Type> _edmTypes = new Dictionary<string,System.Type>
+        private static char[] HexChars = "0123456789ABCDEF".ToArray();
+
+        private static readonly Dictionary<string, System.Type> EdmTypes = new Dictionary<string,System.Type>
         {
             { "Edm.Binary", typeof(byte[]) },
             { "Edm.Boolean", typeof(bool) },
@@ -25,6 +28,73 @@ namespace NHibernate.OData
             { "Edm.Time", typeof(XmlTimeSpan) },
             { "Edm.DateTimeOffset", typeof(DateTime) }
         };
+
+        private static readonly Dictionary<System.Type, Func<object, string>> Escapers = new Dictionary<System.Type, Func<object, string>>
+        {
+            { typeof(byte[]), p => SerializeBinary((byte[])p, true) },
+            { typeof(bool), p => (bool)p ? "true" : "false" },
+            { typeof(byte), p => ((byte)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(DateTime), p => "datetime'" + ((DateTime)p).ToString("o") + "'" },
+            { typeof(decimal), p => ((decimal)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(double), p => ((double)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(float), p => ((float)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(Guid), p => "guid'" + ((Guid)p).ToString("D") + "'" },
+            { typeof(short), p => ((short)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(int), p => ((int)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(long), p => ((long)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(sbyte), p => ((sbyte)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(string), p => "'" + ((string)p).Replace("'", "''") + "'" }
+        };
+
+        private static readonly Dictionary<System.Type, Func<object, string>> Serializers = new Dictionary<System.Type, Func<object, string>>
+        {
+            { typeof(byte[]), p => SerializeBinary((byte[])p, false) },
+            { typeof(bool), p => (bool)p ? "true" : "false" },
+            { typeof(byte), p => ((byte)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(DateTime), p => ((DateTime)p).ToString("o") },
+            { typeof(decimal), p => ((decimal)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(double), p => ((double)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(float), p => ((float)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(Guid), p => ((Guid)p).ToString("D") },
+            { typeof(short), p => ((short)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(int), p => ((int)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(long), p => ((long)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(sbyte), p => ((sbyte)p).ToString(CultureInfo.InvariantCulture) },
+            { typeof(string), p => (string)p }
+        };
+
+        private static string SerializeBinary(byte[] value, bool escape)
+        {
+            var sb = new StringBuilder();
+
+            if (escape)
+                sb.Append("binary'");
+
+            for (int i = 0; i < value.Length; i++)
+            {
+                byte c = value[i];
+
+                sb.Append(HexChars[c / 16]);
+                sb.Append(HexChars[c % 16]);
+            }
+
+            if (escape)
+                sb.Append("'");
+
+            return sb.ToString();
+        }
+
+        private static readonly Dictionary<System.Type, string> EdmTypesReverse;
+
+        static LiteralUtil()
+        {
+            EdmTypesReverse = new Dictionary<System.Type, string>();
+
+            foreach (var item in EdmTypes)
+            {
+                EdmTypesReverse[item.Value] = item.Key;
+            }
+        }
 
         public static LiteralType GetLiteralType(object value)
         {
@@ -208,13 +278,24 @@ namespace NHibernate.OData
             return true;
         }
 
+        public static string GetEdmType(System.Type type)
+        {
+            Require.NotNull(type, "type");
+
+            string result;
+
+            EdmTypesReverse.TryGetValue(type, out result);
+
+            return result;
+        }
+
         public static System.Type GetCompatibleType(string edmType)
         {
             Require.NotNull(edmType, "edmType");
 
             System.Type result;
 
-            if (!_edmTypes.TryGetValue(edmType, out result))
+            if (!EdmTypes.TryGetValue(edmType, out result))
             {
                 throw new ODataException(String.Format(
                     ErrorMessages.LiteralUtil_UnknownEdmType, edmType
@@ -243,7 +324,7 @@ namespace NHibernate.OData
             return false;
         }
 
-        internal static bool TryCoerceInt(LiteralExpression expression, out int result)
+        public static bool TryCoerceInt(LiteralExpression expression, out int result)
         {
             switch (expression.LiteralType)
             {
@@ -259,6 +340,22 @@ namespace NHibernate.OData
                     result = 0;
                     return false;
             }
+        }
+
+        public static string EscapeValue(object value)
+        {
+            if (value == null)
+                return "null";
+            else
+                return Escapers[value.GetType()](value);
+        }
+
+        public static string SerializeValue(object value)
+        {
+            if (value == null)
+                return null;
+            else
+                return Serializers[value.GetType()](value);
         }
     }
 }

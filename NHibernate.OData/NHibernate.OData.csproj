@@ -66,9 +66,15 @@
     <Compile Include="FilterParser.cs" />
     <Compile Include="HttpUtil.cs" />
     <Compile Include="IMethodVisitor.cs" />
+    <Compile Include="Inflector.cs" />
+    <Compile Include="NormalizeVisitor.cs" />
+    <Compile Include="ODataRequest.cs" />
+    <Compile Include="ODataService.cs" />
     <Compile Include="OrderBy.cs" />
     <Compile Include="OrderByDirection.cs" />
     <Compile Include="OrderByParser.cs" />
+    <Compile Include="ParserMode.cs" />
+    <Compile Include="PathParser.cs" />
     <Compile Include="QueryMethodVisitorBase.cs" />
     <Compile Include="ProjectionMethodVisitor.cs" />
     <Compile Include="NormalizeMethodVisitor.cs" />
@@ -78,7 +84,7 @@
     <Compile Include="LiteralUtil.cs" />
     <Compile Include="Method.cs" />
     <Compile Include="MethodType.cs" />
-    <Compile Include="NormalizeVisitor.cs" />
+    <Compile Include="AliasingNormalizeVisitor.cs" />
     <Compile Include="ODataException.cs" />
     <Compile Include="ODataExpression.cs" />
     <Compile Include="ODataParser.cs" />

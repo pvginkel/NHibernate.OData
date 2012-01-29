@@ -174,6 +174,21 @@
   <data name="ODataExpression_SkipTopMustBePositive" xml:space="preserve">
     <value>Query string parameter '{0}' must be a positive integer.</value>
   </data>
+  <data name="ODataRequest_AmbiguousEntityName" xml:space="preserve">
+    <value>Could not resolve entity name '{0}'.</value>
+  </data>
+  <data name="ODataRequest_PropertyDoesNotExistOnParent" xml:space="preserve">
+    <value>Entity '{0}' does not have a field '{1}'.</value>
+  </data>
+  <data name="ODataRequest_PropertyNotARelationship" xml:space="preserve">
+    <value>Property '{0}' of entity '{1}' is not a relationship.</value>
+  </data>
+  <data name="ODataService_PersisterMustHaveIdentifierProperty" xml:space="preserve">
+    <value>Persister of type '{0}' does not have an identifier property.</value>
+  </data>
+  <data name="ODataService_UnsupportedPersister" xml:space="preserve">
+    <value>Persister of type '{0}' is not supported.</value>
+  </data>
   <data name="OrderByParser_ExpectedNextOrEnd" xml:space="preserve">
     <value>Expected end, comma, asc or desc.</value>
   </data>
@@ -201,6 +216,9 @@
   <data name="Parser_ExpectedLiteral" xml:space="preserve">
     <value>Expected literal.</value>
   </data>
+  <data name="Parser_ExpectedLiteralExpression" xml:space="preserve">
+    <value>Expected literal expression.</value>
+  </data>
   <data name="Parser_ExpectedOperator" xml:space="preserve">
     <value>Expected operator.</value>
   </data>
@@ -224,5 +242,8 @@
   </data>
   <data name="Parser_UnknownMethod" xml:space="preserve">
     <value>Unknown method '{0}'.</value>
+  </data>
+  <data name="PathParser_InvalidPath" xml:space="preserve">
+    <value>Could not parse path.</value>
   </data>
 </root>

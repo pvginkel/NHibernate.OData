@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace NHibernate.OData.Demo
+namespace NHibernate.OData
 {
     /// <summary>
     /// Contains utility methods for working with English natural language strings.
     /// </summary>
-    public static class Inflector
+    internal static class Inflector
     {
         private static readonly List<KeyValuePair<Regex, string>> _pluralRules = new List<KeyValuePair<Regex, string>>();
         private static readonly List<KeyValuePair<Regex, string>> _singularRules = new List<KeyValuePair<Regex, string>>();
