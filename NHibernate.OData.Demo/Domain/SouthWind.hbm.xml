@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="NHibernate.OData.Demo.Domain" assembly="NHibernate.OData.Demo">
+  <class name="Category">
+    <id name="Id" type="int" />
+    <property name="CategoryName" />
+    <property name="Description" />
+    <property name="Picture" />
+    <set name="Products">
+      <key column="CategoryId" />
+      <one-to-many class="Product" />
+    </set>
+  </class>
+  <class name="Customer">
+    <id name="Id" type="string" />
+    <property name="CompanyName" />
+    <property name="ContactName" />
+    <property name="ContactTitle" />
+    <property name="Address" />
+    <property name="City" />
+    <property name="Region" />
+    <property name="PostalCode" />
+    <property name="Country" />
+    <property name="Phone" />
+    <property name="Fax" />
+    <set name="Orders">
+      <key column="CustomerId" />
+      <one-to-many class="Order" />
+    </set>
+  </class>
+  <class name="Employee">
+    <id name="Id" type="int" />
+    <property name="LastName" />
+    <property name="FirstName" />
+    <property name="Title" />
+    <property name="TitleOfCourtesy" />
+    <property name="BirthDate" />
+    <property name="HireDate" />
+    <property name="Address" />
+    <property name="City" />
+    <property name="Region" />
+    <property name="PostalCode" />
+    <property name="Extension" />
+    <property name="Photo" />
+    <property name="Notes" />
+    <property name="ReportsTo" />
+    <set name="EmployeeTerritories">
+      <key column="EmployeeId" />
+      <one-to-many class="EmployeeTerritory" />
+    </set>
+    <set name="Orders">
+      <key column="EmployeeId" />
+      <one-to-many class="Order" />
+    </set>
+  </class>
+  <class name="EmployeeTerritory">
+    <id name="Id" type="int">
+      <generator class="native" />
+    </id>
+    <many-to-one name="Employee" column="EmployeeId" />
+    <many-to-one name="Territory" column="TerritoryId" />
+  </class>
+  <class name="Order">
+    <id name="Id" type="int" />
+    <many-to-one name="Customer" column="CustomerId" />
+    <many-to-one name="Employee" column="EmployeeId" />
+    <property name="OrderDate" />
+    <property name="RequiredDate" />
+    <property name="ShippedDate" />
+    <property name="ShipVia" />
+    <property name="Freight" />
+    <property name="ShipName" />
+    <property name="ShipAddress" />
+    <property name="ShipCity" />
+    <property name="ShipRegion" />
+    <property name="ShipPostalCode" />
+    <property name="ShipCountry" />
+    <set name="OrderDetails">
+      <key column="OrderId" />
+      <one-to-many class="OrderDetail" />
+    </set>
+  </class>
+  <class name="OrderDetail">
+    <id name="Id" type="int">
+      <generator class="native" />
+    </id>
+    <many-to-one name="Order" column="OrderId" />
+    <many-to-one name="Product" column="ProductId" />
+    <property name="UnitPrice" />
+    <property name="Quantity" />
+    <property name="Discount" />
+  </class>
+  <class name="Product">
+    <id name="Id" type="int" />
+    <property name="ProductName" />
+    <many-to-one name="Supplier" column="SupplierId" />
+    <many-to-one name="Category" column="CategoryId" />
+    <property name="QuantityPerUnit" />
+    <property name="UnitPrice" />
+    <property name="UnitsInStock" />
+    <property name="UnitsOnOrder" />
+    <property name="ReorderLevel" />
+    <property name="Discontinued" />
+    <set name="OrderDetails">
+      <key column="ProductId" />
+      <one-to-many class="OrderDetail" />
+    </set>
+  </class>
+  <class name="Region">
+    <id name="Id" type="int" />
+    <property name="RegionDescription" />
+    <set name="Territories">
+      <key column="RegionId" />
+      <one-to-many class="Territory" />
+    </set>
+  </class>
+  <class name="Shipper">
+    <id name="Id" type="int" />
+    <property name="CompanyName" />
+    <property name="Phone" />
+  </class>
+  <class name="Supplier">
+    <id name="Id" type="int" />
+    <property name="CompanyName" />
+    <property name="ContactName" />
+    <property name="ContactTitle" />
+    <property name="Address" />
+    <property name="City" />
+    <property name="Region" />
+    <property name="PostalCode" />
+    <property name="Country" />
+    <property name="Phone" />
+    <property name="Fax" />
+    <property name="HomePage" />
+    <set name="Products">
+      <key column="SupplierId" />
+      <one-to-many class="Product" />
+    </set>
+  </class>
+  <class name="Territory">
+    <id name="Id" type="int" />
+    <property name="TerritoryDescription" />
+    <many-to-one name="Region" column="RegionId" />
+    <set name="EmployeeTerritories">
+      <key column="TerritoryId" />
+      <one-to-many class="EmployeeTerritory" />
+    </set>
+  </class>
+</hibernate-mapping>
