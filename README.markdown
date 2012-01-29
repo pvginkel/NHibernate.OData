@@ -21,29 +21,38 @@ directory at [http://wcf.codeplex.com/SourceControl/BrowseLatest](http://wcf.cod
 However, the license of this source code limits its usage in production
 environments. This project was created as an open source alternative.
 
-NHibernate.OData does **not** implement a full OData service. However, it can
-be used to build such a service. In it's current form it's mainly useful to
-provide an OData query interface for example as part of a public web service.
-
 ## Usage
 
-The OData parser is exposed as three extension methods on the ISession class
-named ODataQuery and is used as follows:
+There are two ways in which NHibernate.OData can be used. If all that is required
+is a way to query the database, the ODataQuery extension method can be used.
+This method parses an OData query string and creates an ICriteria for that
+query string on a specific entity:
 
     ICriteria query = session.ODataQuery<Customer>("$filter=substringof(Name, 'Harry')");
 
-The above method is the only public API of the library. There is no configuration
-required to get up and running; only a reference to the ISession used to create
-the ICriteria.
+Alternatively, the ODataService class provides a service for implementing
+a full OData service. To use the ODataService class, a new instance of this
+class must be instantiated for an ISessionFactory and a few configuration
+parameters (see the constructor documentation). Queries can then be
+executed using the Query method on the ODataService class which takes a
+session, OData path and OData query string.
+
+The demo application which is included in the ZIP file shows how such a service
+can be implemented with minimal effort. This demo application makes use of
+[http://github.com/pvginkel/NHttp](NHttp) so it can run without a web
+server available.
 
 ## Limitations
 
-The current implementation does not access metadata. This results in the
-following limitations:
+The current implementation does not access metadata while querying. This
+results in the following limitations:
 
 * The cast operator is a no-op except for when casting to integer types. In that case it is converted to a round call;
 
 * The isof operator is a no-op.
+
+Also, currently NHibernate.OData is read-only and can only be used to query
+the database.
 
 ## Bugs
 
