@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Xml;
-using System.Xml.Linq;
 using NHibernate.Cfg;
 using NHibernate.OData.Demo.Populator;
 using NHibernate.Tool.hbm2ddl;
 using Environment = NHibernate.Cfg.Environment;
-using NHibernate.OData.Demo.Domain;
 
 namespace NHibernate.OData.Demo
 {
@@ -31,7 +28,6 @@ namespace NHibernate.OData.Demo
                 .SetProperty(Environment.Dialect, typeof(SQLiteDialectEx).AssemblyQualifiedName)
                 .SetProperty(Environment.ConnectionString, String.Format("data source={0}", DatabasePath))
                 .SetProperty(Environment.Hbm2ddlKeyWords, "auto-quote")
-                // .SetProperty(Environment.ShowSql, "true")
                 .AddAssembly(GetType().Assembly);
 
             if (!exists)
