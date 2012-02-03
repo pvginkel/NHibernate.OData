@@ -104,7 +104,6 @@
     <None Include="..\NHibernate.OData\Key.snk">
       <Link>Key.snk</Link>
     </None>
-    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Site\index.html" />
