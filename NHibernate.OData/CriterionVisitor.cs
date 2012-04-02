@@ -22,6 +22,10 @@ namespace NHibernate.OData
         public override ICriterion ComparisonExpression(ComparisonExpression expression)
         {
             var left = ProjectionVisitor.CreateProjection(expression.Left);
+
+            if (expression.Right.ToString() == "null")
+                return expression.Operator == Operator.Eq ? Restrictions.IsNull(left) : Restrictions.IsNotNull(left);
+
             var right = ProjectionVisitor.CreateProjection(expression.Right);
 
             switch (expression.Operator)
