@@ -2,6 +2,8 @@
 
 LGPL License.
 
+[Download from NuGet](http://nuget.org/packages/NHibernate.OData).
+
 ## Introduction
 
 NHibernate.OData is an OData parser for NHibernate.
