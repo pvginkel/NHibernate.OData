@@ -111,6 +111,7 @@
     <None Include="NHibernate.OData.nuspec" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Pack NuGet Package.bat" />
     <None Include="Readme.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
