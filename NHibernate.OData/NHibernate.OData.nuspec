@@ -1,0 +1,22 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>NHibernate.OData</id>
+    <version>$version$</version>
+    <title>NHibernate.OData</title>
+    <authors>Pieter van Ginkel</authors>
+    <owners>Pieter van Ginkel</owners>
+    <licenseUrl>http://www.gnu.org/licenses/lgpl-3.0.txt</licenseUrl>
+    <projectUrl>http://github.com/pvginkel/NHibernate.OData</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>OData parser for NHibernate.</description>
+    <copyright>Pieter van Ginkel © 2012</copyright>
+    <tags>nhibernate odata</tags>
+	<dependencies>
+      <dependency id="NHibernate" version="3.2.0.4000" />
+    </dependencies>
+  </metadata>
+  <files>
+	<file src="bin\Release\NHibernate.OData.xml" target="lib\net35" />
+  </files>
+</package>
