@@ -79,6 +79,14 @@ namespace NHibernate.OData.Test.Support
                         DateTime = new DateTime(2000 + i, i, i, i, i, i)
                     });
                 }
+
+                session.Save(new Parent
+                {
+                    Name = "Parent " + 11,
+                    Int32 = 11,
+                    LengthString = lengthString,
+                    DateTime = new DateTime(2000 + 11, 11, 11, 11, 11, 11)
+                });
             }
         }
 

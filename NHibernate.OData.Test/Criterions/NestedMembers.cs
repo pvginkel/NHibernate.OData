@@ -23,7 +23,7 @@ namespace NHibernate.OData.Test.Criterions
         [Test]
         public void OrderByChild()
         {
-            VerifyOrdered<Parent>("$orderby=Child/Name desc", q => q.OrderBy(p => p.Name).Desc);
+            VerifyOrdered<Parent>("$orderby=Child/Name desc", q => q.Where(p => p.Child != null).OrderBy(p => p.Name).Desc);
         }
 
         [Test]

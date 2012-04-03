@@ -21,8 +21,37 @@ namespace NHibernate.OData
 
         public override ICriterion ComparisonExpression(ComparisonExpression expression)
         {
-            var left = ProjectionVisitor.CreateProjection(expression.Left);
-            var right = ProjectionVisitor.CreateProjection(expression.Right);
+            IProjection left;
+            IProjection right;
+            var leftExpression = expression.Left;
+            var rightExpression = expression.Right;
+
+            // Swap the expressions if the left operand is null.
+
+            if (IsNull(leftExpression))
+            {
+                var tmp = leftExpression;
+                leftExpression = rightExpression;
+                rightExpression = tmp;
+            }
+
+            if (IsNull(rightExpression))
+            {
+                if (IsNull(leftExpression))
+                    throw new NotSupportedException();
+
+                left = ProjectionVisitor.CreateProjection(leftExpression);
+
+                switch (expression.Operator)
+                {
+                    case Operator.Eq: return Restrictions.IsNull(left);
+                    case Operator.Ne: return Restrictions.IsNotNull(left);
+                    default: throw new NotSupportedException();
+                }
+            }
+
+            left = ProjectionVisitor.CreateProjection(expression.Left);
+            right = ProjectionVisitor.CreateProjection(expression.Right);
 
             switch (expression.Operator)
             {
@@ -34,6 +63,13 @@ namespace NHibernate.OData
                 case Operator.Le: return Restrictions.LeProperty(left, right);
                 default: throw new NotSupportedException();
             }
+        }
+
+        private bool IsNull(Expression expression)
+        {
+            var literalExpression = expression as LiteralExpression;
+
+            return literalExpression != null && literalExpression.LiteralType == LiteralType.Null;
         }
 
         public override ICriterion LogicalExpression(LogicalExpression expression)
