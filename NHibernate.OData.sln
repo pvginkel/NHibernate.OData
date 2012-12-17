@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.OData", "NHibernate.OData\NHibernate.OData.csproj", "{6D659B35-A560-4307-B640-76FBFF5BA2BA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.OData.Test", "NHibernate.OData.Test\NHibernate.OData.Test.csproj", "{309BB275-F76A-4799-A690-30AE2241FC5D}"
