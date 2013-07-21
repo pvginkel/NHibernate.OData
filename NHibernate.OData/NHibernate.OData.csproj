@@ -68,6 +68,7 @@
     <Compile Include="IMethodVisitor.cs" />
     <Compile Include="Inflector.cs" />
     <Compile Include="NormalizeVisitor.cs" />
+    <Compile Include="ODataParserConfiguration.cs" />
     <Compile Include="ODataRequest.cs" />
     <Compile Include="ODataService.cs" />
     <Compile Include="OrderBy.cs" />

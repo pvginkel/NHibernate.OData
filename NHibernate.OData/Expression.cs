@@ -139,7 +139,7 @@ namespace NHibernate.OData
                 else
                     hadOne = true;
 
-                sb.Append(member.ToString());
+                sb.Append(member);
             }
 
             return sb.ToString();

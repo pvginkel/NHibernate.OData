@@ -9,7 +9,7 @@ namespace NHibernate.OData.Test.Support
     {
         protected override void Verify(Expression actual, Expression expected)
         {
-            base.Verify(actual.Visit(new AliasingNormalizeVisitor()), expected);
+            base.Verify(actual.Visit(new AliasingNormalizeVisitor(null, true)), expected);
         }
 
         protected void Verify(string source, object value)
@@ -22,7 +22,7 @@ namespace NHibernate.OData.Test.Support
 
         protected override Expression VerifyThrows(Expression expression)
         {
-            return expression.Visit(new AliasingNormalizeVisitor());
+            return expression.Visit(new AliasingNormalizeVisitor(null, true));
         }
     }
 }

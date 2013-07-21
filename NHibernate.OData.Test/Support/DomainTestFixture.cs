@@ -124,13 +124,25 @@ namespace NHibernate.OData.Test.Support
         protected void Verify<T>(string filter, IList<T> expected)
             where T : class, IEntity
         {
-            Verify(filter, expected, false);
+            Verify<T>(filter, expected, null);
+        }
+
+        protected void Verify<T>(string filter, IList<T> expected, ODataParserConfiguration configuration)
+            where T : class, IEntity
+        {
+            Verify(filter, expected, false, configuration);
         }
 
         protected void Verify<T>(string filter, IList<T> expected, bool ordered)
             where T : class, IEntity
         {
-            var actual = Session.ODataQuery<T>(GetQueryString(filter)).List<T>();
+            Verify<T>(filter, expected, ordered, null);
+        }
+
+        protected void Verify<T>(string filter, IList<T> expected, bool ordered, ODataParserConfiguration configuration)
+            where T : class, IEntity
+        {
+            var actual = Session.ODataQuery<T>(GetQueryString(filter), configuration).List<T>();
 
             if (actual.Count == 0)
                 throw new InvalidOperationException("Query returned zero results");
@@ -162,7 +174,13 @@ namespace NHibernate.OData.Test.Support
         protected void VerifyOrdered<T>(string filter, Func<IQueryOver<T, T>, IQueryOver<T, T>> query)
             where T : class, IEntity
         {
-            Verify(filter, query(Session.QueryOver<T>()).List(), true);
+            VerifyOrdered<T>(filter, query, null);
+        }
+
+        protected void VerifyOrdered<T>(string filter, Func<IQueryOver<T, T>, IQueryOver<T, T>> query, ODataParserConfiguration configuration)
+            where T : class, IEntity
+        {
+            Verify(filter, query(Session.QueryOver<T>()).List(), true, configuration);
         }
 
         protected void Verify<T>(string filter, ICriterion criterion)

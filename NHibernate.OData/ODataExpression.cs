@@ -12,11 +12,15 @@ namespace NHibernate.OData
         private int? _skip;
         private ICriterion _criterion;
         private OrderBy[] _orderBys;
-        private readonly AliasingNormalizeVisitor _normalizeVisitor = new AliasingNormalizeVisitor();
+        private readonly AliasingNormalizeVisitor _normalizeVisitor;
 
-        public ODataExpression(string queryString)
+        public ODataExpression(string queryString, System.Type persistentClass, ODataParserConfiguration configuration)
         {
             Require.NotNull(queryString, "queryString");
+            Require.NotNull(persistentClass, "persistentClass");
+            Require.NotNull(configuration, "configuration");
+
+            _normalizeVisitor = new AliasingNormalizeVisitor(persistentClass, configuration.CaseSensitive);
 
             ParseQueryString(queryString);
         }
@@ -91,18 +95,10 @@ namespace NHibernate.OData
             return intValue;
         }
 
-        internal ICriteria BuildCriteria(ISession session, string entityName)
-        {
-            return BuildCriteria(session.CreateCriteria(entityName));
-        }
-
         internal ICriteria BuildCriteria(ISession session, System.Type persistentClass)
         {
-            return BuildCriteria(session.CreateCriteria(persistentClass));
-        }
+            var criteria = session.CreateCriteria(persistentClass);
 
-        private ICriteria BuildCriteria(ICriteria criteria)
-        {
             foreach (var alias in _normalizeVisitor.Aliases)
             {
                 criteria.CreateAlias(alias.Key, alias.Value);
