@@ -117,8 +117,8 @@ namespace NHibernate.OData
             return new SqlFunctionProjection(
                 "locate",
                 NHibernateUtil.Int32,
-                ProjectionVisitor.CreateProjection(arguments[0]),
                 ProjectionVisitor.CreateProjection(arguments[1]),
+                ProjectionVisitor.CreateProjection(arguments[0]),
                 Projections.Constant(1)
             );
         }
