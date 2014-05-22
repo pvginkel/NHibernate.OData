@@ -30,7 +30,7 @@ is a way to query the database, the ODataQuery extension method can be used.
 This method parses an OData query string and creates an ICriteria for that
 query string on a specific entity:
 
-    ICriteria query = session.ODataQuery<Customer>("$filter=substringof(Name, 'Harry')");
+    ICriteria query = session.ODataQuery<Customer>("$filter=substringof('Harry', Name)");
 
 Alternatively, the ODataService class provides a service for implementing
 a full OData service. To use the ODataService class, a new instance of this
