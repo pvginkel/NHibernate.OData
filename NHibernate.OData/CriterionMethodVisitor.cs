@@ -21,12 +21,12 @@ namespace NHibernate.OData
 
         public override ICriterion SubStringOfMethod(SubStringOfMethod method, Expression[] arguments)
         {
-            if (arguments[1].Type != ExpressionType.Literal)
+            if (arguments[0].Type != ExpressionType.Literal)
                 return base.SubStringOfMethod(method, arguments);
 
             return Restrictions.Like(
-                ProjectionVisitor.CreateProjection(arguments[0]),
-                LiteralUtil.CoerceString(((LiteralExpression)arguments[1])),
+                ProjectionVisitor.CreateProjection(arguments[1]),
+                LiteralUtil.CoerceString(((LiteralExpression)arguments[0])),
                 MatchMode.Anywhere
             );
         }

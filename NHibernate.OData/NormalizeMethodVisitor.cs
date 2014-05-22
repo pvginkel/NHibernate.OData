@@ -229,8 +229,8 @@ namespace NHibernate.OData
                 }
                 else
                 {
-                    result = LiteralUtil.CoerceString(arguments[0]).IndexOf(
-                        LiteralUtil.CoerceString(arguments[1]),
+                    result = LiteralUtil.CoerceString(arguments[1]).IndexOf(
+                        LiteralUtil.CoerceString(arguments[0]),
                         StringComparison.InvariantCultureIgnoreCase
                     ) != -1;
                 }

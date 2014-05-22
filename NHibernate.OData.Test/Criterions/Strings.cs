@@ -40,8 +40,8 @@ namespace NHibernate.OData.Test.Criterions
         [Test]
         public void SubStringOf()
         {
-            Verify<Parent>("substringof(LengthString, 'CDE')", q => q.Where(p => p.LengthString.IsLike("CDE", MatchMode.Anywhere)));
-            VerifyThrows<Parent>("substringof(LengthString, Name)");
+            Verify<Parent>("substringof('CDE', LengthString)", q => q.Where(p => p.LengthString.IsLike("CDE", MatchMode.Anywhere)));
+            VerifyThrows<Parent>("substringof(Name, LengthString)");
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace NHibernate.OData.Test.Criterions
         [Test]
         public void SubStringOfAndEndsWith()
         {
-            Verify<Parent>("substringof(LengthString, 'CDE') and endswith(LengthString, 'G')", q => q.Where(p => p.LengthString.IsLike("CDE", MatchMode.Anywhere) && p.LengthString.IsLike("G", MatchMode.End)));
+            Verify<Parent>("substringof('CDE', LengthString) and endswith(LengthString, 'G')", q => q.Where(p => p.LengthString.IsLike("CDE", MatchMode.Anywhere) && p.LengthString.IsLike("G", MatchMode.End)));
         }
 
         [Test]

@@ -44,10 +44,10 @@ namespace NHibernate.OData.Test.Normalization
         [Test]
         public void SubStringOf()
         {
-            Verify("substringof('abc', 'b')", true);
-            Verify("substringof('abc', 'd')", false);
-            Verify("substringof(null, 'a')", false);
-            Verify("substringof(X'00', 'a')", false);
+            Verify("substringof('b', 'abc')", true);
+            Verify("substringof('d', 'abc')", false);
+            Verify("substringof('a', null)", false);
+            Verify("substringof('a', X'00')", false);
         }
 
         [Test]
