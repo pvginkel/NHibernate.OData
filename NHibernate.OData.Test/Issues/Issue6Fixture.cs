@@ -29,11 +29,12 @@ namespace NHibernate.OData.Test.Issues
         {
             VerifyOrdered<Parent>(
                 "$orderby=child/name desc",
-                q => q.Where(p => p.Child != null).OrderBy(p => p.Name).Desc,
+                q => q.OrderBy(p => p.Name).Desc,
                 new ODataParserConfiguration
                 {
                     CaseSensitive = false
-                }
+                },
+                x => x.Child == null
             );
         }
     }

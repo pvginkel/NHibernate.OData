@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NHibernate.Criterion;
+using NHibernate.SqlCommand;
 
 namespace NHibernate.OData
 {
@@ -101,7 +102,7 @@ namespace NHibernate.OData
 
             foreach (var alias in _normalizeVisitor.Aliases)
             {
-                criteria.CreateAlias(alias.Key, alias.Value);
+                criteria.CreateAlias(alias.Key, alias.Value, JoinType.LeftOuterJoin);
             }
 
             if (_criterion != null)
