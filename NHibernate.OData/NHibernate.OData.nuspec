@@ -10,7 +10,7 @@
     <projectUrl>http://github.com/pvginkel/NHibernate.OData</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>OData parser for NHibernate.</description>
-    <copyright>Pieter van Ginkel © 2012</copyright>
+    <copyright>Pieter van Ginkel © 2012-2014</copyright>
     <tags>nhibernate odata</tags>
 	<dependencies>
       <dependency id="NHibernate" version="3.3.0.4000" />
