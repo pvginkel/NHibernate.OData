@@ -44,6 +44,12 @@ can be implemented with minimal effort. This demo application makes use of
 [NHttp](http://github.com/pvginkel/NHttp) so it can run without a web
 server available.
 
+## Join type
+
+The default join type of NHibernate.OData is the inner join type. This may not give
+the expected results. If you want the join type to be the left outer join type, call the
+overload that takes a configuration object and set the OuterJoin property to true.
+
 ## Limitations
 
 The current implementation does not access metadata while querying. This

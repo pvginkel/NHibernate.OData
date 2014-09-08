@@ -14,6 +14,7 @@ namespace NHibernate.OData
         private ICriterion _criterion;
         private OrderBy[] _orderBys;
         private readonly AliasingNormalizeVisitor _normalizeVisitor;
+        private ODataParserConfiguration _configuration;
 
         public ODataExpression(string queryString, System.Type persistentClass, ODataParserConfiguration configuration)
         {
@@ -21,6 +22,7 @@ namespace NHibernate.OData
             Require.NotNull(persistentClass, "persistentClass");
             Require.NotNull(configuration, "configuration");
 
+            _configuration = configuration;
             _normalizeVisitor = new AliasingNormalizeVisitor(persistentClass, configuration.CaseSensitive);
 
             ParseQueryString(queryString);
@@ -102,7 +104,13 @@ namespace NHibernate.OData
 
             foreach (var alias in _normalizeVisitor.Aliases)
             {
-                criteria.CreateAlias(alias.Key, alias.Value, JoinType.LeftOuterJoin);
+                // This is the default when no join type is provided.
+                var joinType = JoinType.InnerJoin;
+
+                if (_configuration.OuterJoin)
+                    joinType = JoinType.LeftOuterJoin;
+
+                criteria.CreateAlias(alias.Key, alias.Value, joinType);
             }
 
             if (_criterion != null)

@@ -142,26 +142,10 @@ namespace NHibernate.OData.Test.Support
         protected void Verify<T>(string filter, IList<T> expected, bool ordered, ODataParserConfiguration configuration)
             where T : class, IEntity
         {
-            Verify(filter, expected, ordered, configuration, null);
-        }
-
-        protected void Verify<T>(string filter, IList<T> expected, bool ordered, ODataParserConfiguration configuration, Predicate<T> ignore)
-            where T : class, IEntity
-        {
             var actual = Session.ODataQuery<T>(GetQueryString(filter), configuration).List<T>();
 
             if (actual.Count == 0)
                 throw new InvalidOperationException("Query returned zero results");
-
-            if (ignore != null)
-            {
-                actual = actual.Where(x => !ignore(x)).ToList();
-
-                if (actual.Count == 0)
-                    throw new InvalidOperationException("All query results where ignored");
-
-                expected = expected.Where(x => !ignore(x)).ToList();
-            }
 
             if (ordered)
             {
@@ -196,13 +180,7 @@ namespace NHibernate.OData.Test.Support
         protected void VerifyOrdered<T>(string filter, Func<IQueryOver<T, T>, IQueryOver<T, T>> query, ODataParserConfiguration configuration)
             where T : class, IEntity
         {
-            VerifyOrdered(filter, query, configuration, null);
-        }
-
-        protected void VerifyOrdered<T>(string filter, Func<IQueryOver<T, T>, IQueryOver<T, T>> query, ODataParserConfiguration configuration, Predicate<T> ignore)
-            where T : class, IEntity
-        {
-            Verify(filter, query(Session.QueryOver<T>()).List(), true, configuration, ignore);
+            Verify(filter, query(Session.QueryOver<T>()).List(), true, configuration);
         }
 
         protected void Verify<T>(string filter, ICriterion criterion)
