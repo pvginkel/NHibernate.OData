@@ -26,6 +26,20 @@ namespace NHibernate.OData
         }
 
         /// <summary>
+        /// Builds an ICriteria for an already parsed query string.
+        /// </summary>
+        /// <param name="session">NHibernate session to build the
+        /// ICriteria for.</param>
+        /// <param name="entityName">Name of the entity to query.</param>
+        /// <param name="queryStringParts">Unescaped query string parts.</param>
+        /// <returns>An <see cref="ICriteria"/> based on the provided
+        /// query string.</returns>
+        public static ICriteria ODataQuery(this ISession session, string entityName, IEnumerable<KeyValuePair<string, string>> queryStringParts)
+        {
+            return ODataQuery(session, entityName, queryStringParts, null);
+        }
+
+        /// <summary>
         /// Parses an OData query string and builds an ICriteria for it.
         /// </summary>
         /// <param name="session">NHibernate session to build the
@@ -44,6 +58,29 @@ namespace NHibernate.OData
             var persistenceClass = ResolvePersistenceClass(session, entityName);
 
             var expression = new ODataExpression(queryString, persistenceClass, configuration ?? new ODataParserConfiguration());
+
+            return expression.BuildCriteria(session, persistenceClass);
+        }
+
+        /// <summary>
+        /// Builds an ICriteria for an already parsed query string.
+        /// </summary>
+        /// <param name="session">NHibernate session to build the
+        /// ICriteria for.</param>
+        /// <param name="entityName">Name of the entity to query.</param>
+        /// <param name="queryStringParts">Unescaped query string parts.</param>
+        /// <param name="configuration">Extra configuration.</param>
+        /// <returns>An <see cref="ICriteria"/> based on the provided
+        /// query string.</returns>
+        public static ICriteria ODataQuery(this ISession session, string entityName, IEnumerable<KeyValuePair<string, string>> queryStringParts, ODataParserConfiguration configuration)
+        {
+            Require.NotNull(session, "session");
+            Require.NotNull(entityName, "entityName");
+            Require.NotNull(queryStringParts, "queryStringParts");
+
+            var persistenceClass = ResolvePersistenceClass(session, entityName);
+
+            var expression = new ODataExpression(queryStringParts, persistenceClass, configuration ?? new ODataParserConfiguration());
 
             return expression.BuildCriteria(session, persistenceClass);
         }
@@ -80,6 +117,20 @@ namespace NHibernate.OData
         }
 
         /// <summary>
+        /// Builds an ICriteria for an already parsed query string.
+        /// </summary>
+        /// <param name="session">NHibernate session to build the
+        /// ICriteria for.</param>
+        /// <param name="persistentClass">Type of the entity to query.</param>
+        /// <param name="queryStringParts">Unescaped query string parts.</param>
+        /// <returns>An <see cref="ICriteria"/> based on the provided
+        /// query string.</returns>
+        public static ICriteria ODataQuery(this ISession session, System.Type persistentClass, IEnumerable<KeyValuePair<string, string>> queryStringParts)
+        {
+            return ODataQuery(session, persistentClass, queryStringParts, null);
+        }
+
+        /// <summary>
         /// Parses an OData query string and builds an ICriteria for it.
         /// </summary>
         /// <param name="session">NHibernate session to build the
@@ -96,6 +147,27 @@ namespace NHibernate.OData
             Require.NotNull(queryString, "queryString");
 
             var expression = new ODataExpression(queryString, persistentClass, configuration ?? new ODataParserConfiguration());
+
+            return expression.BuildCriteria(session, persistentClass);
+        }
+
+        /// <summary>
+        /// Builds an ICriteria for an already parsed query string.
+        /// </summary>
+        /// <param name="session">NHibernate session to build the
+        /// ICriteria for.</param>
+        /// <param name="persistentClass">Type of the entity to query.</param>
+        /// <param name="queryStringParts">Unescaped query string parts.</param>
+        /// <param name="configuration">Extra configuration.</param>
+        /// <returns>An <see cref="ICriteria"/> based on the provided
+        /// query string.</returns>
+        public static ICriteria ODataQuery(this ISession session, System.Type persistentClass, IEnumerable<KeyValuePair<string, string>> queryStringParts, ODataParserConfiguration configuration)
+        {
+            Require.NotNull(session, "session");
+            Require.NotNull(persistentClass, "persistentClass");
+            Require.NotNull(queryStringParts, "queryStringParts");
+
+            var expression = new ODataExpression(queryStringParts, persistentClass, configuration ?? new ODataParserConfiguration());
 
             return expression.BuildCriteria(session, persistentClass);
         }
@@ -127,6 +199,35 @@ namespace NHibernate.OData
         public static ICriteria ODataQuery<T>(this ISession session, string queryString, ODataParserConfiguration configuration)
         {
             return ODataQuery(session, typeof(T), queryString, configuration);
+        }
+
+        /// <summary>
+        /// Builds an ICriteria for an already parsed query string.
+        /// </summary>
+        /// <param name="session">NHibernate session to build the
+        /// ICriteria for.</param>
+        /// <param name="queryStringParts">Unescaped query string parts.</param>
+        /// <typeparam name="T">Type of the entity to query.</typeparam>
+        /// <returns>An <see cref="ICriteria"/> based on the provided
+        /// query string.</returns>
+        public static ICriteria ODataQuery<T>(this ISession session, IEnumerable<KeyValuePair<string, string>> queryStringParts)
+        {
+            return ODataQuery<T>(session, queryStringParts, null);
+        }
+
+        /// <summary>
+        /// Builds an ICriteria for an already parsed query string.
+        /// </summary>
+        /// <param name="session">NHibernate session to build the
+        /// ICriteria for.</param>
+        /// <param name="queryStringParts">Unescaped query string parts.</param>
+        /// <param name="configuration">Extra configuration.</param>
+        /// <typeparam name="T">Type of the entity to query.</typeparam>
+        /// <returns>An <see cref="ICriteria"/> based on the provided
+        /// query string.</returns>
+        public static ICriteria ODataQuery<T>(this ISession session, IEnumerable<KeyValuePair<string, string>> queryStringParts, ODataParserConfiguration configuration)
+        {
+            return ODataQuery(session, typeof(T), queryStringParts, configuration);
         }
     }
 }

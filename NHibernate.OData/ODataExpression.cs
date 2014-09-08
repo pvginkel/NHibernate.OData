@@ -16,16 +16,30 @@ namespace NHibernate.OData
         private readonly AliasingNormalizeVisitor _normalizeVisitor;
         private ODataParserConfiguration _configuration;
 
-        public ODataExpression(string queryString, System.Type persistentClass, ODataParserConfiguration configuration)
+        private ODataExpression(System.Type persistentClass, ODataParserConfiguration configuration)
         {
-            Require.NotNull(queryString, "queryString");
             Require.NotNull(persistentClass, "persistentClass");
             Require.NotNull(configuration, "configuration");
 
             _configuration = configuration;
             _normalizeVisitor = new AliasingNormalizeVisitor(persistentClass, configuration.CaseSensitive);
+        }
+
+        public ODataExpression(string queryString, System.Type persistentClass, ODataParserConfiguration configuration)
+            : this(persistentClass, configuration)
+        {
+            Require.NotNull(queryString, "queryString");
 
             ParseQueryString(queryString);
+        }
+
+        public ODataExpression(IEnumerable<KeyValuePair<string, string>> queryStringParts, System.Type persistentClass, ODataParserConfiguration configuration)
+            : this(persistentClass, configuration)
+        {
+            Require.NotNull(queryStringParts, "queryStringParts");
+
+            foreach (var part in queryStringParts)
+                ProcessQueryStringPart(part.Key, part.Value);
         }
 
         private void ParseQueryString(string queryString)
