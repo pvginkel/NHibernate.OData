@@ -39,8 +39,8 @@ namespace NHibernate.OData
             {
                 string[] elementParts = queryElements[i].Split(new[] { '=' }, 2);
 
-                string key = HttpUtil.UriDecode(elementParts[0]);
-                string value = elementParts.Length == 2 ? HttpUtil.UriDecode(elementParts[1]) : "";
+                string key = HttpUtil.UriDecode(elementParts[0], _configuration.UTF8Unescape);
+                string value = elementParts.Length == 2 ? HttpUtil.UriDecode(elementParts[1], _configuration.UTF8Unescape) : "";
 
                 ProcessQueryStringPart(key, value);
             }

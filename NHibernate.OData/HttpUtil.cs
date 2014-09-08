@@ -7,9 +7,12 @@ namespace NHibernate.OData
 {
     internal static class HttpUtil
     {
-        public static string UriDecode(string value)
+        public static string UriDecode(string value, bool useUtf8Encoding)
         {
             Require.NotNull(value, "value");
+
+            if (useUtf8Encoding)
+                return Uri.UnescapeDataString(value.Replace('+', ' '));
 
             var sb = new StringBuilder();
 

@@ -14,6 +14,11 @@ namespace NHibernate.OData
         /// </summary>
         public bool OuterJoin { get; set; }
 
+        /// <summary>
+        /// Unescape URI query string percent-encoded parts using UTF-8 characted encoding
+        /// </summary>
+        public bool UTF8Unescape { get; set; }
+
         public ODataParserConfiguration()
         {
             CaseSensitive = true;
