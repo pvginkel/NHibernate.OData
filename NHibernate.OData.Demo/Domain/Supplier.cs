@@ -31,6 +31,6 @@ namespace NHibernate.OData.Demo.Domain
 
         public virtual string HomePage { get; set; }
 
-        public virtual Iesi.Collections.Generic.ISet<Product> Products { get; set; }
+        public virtual ISet<Product> Products { get; set; }
     }
 }

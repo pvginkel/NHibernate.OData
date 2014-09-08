@@ -29,6 +29,6 @@ namespace NHibernate.OData.Demo.Domain
 
         public virtual string Fax { get; set; }
 
-        public virtual Iesi.Collections.Generic.ISet<Order> Orders { get; set; }
+        public virtual ISet<Order> Orders { get; set; }
     }
 }

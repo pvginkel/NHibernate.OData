@@ -62,7 +62,7 @@ namespace NHibernate.OData.Extensions
                                                        IDictionary<string, IFilter> enabledFilters)
         {
             SqlString sql = projection.ToSqlString(criteria, loc, criteriaQuery, enabledFilters);
-            return StringHelper.RemoveAsAliasesFromSql(sql);
+            return sql.Substring(0, sql.LastIndexOfCaseInsensitive(" as "));
         }
 
         public override IType[] GetTypes(ICriteria criteria, ICriteriaQuery criteriaQuery)

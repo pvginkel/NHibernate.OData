@@ -37,8 +37,8 @@ namespace NHibernate.OData.Demo.Domain
 
         public virtual int ReportsTo { get; set; }
 
-        public virtual Iesi.Collections.Generic.ISet<EmployeeTerritory> EmployeeTerritories { get; set; }
+        public virtual ISet<EmployeeTerritory> EmployeeTerritories { get; set; }
 
-        public virtual Iesi.Collections.Generic.ISet<Order> Orders { get; set; }
+        public virtual ISet<Order> Orders { get; set; }
     }
 }

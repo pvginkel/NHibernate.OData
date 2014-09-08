@@ -13,10 +13,10 @@
     <copyright>Pieter van Ginkel © 2012-2014</copyright>
     <tags>nhibernate odata</tags>
 	<dependencies>
-      <dependency id="NHibernate" version="3.3.0.4000" />
+      <dependency id="NHibernate" version="4.0.0.4000" />
     </dependencies>
   </metadata>
   <files>
-	<file src="bin\Release\NHibernate.OData.xml" target="lib\net35" />
+	<file src="bin\Release\NHibernate.OData.xml" target="lib\net40-Client" />
   </files>
 </package>

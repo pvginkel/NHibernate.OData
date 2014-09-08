@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Iesi.Collections.Generic;
 
 namespace NHibernate.OData.Demo.Domain
 {
@@ -36,6 +35,6 @@ namespace NHibernate.OData.Demo.Domain
         
         public virtual string ShipCountry { get; set; }
 
-        public virtual Iesi.Collections.Generic.ISet<OrderDetail> OrderDetails { get; set; }
+        public virtual ISet<OrderDetail> OrderDetails { get; set; }
     }
 }

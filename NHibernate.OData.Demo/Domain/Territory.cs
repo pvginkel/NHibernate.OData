@@ -13,6 +13,6 @@ namespace NHibernate.OData.Demo.Domain
 
         public virtual Region Region { get; set; }
 
-        public virtual Iesi.Collections.Generic.ISet<EmployeeTerritory> EmployeeTerritories { get; set; }
+        public virtual ISet<EmployeeTerritory> EmployeeTerritories { get; set; }
     }
 }

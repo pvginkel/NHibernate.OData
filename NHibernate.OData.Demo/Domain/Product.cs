@@ -27,6 +27,6 @@ namespace NHibernate.OData.Demo.Domain
 
         public virtual bool Discontinued { get; set; }
 
-        public virtual Iesi.Collections.Generic.ISet<OrderDetail> OrderDetails { get; set; }
+        public virtual ISet<OrderDetail> OrderDetails { get; set; }
     }
 }

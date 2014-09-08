@@ -12,7 +12,7 @@
     <AssemblyName>NHibernate.OData.Demo</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -104,6 +104,7 @@
     <None Include="..\NHibernate.OData\Key.snk">
       <Link>Key.snk</Link>
     </None>
+    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Site\index.html" />

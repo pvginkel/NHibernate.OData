@@ -11,6 +11,6 @@ namespace NHibernate.OData.Demo.Domain
 
         public virtual string RegionDescription { get; set; }
 
-        public virtual Iesi.Collections.Generic.ISet<Territory> Territories { get; set; }
+        public virtual ISet<Territory> Territories { get; set; }
     }
 }

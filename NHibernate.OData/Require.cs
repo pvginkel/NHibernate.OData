@@ -46,31 +46,3 @@ namespace NHibernate.OData
         }
     }
 }
-
-namespace JetBrains.Annotations
-{
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    internal sealed class InvokerParameterNameAttribute : Attribute { }
-
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    internal sealed class AssertionMethodAttribute : Attribute { }
-
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    internal sealed class AssertionConditionAttribute : Attribute
-    {
-        public AssertionConditionAttribute(AssertionConditionType conditionType)
-        {
-            ConditionType = conditionType;
-        }
-
-        public AssertionConditionType ConditionType { get; private set; }
-    }
-
-    internal enum AssertionConditionType
-    {
-        IS_TRUE,
-        IS_FALSE,
-        IS_NULL,
-        IS_NOT_NULL
-    }
-}
