@@ -57,7 +57,7 @@ namespace NHibernate.OData
 
             var persistenceClass = ResolvePersistenceClass(session, entityName);
 
-            var expression = new ODataExpression(queryString, persistenceClass, configuration ?? new ODataParserConfiguration());
+            var expression = new ODataExpression(GetMappedClasses(session), queryString, persistenceClass, configuration ?? new ODataParserConfiguration());
 
             return expression.BuildCriteria(session, persistenceClass);
         }
@@ -80,7 +80,7 @@ namespace NHibernate.OData
 
             var persistenceClass = ResolvePersistenceClass(session, entityName);
 
-            var expression = new ODataExpression(queryStringParts, persistenceClass, configuration ?? new ODataParserConfiguration());
+            var expression = new ODataExpression(GetMappedClasses(session), queryStringParts, persistenceClass, configuration ?? new ODataParserConfiguration());
 
             return expression.BuildCriteria(session, persistenceClass);
         }
@@ -100,6 +100,11 @@ namespace NHibernate.OData
             }
 
             throw new QueryException("Cannot resolve entity name '{0}'", entityName);
+        }
+
+        private static IList<System.Type> GetMappedClasses(ISession session)
+        {
+            return session.SessionFactory.GetAllClassMetadata().Values.Select(x => x.GetMappedClass(EntityMode.Poco)).ToList();
         }
 
         /// <summary>
@@ -146,7 +151,7 @@ namespace NHibernate.OData
             Require.NotNull(persistentClass, "persistentClass");
             Require.NotNull(queryString, "queryString");
 
-            var expression = new ODataExpression(queryString, persistentClass, configuration ?? new ODataParserConfiguration());
+            var expression = new ODataExpression(GetMappedClasses(session), queryString, persistentClass, configuration ?? new ODataParserConfiguration());
 
             return expression.BuildCriteria(session, persistentClass);
         }
@@ -167,7 +172,7 @@ namespace NHibernate.OData
             Require.NotNull(persistentClass, "persistentClass");
             Require.NotNull(queryStringParts, "queryStringParts");
 
-            var expression = new ODataExpression(queryStringParts, persistentClass, configuration ?? new ODataParserConfiguration());
+            var expression = new ODataExpression(GetMappedClasses(session), queryStringParts, persistentClass, configuration ?? new ODataParserConfiguration());
 
             return expression.BuildCriteria(session, persistentClass);
         }

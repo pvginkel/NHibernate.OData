@@ -16,5 +16,8 @@
     </id>
     <property name="Name" type="string" />
     <property name="Int32" type="int" />
+    <component name="Component">
+      <property name="Value" type="string"/>
+    </component>
   </class>
 </hibernate-mapping>

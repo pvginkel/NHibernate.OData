@@ -13,6 +13,8 @@ namespace NHibernate.OData.Test.Domain
 
         public virtual int Int32 { get; set; }
 
+        public virtual Component Component { get; set; }
+
         public override string ToString()
         {
             return Name;

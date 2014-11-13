@@ -9,11 +9,13 @@ namespace NHibernate.OData
 {
     internal class AliasingNormalizeVisitor : NormalizeVisitor
     {
+        private readonly IList<System.Type> _mappedClasses;
         private readonly System.Type _persistentClass;
         private readonly bool _caseSensitive;
 
-        public AliasingNormalizeVisitor(System.Type persistentClass, bool caseSensitive)
+        public AliasingNormalizeVisitor(IList<System.Type> mappedClasses, System.Type persistentClass, bool caseSensitive)
         {
+            _mappedClasses = mappedClasses;
             _persistentClass = persistentClass;
             _caseSensitive = caseSensitive;
 
@@ -34,39 +36,55 @@ namespace NHibernate.OData
             }
 
             var sb = new StringBuilder();
-            string alias = null;
 
-            for (int i = 0; i < expression.Members.Count - 1; i++)
+            for (int i = 0; i < expression.Members.Count; i++)
             {
-                if (i > 0)
+                var member = expression.Members[i];
+
+                Debug.Assert(member.IdExpression == null);
+
+                bool isLastMember = (i == expression.Members.Count - 1);
+                string resolvedName = ResolveName(member.Name, ref type);
+
+                if (sb.Length > 0)
                     sb.Append('.');
 
-                Debug.Assert(expression.Members[i].IdExpression == null);
+                sb.Append(resolvedName);
 
-                sb.Append(ResolveName(expression.Members[i].Name, ref type));
-
-                string path = sb.ToString();
-
-                if (!Aliases.TryGetValue(path, out alias))
+                if (_mappedClasses.Contains(type) && !isLastMember)
                 {
-                    alias = "t" + (Aliases.Count + 1);
+                    string path = sb.ToString();
+                    string alias;
 
-                    Aliases.Add(path, alias);
+                    if (!Aliases.TryGetValue(path, out alias))
+                    {
+                        alias = "t" + (Aliases.Count + 1);
+
+                        Aliases.Add(path, alias);
+                    }
+
+                    sb.Clear();
+                    sb.Append(alias);
                 }
             }
 
             return new ResolvedMemberExpression(
                 expression.MemberType,
-                alias + "." + ResolveName(expression.Members[expression.Members.Count - 1].Name, ref type)
+                sb.ToString()
             );
         }
 
         private string ResolveName(string name, ref System.Type type)
         {
-            if (_caseSensitive)
+            if (type == null)
                 return name;
 
-            var property = type.GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.IgnoreCase);
+            BindingFlags caseFlags = 0;
+
+            if (!_caseSensitive)
+                caseFlags = BindingFlags.IgnoreCase;
+
+            var property = type.GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | caseFlags);
 
             if (property != null)
             {
@@ -74,7 +92,7 @@ namespace NHibernate.OData
                 return property.Name;
             }
 
-            var field = type.GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.IgnoreCase);
+            var field = type.GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | caseFlags);
 
             if (field != null)
             {
