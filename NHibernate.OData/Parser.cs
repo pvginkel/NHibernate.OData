@@ -160,6 +160,14 @@ namespace NHibernate.OData
                         ParseCommon(right)
                     );
                 }
+                else if (binary != null)
+                {
+                    result = Rebalance(
+                        binary,
+                        @operator.Value,
+                        right
+                    );
+                }
                 else
                 {
                     result = CreateBinary(
@@ -171,6 +179,19 @@ namespace NHibernate.OData
             }
 
             return result;
+        }
+
+        private Expression Rebalance(BinaryExpression left, Operator @operator, Expression right)
+        {
+            return CreateBinary(
+                left.Operator,
+                left.Left,
+                CreateBinary(
+                    @operator,
+                    left.Right,
+                    right
+                )
+            );
         }
 
         private Expression CreateBinary(Operator @operator, Expression left, Expression right)

@@ -74,6 +74,7 @@
     <Compile Include="Domain\IEntity.cs" />
     <Compile Include="Interface\EntityNameInterface.cs" />
     <Compile Include="Interface\ParsedQueryString.cs" />
+    <Compile Include="Issues\Issue13Fixture.cs" />
     <Compile Include="Issues\Issue6Fixture.cs" />
     <Compile Include="SupportFixtures\HttpUtil.cs" />
     <Compile Include="Interface\IllegalQueryString.cs" />
