@@ -63,12 +63,14 @@
     <Compile Include="Criterions\Arithmetics.cs" />
     <Compile Include="Criterions\Casting.cs" />
     <Compile Include="Criterions\Comparisons.cs" />
+    <Compile Include="Criterions\Components.cs" />
     <Compile Include="Criterions\DateParts.cs" />
     <Compile Include="Criterions\IsOfs.cs" />
     <Compile Include="Criterions\Logicals.cs" />
     <Compile Include="Criterions\NestedMembers.cs" />
     <Compile Include="Criterions\QueryTest.cs" />
     <Compile Include="Criterions\Strings.cs" />
+    <Compile Include="Domain\Component.cs" />
     <Compile Include="Domain\IEntity.cs" />
     <Compile Include="Interface\EntityNameInterface.cs" />
     <Compile Include="Interface\ParsedQueryString.cs" />

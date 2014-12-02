@@ -65,8 +65,15 @@ namespace NHibernate.OData.Test.Support
                     var child = new Child
                     {
                         Name = "Child " + i,
-                        Int32 = i
+                        Int32 = i,
+                        Component = new Component
+                        {
+                            Value = "Value " + i
+                        }
                     };
+
+                    if (i == 10)
+                        child.Component = null;
 
                     session.Save(child);
 
