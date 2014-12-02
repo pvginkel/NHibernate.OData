@@ -5,8 +5,14 @@ using System.Text;
 
 namespace NHibernate.OData
 {
+    /// <summary>
+    /// Provide configuration for the OData parser.
+    /// </summary>
     public class ODataParserConfiguration
     {
+        /// <summary>
+        /// Whether or not OData queries should be parsed case sensitive.
+        /// </summary>
         public bool CaseSensitive { get; set; }
 
         /// <summary>
@@ -19,6 +25,9 @@ namespace NHibernate.OData
         /// </summary>
         public bool UTF8Unescape { get; set; }
 
+        /// <summary>
+        /// Create a new instance of the ODataParserConfiguration class.
+        /// </summary>
         public ODataParserConfiguration()
         {
             CaseSensitive = true;

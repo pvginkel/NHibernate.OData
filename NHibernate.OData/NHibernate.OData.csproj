@@ -39,6 +39,10 @@
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Iesi.Collections, Version=4.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\NHibernate\Iesi.Collections.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate">
       <HintPath>..\Libraries\NHibernate\NHibernate.dll</HintPath>
     </Reference>
@@ -69,9 +73,11 @@
     <Compile Include="IMethodVisitor.cs" />
     <Compile Include="Inflector.cs" />
     <Compile Include="NormalizeVisitor.cs" />
+    <Compile Include="ODataContext.cs" />
     <Compile Include="ODataParserConfiguration.cs" />
     <Compile Include="ODataRequest.cs" />
     <Compile Include="ODataService.cs" />
+    <Compile Include="ODataSessionFactoryContext.cs" />
     <Compile Include="OrderBy.cs" />
     <Compile Include="OrderByDirection.cs" />
     <Compile Include="OrderByParser.cs" />

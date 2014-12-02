@@ -14,30 +14,28 @@ namespace NHibernate.OData
         private ICriterion _criterion;
         private OrderBy[] _orderBys;
         private readonly AliasingNormalizeVisitor _normalizeVisitor;
-        private ODataParserConfiguration _configuration;
-        private readonly IList<System.Type> _mappedClasses;
+        private readonly ODataParserConfiguration _configuration;
 
-        private ODataExpression(IList<System.Type> mappedClasses, System.Type persistentClass, ODataParserConfiguration configuration)
+        private ODataExpression(ODataSessionFactoryContext context, System.Type persistentClass, ODataParserConfiguration configuration)
         {
-            Require.NotNull(mappedClasses, "mappedClasses");
+            Require.NotNull(context, "context");
             Require.NotNull(persistentClass, "persistentClass");
             Require.NotNull(configuration, "configuration");
 
-            _mappedClasses = mappedClasses;
             _configuration = configuration;
-            _normalizeVisitor = new AliasingNormalizeVisitor(mappedClasses, persistentClass, configuration.CaseSensitive);
+            _normalizeVisitor = new AliasingNormalizeVisitor(context, persistentClass, configuration.CaseSensitive);
         }
 
-        public ODataExpression(IList<System.Type> _mappedClasses, string queryString, System.Type persistentClass, ODataParserConfiguration configuration)
-            : this(_mappedClasses, persistentClass, configuration)
+        public ODataExpression(ODataSessionFactoryContext context, string queryString, System.Type persistentClass, ODataParserConfiguration configuration)
+            : this(context, persistentClass, configuration)
         {
             Require.NotNull(queryString, "queryString");
 
             ParseQueryString(queryString);
         }
 
-        public ODataExpression(IList<System.Type> _mappedClasses, IEnumerable<KeyValuePair<string, string>> queryStringParts, System.Type persistentClass, ODataParserConfiguration configuration)
-            : this(_mappedClasses, persistentClass, configuration)
+        public ODataExpression(ODataSessionFactoryContext context, IEnumerable<KeyValuePair<string, string>> queryStringParts, System.Type persistentClass, ODataParserConfiguration configuration)
+            : this(context, persistentClass, configuration)
         {
             Require.NotNull(queryStringParts, "queryStringParts");
 

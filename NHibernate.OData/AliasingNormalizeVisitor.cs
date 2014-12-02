@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -9,13 +10,13 @@ namespace NHibernate.OData
 {
     internal class AliasingNormalizeVisitor : NormalizeVisitor
     {
-        private readonly IList<System.Type> _mappedClasses;
+        private readonly ODataSessionFactoryContext _context;
         private readonly System.Type _persistentClass;
         private readonly bool _caseSensitive;
 
-        public AliasingNormalizeVisitor(IList<System.Type> mappedClasses, System.Type persistentClass, bool caseSensitive)
+        public AliasingNormalizeVisitor(ODataSessionFactoryContext context, System.Type persistentClass, bool caseSensitive)
         {
-            _mappedClasses = mappedClasses;
+            _context = context;
             _persistentClass = persistentClass;
             _caseSensitive = caseSensitive;
 
@@ -43,7 +44,7 @@ namespace NHibernate.OData
 
                 Debug.Assert(member.IdExpression == null);
 
-                bool isLastMember = (i == expression.Members.Count - 1);
+                bool isLastMember = i == expression.Members.Count - 1;
                 string resolvedName = ResolveName(member.Name, ref type);
 
                 if (sb.Length > 0)
@@ -51,14 +52,14 @@ namespace NHibernate.OData
 
                 sb.Append(resolvedName);
 
-                if (_mappedClasses.Contains(type) && !isLastMember)
+                if (_context.MappedClasses.Contains(type) && !isLastMember)
                 {
                     string path = sb.ToString();
                     string alias;
 
                     if (!Aliases.TryGetValue(path, out alias))
                     {
-                        alias = "t" + (Aliases.Count + 1);
+                        alias = "t" + (Aliases.Count + 1).ToString(CultureInfo.InvariantCulture);
 
                         Aliases.Add(path, alias);
                     }
@@ -79,12 +80,12 @@ namespace NHibernate.OData
             if (type == null)
                 return name;
 
-            BindingFlags caseFlags = 0;
+            var bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
             if (!_caseSensitive)
-                caseFlags = BindingFlags.IgnoreCase;
+                bindingFlags |= BindingFlags.IgnoreCase;
 
-            var property = type.GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | caseFlags);
+            var property = type.GetProperty(name, bindingFlags);
 
             if (property != null)
             {
@@ -92,7 +93,7 @@ namespace NHibernate.OData
                 return property.Name;
             }
 
-            var field = type.GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | caseFlags);
+            var field = type.GetField(name, bindingFlags);
 
             if (field != null)
             {
