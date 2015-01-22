@@ -21,6 +21,15 @@ namespace NHibernate.OData.Test.Criterions
         }
 
         [Test]
+        public void SelectByComponentMemberIsNull()
+        {
+            Verify(
+                "Component/Value eq null",
+                Session.QueryOver<Child>().Where(x => x.Name == "Child 10").List()
+            );
+        }
+
+        [Test]
         public void SelectByChildComponentMemberEq()
         {
             Verify(
@@ -36,6 +45,15 @@ namespace NHibernate.OData.Test.Criterions
             Verify(
                 "Component eq null",
                 Session.QueryOver<Child>().Where(x => x.Name == "Child 10").List()
+            );
+        }
+
+        [Test]
+        public void SelectByComponentIsNotNull()
+        {
+            Verify(
+                "Component ne null",
+                Session.QueryOver<Child>().Where(x => x.Component != null).List()
             );
         }
 

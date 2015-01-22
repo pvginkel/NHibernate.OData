@@ -8,5 +8,6 @@ namespace NHibernate.OData.Test.Domain
     public class Component
     {
         public virtual string Value { get; set; }
+        public virtual int? IntValue { get; set; }
     }
 }

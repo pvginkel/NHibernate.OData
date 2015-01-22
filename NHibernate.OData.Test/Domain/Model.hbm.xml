@@ -18,6 +18,7 @@
     <property name="Int32" type="int" />
     <component name="Component">
       <property name="Value" type="string"/>
+      <property name="IntValue" type="int"/>
     </component>
   </class>
 </hibernate-mapping>
