@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -77,7 +78,7 @@ namespace NHibernate.OData
 
         private string ResolveName(string name, ref System.Type type)
         {
-            if (type == null)
+            if (type == null || typeof(IDictionary).IsAssignableFrom(type))
                 return name;
 
             var bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;

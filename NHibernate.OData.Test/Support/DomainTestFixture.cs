@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -69,11 +70,19 @@ namespace NHibernate.OData.Test.Support
                         Component = new Component
                         {
                             Value = "Value " + i
+                        },
+                        DynamicComponent = new Hashtable
+                        {
+                            { "DynamicString", "Value " + i },
+                            { "DynamicInt", i }
                         }
                     };
 
                     if (i == 10)
+                    {
                         child.Component = null;
+                        child.DynamicComponent = null;
+                    }
 
                     session.Save(child);
 

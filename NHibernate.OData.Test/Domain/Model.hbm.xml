@@ -20,5 +20,9 @@
       <property name="Value" type="string"/>
       <property name="IntValue" type="int"/>
     </component>
+    <dynamic-component name="DynamicComponent">
+      <property name="DynamicString" type="string"/>
+      <property name="DynamicInt" type="int"/>
+    </dynamic-component>
   </class>
 </hibernate-mapping>
