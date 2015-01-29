@@ -29,15 +29,20 @@ namespace NHibernate.OData
         public override Expression MemberExpression(MemberExpression expression)
         {
             var type = _persistentClass;
+            MappedClassMetadata mappedClass = null;
+
+            if (type != null)
+                _context.MappedClassMetadata.TryGetValue(type, out mappedClass);
 
             if (expression.Members.Count == 1)
             {
                 Debug.Assert(expression.Members[0].IdExpression == null);
 
-                return new ResolvedMemberExpression(expression.MemberType, ResolveName(expression.Members[0].Name, ref type));
+                return new ResolvedMemberExpression(expression.MemberType, ResolveName(mappedClass, string.Empty, expression.Members[0].Name, ref type));
             }
 
             var sb = new StringBuilder();
+            string lastAlias = null;
 
             for (int i = 0; i < expression.Members.Count; i++)
             {
@@ -46,40 +51,55 @@ namespace NHibernate.OData
                 Debug.Assert(member.IdExpression == null);
 
                 bool isLastMember = i == expression.Members.Count - 1;
-                string resolvedName = ResolveName(member.Name, ref type);
+                string resolvedName = ResolveName(mappedClass, sb.ToString(), member.Name, ref type);
 
                 if (sb.Length > 0)
                     sb.Append('.');
 
                 sb.Append(resolvedName);
 
-                if (_context.MappedClasses.Contains(type) && !isLastMember)
+                if (type != null && _context.MappedClassMetadata.ContainsKey(type) && !isLastMember)
                 {
-                    string path = sb.ToString();
-                    string alias;
+                    mappedClass = _context.MappedClassMetadata[type];
 
-                    if (!Aliases.TryGetValue(path, out alias))
+                    string path = string.Concat(lastAlias != null ? lastAlias + "." : null, sb.ToString());
+
+                    if (!Aliases.TryGetValue(path, out lastAlias))
                     {
-                        alias = "t" + (Aliases.Count + 1).ToString(CultureInfo.InvariantCulture);
-
-                        Aliases.Add(path, alias);
+                        lastAlias = "t" + (Aliases.Count + 1).ToString(CultureInfo.InvariantCulture);
+                        Aliases.Add(path, lastAlias);
                     }
 
                     sb.Clear();
-                    sb.Append(alias);
                 }
             }
 
             return new ResolvedMemberExpression(
                 expression.MemberType,
-                sb.ToString()
+                string.Concat(lastAlias != null ? lastAlias + "." : null, sb.ToString())
             );
         }
 
-        private string ResolveName(string name, ref System.Type type)
+        private string ResolveName(MappedClassMetadata mappedClass, string mappedClassPath, string name, ref System.Type type)
         {
-            if (type == null || typeof(IDictionary).IsAssignableFrom(type))
+            if (type == null)
                 return name;
+
+            // Dynamic component support
+            if (type == typeof(IDictionary) && mappedClass != null)
+            {
+                string fullPath = string.Concat(mappedClassPath, ".", name);
+
+                var dynamicProperty = mappedClass.FindDynamicComponentProperty(fullPath, _caseSensitive);
+
+                if (dynamicProperty == null)
+                    throw new QueryException(String.Format(
+                        "Cannot resolve member '{0}' of dynamic component '{1}' on '{2}'", name, mappedClassPath, type
+                    ));
+
+                type = dynamicProperty.Type;
+                return dynamicProperty.Name;
+            }
 
             var bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 

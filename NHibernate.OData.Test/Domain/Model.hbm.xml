@@ -23,6 +23,7 @@
     <dynamic-component name="DynamicComponent">
       <property name="DynamicString" type="string"/>
       <property name="DynamicInt" type="int"/>
+      <many-to-one name="DynamicChildRef" class="Child"/>
     </dynamic-component>
   </class>
 </hibernate-mapping>

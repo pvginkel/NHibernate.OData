@@ -47,5 +47,39 @@ namespace NHibernate.OData.Test.Criterions
                 Session.QueryOver<Parent>().Where(x => x.Name == "Parent 10").List()
             );
         }
+
+        [Test]
+        public void SelectByComponentManyToOneMember()
+        {
+            Verify(
+                "Child/DynamicComponent/DynamicChildRef/Name eq 'Child 4'",
+                Session.QueryOver<Parent>().Where(x => x.Name == "Parent 5").List()
+            );
+        }
+
+        [Test]
+        public void SelectByMultipleConditionsOnManyToOneMember()
+        {
+            Verify(
+                "(Child/DynamicComponent/DynamicChildRef/Name eq 'Child 4') or (Child/DynamicComponent/DynamicChildRef/Name eq 'Child 5')",
+                Session.QueryOver<Parent>().Where(x => x.Name == "Parent 5" || x.Name == "Parent 6").List()
+            );
+        }
+
+        [Test]
+        public void SelectByComponentManyToOneMemberCaseInsensitive()
+        {
+            Verify(
+                "child/dynamiccomponent/dynamicchildref/name eq 'Child 4'",
+                Session.QueryOver<Parent>().Where(x => x.Name == "Parent 5").List(),
+                new ODataParserConfiguration { CaseSensitive = false }
+            );
+        }
+
+        [Test]
+        public void ThrowsOnUnknownComponentMember()
+        {
+            VerifyThrows<Parent>("Child/DynamicComponent/UnknownMember eq 10", typeof(QueryException));
+        }
     }
 }
