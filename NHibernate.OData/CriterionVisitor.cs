@@ -42,12 +42,29 @@ namespace NHibernate.OData
 
                 left = ProjectionVisitor.CreateProjection(leftExpression);
 
-                switch (expression.Operator)
+                // If the restriction is applied to a component ("Component eq null"), 
+                // we should use Restrictions.IsNull(string propertyName) overload, otherwise NHibernate will raise an exception
+
+                IPropertyProjection property = left as IPropertyProjection;
+
+                if (property != null)
                 {
-                    case Operator.Eq: return Restrictions.IsNull(left);
-                    case Operator.Ne: return Restrictions.IsNotNull(left);
-                    default: throw new NotSupportedException();
+                    switch (expression.Operator)
+                    {
+                        case Operator.Eq: return Restrictions.IsNull(property.PropertyName);
+                        case Operator.Ne: return Restrictions.IsNotNull(property.PropertyName);
+                    }   
                 }
+                else
+                { 
+                    switch (expression.Operator)
+                    {
+                        case Operator.Eq: return Restrictions.IsNull(left);
+                        case Operator.Ne: return Restrictions.IsNotNull(left);
+                    }
+                }
+
+                throw new NotSupportedException();
             }
 
             left = ProjectionVisitor.CreateProjection(expression.Left);

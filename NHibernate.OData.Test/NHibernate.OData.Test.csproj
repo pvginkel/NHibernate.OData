@@ -63,6 +63,7 @@
     <Compile Include="Criterions\Arithmetics.cs" />
     <Compile Include="Criterions\Casting.cs" />
     <Compile Include="Criterions\Comparisons.cs" />
+    <Compile Include="Criterions\DynamicComponents.cs" />
     <Compile Include="Criterions\Components.cs" />
     <Compile Include="Criterions\DateParts.cs" />
     <Compile Include="Criterions\IsOfs.cs" />

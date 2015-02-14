@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -58,6 +59,8 @@ namespace NHibernate.OData.Test.Support
             {
                 string lengthString = "";
 
+                Child previousChild = null;
+
                 for (int i = 1; i <= 10; i++)
                 {
                     lengthString += ((char)('A' + (i - 1))).ToString();
@@ -69,11 +72,20 @@ namespace NHibernate.OData.Test.Support
                         Component = new Component
                         {
                             Value = "Value " + i
+                        },
+                        DynamicComponent = new Hashtable
+                        {
+                            { "DynamicString", "Value " + i },
+                            { "DynamicInt", i },
+                            { "DynamicChildRef", previousChild },
                         }
                     };
 
                     if (i == 10)
+                    {
                         child.Component = null;
+                        child.DynamicComponent = null;
+                    }
 
                     session.Save(child);
 
@@ -85,6 +97,8 @@ namespace NHibernate.OData.Test.Support
                         LengthString = lengthString,
                         DateTime = new DateTime(2000 + i, i, i, i, i, i)
                     });
+
+                    previousChild = child;
                 }
 
                 session.Save(new Parent

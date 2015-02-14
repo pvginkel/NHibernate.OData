@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Iesi.Collections.Generic;
+using NHibernate.Type;
 
 namespace NHibernate.OData
 {
@@ -10,20 +11,21 @@ namespace NHibernate.OData
     {
         internal static ODataSessionFactoryContext Empty = new ODataSessionFactoryContext();
 
-        public ISet<System.Type> MappedClasses { get; private set; }
+        public IDictionary<System.Type, MappedClassMetadata> MappedClassMetadata { get; private set; }
 
         private ODataSessionFactoryContext()
         {
-            MappedClasses = new ReadOnlySet<System.Type>(new HashSet<System.Type>());
+            MappedClassMetadata = new Dictionary<System.Type, MappedClassMetadata>();
         }
 
         public ODataSessionFactoryContext(ISessionFactory sessionFactory)
         {
             Require.NotNull(sessionFactory, "sessionFactory");
 
-            MappedClasses = new ReadOnlySet<System.Type>(new HashSet<System.Type>(
-                sessionFactory.GetAllClassMetadata().Values.Select(x => x.GetMappedClass(EntityMode.Poco))
-            ));
+            MappedClassMetadata = sessionFactory.GetAllClassMetadata().Values.ToDictionary(
+                x => x.GetMappedClass(EntityMode.Poco), 
+                x => new MappedClassMetadata(x)
+            );
         }
     }
 }

@@ -57,6 +57,7 @@
     <Compile Include="ArgumentType.cs" />
     <Compile Include="CriterionMethodVisitor.cs" />
     <Compile Include="CriterionVisitor.cs" />
+    <Compile Include="DynamicComponentProperty.cs" />
     <Compile Include="ErrorMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -72,6 +73,7 @@
     <Compile Include="HttpUtil.cs" />
     <Compile Include="IMethodVisitor.cs" />
     <Compile Include="Inflector.cs" />
+    <Compile Include="MappedClassMetadata.cs" />
     <Compile Include="NormalizeVisitor.cs" />
     <Compile Include="ODataContext.cs" />
     <Compile Include="ODataParserConfiguration.cs" />
