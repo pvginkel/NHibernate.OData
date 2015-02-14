@@ -10,7 +10,7 @@ namespace NHibernate.OData
     internal class Lexer
     {
         private static readonly CultureInfo ParseCulture = CultureInfo.InvariantCulture;
-        private static readonly Regex DateTimeRegex = new Regex("^(\\d{4})-(\\d{1,2})-(\\d{1,2})T(\\d{1,22}):(\\d{2})(?::(\\d{2})(?:\\.(\\d{7}))?)?$");
+        private static readonly Regex DateTimeRegex = new Regex("^(\\d{4})-(\\d{1,2})-(\\d{1,2})T(\\d{1,2}):(\\d{2})(?::(\\d{2})(?:\\.(\\d{1,7}))?)?(Z|(?:[+-](\\d{1,2}):(\\d{2})))?$");
         private static readonly Regex GuidRegex = new Regex("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$");
         private static readonly Regex DurationRegex = new Regex("^(-)?P(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)D)?T?(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d*)?)S)?$");
         private readonly string _source;
@@ -483,9 +483,38 @@ namespace NHibernate.OData
                 int second = match.Groups[6].Value.Length > 0 ? int.Parse(match.Groups[6].Value, ParseCulture) : 0;
                 int nanoSecond = match.Groups[7].Value.Length > 0 ? int.Parse(match.Groups[7].Value, ParseCulture) : 0;
 
-                // We let DateTime take care of validating the input.
+                // Parse timezone offset
 
-                return new LiteralToken(new DateTime(year, month, day, hour, minute, second, nanoSecond / 1000), LiteralType.DateTime);
+                string timeZoneString = match.Groups[8].Value;
+                TimeSpan? timeZoneOffset = null;
+
+                if (timeZoneString.Equals("Z", StringComparison.Ordinal))
+                    timeZoneOffset = TimeSpan.Zero;
+                else if (timeZoneString.Length > 0)
+                {
+                    int tzHour = int.Parse(match.Groups[9].Value, ParseCulture);
+                    int tzMinute = int.Parse(match.Groups[10].Value, ParseCulture);
+
+                    timeZoneOffset = new TimeSpan(tzHour, tzMinute, 0);
+
+                    if (timeZoneString[0] == '-')
+                        timeZoneOffset = -timeZoneOffset;
+                }
+
+                // We let DateTime take care of validating the input.
+                // If the timezone was not specified, default to local timezone
+
+                DateTimeOffset dateTimeOffset = new DateTimeOffset(
+                    year, month, day, hour, minute, second, nanoSecond / 1000,
+                    timeZoneOffset ?? DateTimeOffset.Now.Offset
+                );
+
+                // If the timezone was specified, return it as UTC DateTime;
+                // else return it as is (DateTimeKind.Unspecified)
+
+                DateTime dateTime = timeZoneOffset != null ? dateTimeOffset.UtcDateTime : dateTimeOffset.DateTime;
+
+                return new LiteralToken(dateTime, LiteralType.DateTime);
             }
             else
             {
