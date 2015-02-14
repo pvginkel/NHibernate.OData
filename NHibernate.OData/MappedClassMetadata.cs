@@ -10,8 +10,8 @@ namespace NHibernate.OData
 {
     internal class MappedClassMetadata
     {
-        private readonly IDictionary<string, DynamicComponentProperty> caseSensitiveDynamicProperties = new Dictionary<string, DynamicComponentProperty>(StringComparer.Ordinal);
-        private readonly IDictionary<string, DynamicComponentProperty> caseInsensitiveDynamicProperties = new Dictionary<string, DynamicComponentProperty>(StringComparer.OrdinalIgnoreCase);
+        private readonly IDictionary<string, DynamicComponentProperty> _caseSensitiveDynamicProperties = new Dictionary<string, DynamicComponentProperty>(StringComparer.Ordinal);
+        private readonly IDictionary<string, DynamicComponentProperty> _caseInsensitiveDynamicProperties = new Dictionary<string, DynamicComponentProperty>(StringComparer.OrdinalIgnoreCase);
 
         public MappedClassMetadata(IClassMetadata classMetadata)
         {
@@ -25,7 +25,7 @@ namespace NHibernate.OData
         {
             Require.NotNull(fullPath, "fullPath");
 
-            var dictionary = caseSensitive ? caseSensitiveDynamicProperties : caseInsensitiveDynamicProperties;
+            var dictionary = caseSensitive ? _caseSensitiveDynamicProperties : _caseInsensitiveDynamicProperties;
             DynamicComponentProperty dynamicProperty;
 
             dictionary.TryGetValue(fullPath, out dynamicProperty);
@@ -43,14 +43,14 @@ namespace NHibernate.OData
 
             for (int i = 0; i < component.PropertyNames.Length; i++)
             {
-                string fullName = string.Concat(name, ".", component.PropertyNames[i]);
+                string fullName = name + "." + component.PropertyNames[i];
 
                 if (isDynamicComponent)
                 {
                     var dynamicProperty = new DynamicComponentProperty(component.PropertyNames[i], component.Subtypes[i].ReturnedClass);
 
-                    caseInsensitiveDynamicProperties[fullName] = dynamicProperty;
-                    caseSensitiveDynamicProperties[fullName] = dynamicProperty;
+                    _caseInsensitiveDynamicProperties[fullName] = dynamicProperty;
+                    _caseSensitiveDynamicProperties[fullName] = dynamicProperty;
                 }
 
                 BuildDynamicComponentPropertyList(fullName, component.Subtypes[i]);

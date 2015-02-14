@@ -62,7 +62,7 @@ namespace NHibernate.OData
                 {
                     mappedClass = _context.MappedClassMetadata[type];
 
-                    string path = string.Concat(lastAlias != null ? lastAlias + "." : null, sb.ToString());
+                    string path = (lastAlias != null ? lastAlias + "." : null) + sb;
 
                     if (!Aliases.TryGetValue(path, out lastAlias))
                     {
@@ -76,7 +76,7 @@ namespace NHibernate.OData
 
             return new ResolvedMemberExpression(
                 expression.MemberType,
-                string.Concat(lastAlias != null ? lastAlias + "." : null, sb.ToString())
+                (lastAlias != null ? lastAlias + "." : null) + sb
             );
         }
 
@@ -88,7 +88,7 @@ namespace NHibernate.OData
             // Dynamic component support
             if (type == typeof(IDictionary) && mappedClass != null)
             {
-                string fullPath = string.Concat(mappedClassPath, ".", name);
+                string fullPath = mappedClassPath + "." + name;
 
                 var dynamicProperty = mappedClass.FindDynamicComponentProperty(fullPath, _caseSensitive);
 
