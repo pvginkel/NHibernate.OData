@@ -28,6 +28,8 @@ namespace NHibernate.OData
         Second,
         Round,
         Floor,
-        Ceiling
+        Ceiling,
+        Any,
+        All
     }
 }

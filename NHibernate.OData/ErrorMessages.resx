@@ -243,7 +243,13 @@
   <data name="Parser_UnknownMethod" xml:space="preserve">
     <value>Unknown method '{0}'.</value>
   </data>
+  <data name="Parser_UnknownCollectionMethod" xml:space="preserve">
+    <value>Unknown collection method '{0}'.</value>
+  </data>
   <data name="PathParser_InvalidPath" xml:space="preserve">
     <value>Could not parse path.</value>
+  </data>
+  <data name="Parser_CannotParseLambdaExpression" xml:space="preserve">
+    <value>Cannot parse lambda expression.</value>
   </data>
 </root>

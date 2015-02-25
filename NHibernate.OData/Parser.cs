@@ -264,6 +264,9 @@ namespace NHibernate.OData
 
                             ExpectAny();
 
+                            if (IsCollectionMethodCall())
+                                return ParseCollectionMethodCall(members);
+
                             ParseMember(members);
                         }
 
@@ -341,6 +344,13 @@ namespace NHibernate.OData
             return null;
         }
 
+        protected bool IsCollectionMethodCall()
+        {
+            var identifier = Current as IdentifierToken;
+
+            return identifier != null && Method.FindMethodByName(identifier.Identifier) is CollectionMethod;
+        }
+
         private MethodCallExpression ParseMethodCall()
         {
             var method = Method.FindMethodByName(CurrentIdentifier);
@@ -410,26 +420,7 @@ namespace NHibernate.OData
                 }
             }
 
-            if (arguments.Count < method.ArgumentCount || arguments.Count > method.MaxArgumentCount)
-            {
-                if (method.ArgumentCount == method.MaxArgumentCount)
-                {
-                    throw new ODataException(String.Format(
-                        ErrorMessages.Parser_IllegalArgumentCount,
-                        method.MethodType,
-                        method.ArgumentCount
-                        ));
-                }
-                else
-                {
-                    throw new ODataException(String.Format(
-                        ErrorMessages.Parser_IllegalVarArgumentCount,
-                        method.MethodType,
-                        method.ArgumentCount,
-                        method.MaxArgumentCount
-                        ));
-                }
-            }
+            ValidateArgumentCount(method, arguments.Count);
 
             for (int i = 0; i < arguments.Count; i++)
             {
@@ -449,6 +440,86 @@ namespace NHibernate.OData
             }
 
             return arguments.ToArray();
+        }
+
+        private Expression ParseCollectionMethodCall(List<MemberExpressionComponent> collectionMembers)
+        {
+            var method = Method.FindMethodByName(CurrentIdentifier) as CollectionMethod;
+
+            if (method == null)
+            {
+                throw new ODataException(String.Format(
+                    ErrorMessages.Parser_UnknownCollectionMethod, CurrentIdentifier
+                ));
+            }
+
+            MoveNext();
+
+            Expect(SyntaxToken.ParenOpen);
+
+            ExpectAny();
+
+            List<Expression> arguments = new List<Expression>(2)
+            {
+                new MemberExpression(MemberType.Normal, collectionMembers)
+            };
+
+            if (Current.Type == TokenType.Identifier)
+                arguments.Add(ParseLambdaExpression());
+            else if (Current != SyntaxToken.ParenClose)
+                throw new ODataException(ErrorMessages.Parser_CannotParseArgumentList);
+
+            ValidateArgumentCount(method, arguments.Count);
+
+            MoveNext();
+
+            return new MethodCallExpression(
+                MethodCallType.Boolean,
+                method,
+                arguments.ToArray()
+            );
+        }
+
+        private LambdaExpression ParseLambdaExpression()
+        {
+            ExpectAny();
+
+            string parameterName = CurrentIdentifier;
+
+            MoveNext();
+
+            if (Current != SyntaxToken.Colon)
+                throw new ODataException(ErrorMessages.Parser_CannotParseLambdaExpression);
+
+            MoveNext();
+
+            Expression body = ParseBool();
+
+            return new LambdaExpression(parameterName, body);
+        }
+
+        private void ValidateArgumentCount(Method method, int argumentCount)
+        {
+            if (argumentCount < method.ArgumentCount || argumentCount > method.MaxArgumentCount)
+            {
+                if (method.ArgumentCount == method.MaxArgumentCount)
+                {
+                    throw new ODataException(String.Format(
+                        ErrorMessages.Parser_IllegalArgumentCount,
+                        method.MethodType,
+                        method.ArgumentCount
+                    ));
+                }
+                else
+                {
+                    throw new ODataException(String.Format(
+                        ErrorMessages.Parser_IllegalVarArgumentCount,
+                        method.MethodType,
+                        method.ArgumentCount,
+                        method.MaxArgumentCount
+                    ));
+                }
+            }
         }
     }
 }

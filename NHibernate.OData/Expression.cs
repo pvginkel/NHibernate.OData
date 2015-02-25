@@ -519,4 +519,52 @@ namespace NHibernate.OData
         Normal,
         Boolean
     }
+
+    internal class LambdaExpression : Expression
+    {
+        public string ParameterName { get; private set; }
+        public Expression Body { get; private set; }
+
+        public override bool IsBool
+        {
+            get { return true; }
+        }
+
+        public LambdaExpression(string parameterName, Expression body)
+            : base(ExpressionType.Lambda)
+        {
+            Require.NotEmpty(parameterName, "parameterName");
+            Require.NotNull(body, "body");
+
+            ParameterName = parameterName;
+            Body = ExpressionUtil.CoerceBoolExpression(body);
+        }
+
+        public override T Visit<T>(IVisitor<T> visitor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            var other = obj as LambdaExpression;
+
+            if (
+                other == null ||
+                !ParameterName.Equals(other.ParameterName, StringComparison.Ordinal) ||
+                !Body.Equals(other.Body)
+            )
+                return false;
+
+            return true;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("({0}: {1})", ParameterName, Body);
+        }
+    }
 }

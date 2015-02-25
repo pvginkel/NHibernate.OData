@@ -304,6 +304,15 @@ namespace NHibernate.OData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot parse lambda expression..
+        /// </summary>
+        internal static string Parser_CannotParseLambdaExpression {
+            get {
+                return ResourceManager.GetString("Parser_CannotParseLambdaExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected empty expression..
         /// </summary>
         internal static string Parser_EmptySource {
@@ -426,6 +435,15 @@ namespace NHibernate.OData {
         internal static string Parser_UnexpectedEnd {
             get {
                 return ResourceManager.GetString("Parser_UnexpectedEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown collection method &apos;{0}&apos;..
+        /// </summary>
+        internal static string Parser_UnknownCollectionMethod {
+            get {
+                return ResourceManager.GetString("Parser_UnknownCollectionMethod", resourceCulture);
             }
         }
         

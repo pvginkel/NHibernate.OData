@@ -69,6 +69,7 @@ namespace NHibernate.OData
                 case ')':
                 case ',':
                 case '/':
+                case ':':
                     return ParseSyntax();
 
                 default:
@@ -328,6 +329,7 @@ namespace NHibernate.OData
                 case ')': token = SyntaxToken.ParenClose; break;
                 case '/': token = SyntaxToken.Slash; break;
                 case ',': token = SyntaxToken.Comma; break;
+                case ':': token = SyntaxToken.Colon; break;
                 default: throw new InvalidOperationException("Unknown token");
             }
 

@@ -31,6 +31,8 @@ namespace NHibernate.OData
         public static readonly RoundMethod RoundMethod = new RoundMethod();
         public static readonly FloorMethod FloorMethod = new FloorMethod();
         public static readonly CeilingMethod CeilingMethod = new CeilingMethod();
+        public static readonly AnyMethod AnyMethod = new AnyMethod();
+        public static readonly AllMethod AllMethod = new AllMethod();
 
         private static readonly Dictionary<MethodType, Method> _methods = new Dictionary<MethodType,Method>
         {
@@ -55,7 +57,9 @@ namespace NHibernate.OData
             { MethodType.Second, SecondMethod },
             { MethodType.Round, RoundMethod },
             { MethodType.Floor, FloorMethod },
-            { MethodType.Ceiling, CeilingMethod }
+            { MethodType.Ceiling, CeilingMethod },
+            { MethodType.Any, AnyMethod },
+            { MethodType.All, AllMethod }
         };
 
         private static readonly Dictionary<string, MethodType> _methodNames = CreateMethodNames();
@@ -422,6 +426,40 @@ namespace NHibernate.OData
         public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
             return visitor.CeilingMethod(this, arg);
+        }
+    }
+
+    internal abstract class CollectionMethod : Method
+    {
+        protected CollectionMethod(MethodType methodType, params ArgumentType[] argumentTypes)
+            : base(methodType, argumentTypes)
+        {
+        }
+    }
+
+    internal class AnyMethod : CollectionMethod
+    {
+        public AnyMethod()
+            : base(MethodType.Any, ArgumentType.Common, ArgumentType.OptionalCommon)
+        {
+        }
+
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    internal class AllMethod : CollectionMethod
+    {
+        public AllMethod()
+            : base(MethodType.All, ArgumentType.Common, ArgumentType.Common)
+        {
+        }
+
+        public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
+        {
+            throw new NotImplementedException();
         }
     }
 }
