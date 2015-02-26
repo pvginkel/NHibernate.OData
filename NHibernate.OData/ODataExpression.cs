@@ -29,10 +29,10 @@ namespace NHibernate.OData
             _persistentClass = persistentClass;
             _configuration = configuration;
 
-            _context = new CriterionBuildContext(sessionFactoryContext);
+            _context = new CriterionBuildContext(sessionFactoryContext, configuration.CaseSensitive);
             _context.AliasesByName.Add(RootAlias, new Alias(RootAlias, string.Empty, _persistentClass));
             
-            _normalizeVisitor = new AliasingNormalizeVisitor(_context, persistentClass, configuration.CaseSensitive, RootAlias);
+            _normalizeVisitor = new AliasingNormalizeVisitor(_context, persistentClass, RootAlias);
             _context.AddAliases(_normalizeVisitor.Aliases.Values);
         }
 

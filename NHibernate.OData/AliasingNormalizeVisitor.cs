@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -13,17 +11,15 @@ namespace NHibernate.OData
     {
         private readonly CriterionBuildContext _context;
         private readonly System.Type _persistentClass;
-        private readonly bool _caseSensitive;
         private readonly string _rootAlias;
 
-        public AliasingNormalizeVisitor(CriterionBuildContext context, System.Type persistentClass, bool caseSensitive, string rootAlias)
+        public AliasingNormalizeVisitor(CriterionBuildContext context, System.Type persistentClass, string rootAlias)
         {
             if (rootAlias != null && rootAlias.Length == 0)
                 throw new ArgumentException("Root alias cannot be an empty string.", "rootAlias");
 
             _context = context;
             _persistentClass = persistentClass;
-            _caseSensitive = caseSensitive;
             _rootAlias = rootAlias;
 
             Aliases = new Dictionary<string, Alias>(StringComparer.Ordinal);
@@ -35,33 +31,51 @@ namespace NHibernate.OData
         {
             var type = _persistentClass;
             MappedClassMetadata mappedClass = null;
+            var members = expression.Members;
+            var lastAliasName = _rootAlias;
+
+            // Lambda member expression MUST start with a variable name
+            if (_context.IsInsideLambdaContext)
+            {
+                // Special case: variable $it refers to the other variable of lambda expession
+                if (members[0].Name != "$it")
+                {
+                    var lambdaContext = _context.FindLambdaContext(members[0].Name);
+                    if (lambdaContext == null)
+                        throw new QueryException("Member expressions inside a lambda expression must start with a lambda parameter");
+
+                    type = lambdaContext.ParameterType;
+                    lastAliasName = lambdaContext.ParameterAlias;
+                }
+
+                members.RemoveAt(0);
+            }
 
             if (type != null)
                 _context.SessionFactoryContext.MappedClassMetadata.TryGetValue(type, out mappedClass);
 
-            if (expression.Members.Count == 1)
+            if (members.Count == 1)
             {
-                Debug.Assert(expression.Members[0].IdExpression == null);
+                Debug.Assert(members[0].IdExpression == null);
 
-                string resolvedName = ResolveName(mappedClass, string.Empty, expression.Members[0].Name, ref type);
+                string resolvedName = ResolveName(mappedClass, string.Empty, members[0].Name, ref type);
 
                 return new ResolvedMemberExpression(
                     expression.MemberType,
-                    (_rootAlias != null ? _rootAlias + "." : null) + resolvedName,
+                    (lastAliasName != null ? lastAliasName + "." : null) + resolvedName,
                     type
                 );
             }
 
             var sb = new StringBuilder();
-            string lastAliasName = _rootAlias;
 
-            for (int i = 0; i < expression.Members.Count; i++)
+            for (int i = 0; i < members.Count; i++)
             {
-                var member = expression.Members[i];
+                var member = members[i];
 
                 Debug.Assert(member.IdExpression == null);
 
-                bool isLastMember = i == expression.Members.Count - 1;
+                bool isLastMember = i == members.Count - 1;
                 string resolvedName = ResolveName(mappedClass, sb.ToString(), member.Name, ref type);
 
                 if (sb.Length > 0)
@@ -78,12 +92,7 @@ namespace NHibernate.OData
                    
                     if (!Aliases.TryGetValue(path, out alias))
                     {
-                        alias = new Alias(
-                            _context.CreateUniqueAliasName(),
-                            path,
-                            type
-                        );
-
+                        alias = new Alias(_context.CreateUniqueAliasName(), path, type);
                         Aliases.Add(path, alias);
                     }
 
@@ -110,7 +119,7 @@ namespace NHibernate.OData
             {
                 string fullPath = mappedClassPath + "." + name;
 
-                var dynamicProperty = mappedClass.FindDynamicComponentProperty(fullPath, _caseSensitive);
+                var dynamicProperty = mappedClass.FindDynamicComponentProperty(fullPath, _context.CaseSensitive);
 
                 if (dynamicProperty == null)
                     throw new QueryException(String.Format(
@@ -123,7 +132,7 @@ namespace NHibernate.OData
 
             var bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
-            if (!_caseSensitive)
+            if (!_context.CaseSensitive)
                 bindingFlags |= BindingFlags.IgnoreCase;
 
             var property = type.GetProperty(name, bindingFlags);

@@ -75,6 +75,7 @@
     <Compile Include="HttpUtil.cs" />
     <Compile Include="IMethodVisitor.cs" />
     <Compile Include="Inflector.cs" />
+    <Compile Include="LambdaExpressionContext.cs" />
     <Compile Include="MappedClassMetadata.cs" />
     <Compile Include="NormalizeVisitor.cs" />
     <Compile Include="ODataContext.cs" />

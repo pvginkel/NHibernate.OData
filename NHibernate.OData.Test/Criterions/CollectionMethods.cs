@@ -25,5 +25,63 @@ namespace NHibernate.OData.Test.Criterions
         {
             VerifyThrows<Parent>("RelatedParents/all()", typeof(ODataException));
         }
+
+        [Test]
+        public void AnyWithSimpleCondition()
+        {
+            Verify(
+                "RelatedParents/any(x:x/Int32 lt 5)",
+                Session.QueryOver<Parent>().Where(x => x.Name == "Parent 9").List()
+            );
+        }
+
+        [Test]
+        public void ThrowsOnDuplicateLambdaParameters()
+        {
+            VerifyThrows<Parent>("RelatedParents/any(x:x/RelatedParents/any(x:x/Int32 gt 0))", typeof(ODataException));
+            VerifyThrows<Parent>("RelatedParents/any($it:$it ne null)", typeof(ODataException));
+        }
+
+        [Test]
+        public void ThrowsOnNonCollection()
+        {
+            VerifyThrows<Parent>("Int32/any()", typeof(ODataException));
+        }
+
+        [Test]
+        public void OuterScopeVariable()
+        {
+            Verify(
+                "RelatedParents/any(x:x/Int32 eq $it/Int32 sub 8)",
+                Session.QueryOver<Parent>().Where(x => x.Name == "Parent 9").List()
+            );
+        }
+
+        [Test]
+        public void NestedAny()
+        {
+            Verify(
+                "RelatedParents/any(x:x/RelatedParents/any())",
+                Session.QueryOver<Parent>().Where(x => x.Name == "Parent 10").List()
+            );
+        }
+
+        [Test]
+        public void JoinInLambda()
+        {
+            Verify(
+                "RelatedParents/Any(x:x/Child/Int32 eq 3)",
+                Session.QueryOver<Parent>().Where(x => x.Name == "Parent 9").List()
+            );
+        }
+
+        [Test]
+        public void NestedAnyWithJoin()
+        {
+            Verify(
+                "RelatedParents/any(x:x/RelatedParents/any(y:y/Child/Int32 eq 2))",
+                Session.QueryOver<Parent>().Where(x => x.Name == "Parent 10").List()
+            );
+        }
     }
 }

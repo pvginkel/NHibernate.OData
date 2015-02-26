@@ -74,10 +74,6 @@ namespace NHibernate.OData
                 return base.AnyMethod(method, arguments);
 
             var resolvedMember = (ResolvedMemberExpression)arguments[0];
-            /*System.Type itemType;
-
-            if (resolvedMember.Type == null || (itemType = TypeUtil.TryGetCollectionItemType(resolvedMember.Type)) == null)
-                throw new ODataException("Cannot get collection item type");*/
 
             // Resolved member's name may contain multiple dots if it's inside a component (i.e. 'root.Component.Collection')
             int p = resolvedMember.Member.IndexOf('.');
@@ -111,13 +107,47 @@ namespace NHibernate.OData
 
             var lambdaAlias = _context.CreateUniqueAliasName();
 
+            System.Type itemType;
+
+            if (resolvedMember.ReturnedType == null || (itemType = TypeUtil.TryGetCollectionItemType(resolvedMember.ReturnedType)) == null)
+                throw new ODataException("Cannot get collection item type");
+
+            _context.AddAlias(new Alias(lambdaAlias, string.Empty, itemType));
+
             // The inner joined alias to collection items must be created in any case (whether the lambda expression is specified or not)
             detachedCriteria.CreateAlias(subCriteriaAlias + "." + collectionMemberName, lambdaAlias, JoinType.InnerJoin);
 
             detachedCriteria.SetProjection(Projections.Constant(1));
 
             if (lambdaExpression != null)
-                throw new NotImplementedException("Lambda expression support is not implemented yet");
+            {
+                _context.PushLambdaContext(lambdaExpression, itemType, lambdaAlias);
+                
+                try
+                {
+                    var lambdaNormalizeVisitor = new AliasingNormalizeVisitor(
+                        _context, 
+                        _context.AliasesByName[collectionHolderAliasName].ReturnedType, 
+                        collectionHolderAliasName
+                    );
+
+                    var bodyExpression = lambdaExpression.Body.Visit(lambdaNormalizeVisitor);
+                    
+                    var criterion = bodyExpression.Visit(new CriterionVisitor(_context));
+
+                    if (criterion != null)
+                    {
+                        detachedCriteria.Add(criterion);
+
+                        foreach (var alias in lambdaNormalizeVisitor.Aliases.Values)
+                            detachedCriteria.CreateAlias(alias.AssociationPath, alias.Name, JoinType.LeftOuterJoin);
+                    }
+                }
+                finally
+                {
+                    _context.PopLambdaContext();
+                }
+            }
 
             return Subqueries.Exists(detachedCriteria);
         }
