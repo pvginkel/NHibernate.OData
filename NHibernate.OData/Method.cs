@@ -446,7 +446,7 @@ namespace NHibernate.OData
 
         public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            throw new NotImplementedException();
+            return visitor.AnyMethod(this, arg);
         }
     }
 
@@ -459,7 +459,7 @@ namespace NHibernate.OData
 
         public override TResult Visit<TResult, TArg>(IMethodVisitor<TResult, TArg> visitor, TArg arg)
         {
-            throw new NotImplementedException();
+            return visitor.AllMethod(this, arg);
         }
     }
 }

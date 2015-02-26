@@ -132,15 +132,15 @@ namespace NHibernate.OData.Test.Normalization
                 "A add B",
                 new ArithmeticExpression(
                     Operator.Add,
-                    new ResolvedMemberExpression(MemberType.Normal, "A"),
-                    new ResolvedMemberExpression(MemberType.Normal, "B")
+                    new ResolvedMemberExpression(MemberType.Normal, "A", null),
+                    new ResolvedMemberExpression(MemberType.Normal, "B", null)
                 )
             );
             Verify(
                 "- A",
                 new ArithmeticUnaryExpression(
                     Operator.Negative,
-                    new ResolvedMemberExpression(MemberType.Normal, "A")
+                    new ResolvedMemberExpression(MemberType.Normal, "A", null)
                 )
             );
         }

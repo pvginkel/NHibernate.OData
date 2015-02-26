@@ -376,5 +376,10 @@ namespace NHibernate.OData
         {
             throw new InvalidOperationException();
         }
+
+        public Expression LambdaExpression(LambdaExpression expression)
+        {
+            return expression;
+        }
     }
 }

@@ -116,5 +116,15 @@ namespace NHibernate.OData
         {
             throw new QueryNotSupportException();
         }
+
+        public virtual TResult AnyMethod(AnyMethod method, Expression[] arg)
+        {
+            throw new QueryNotSupportException();
+        }
+
+        public virtual TResult AllMethod(AllMethod method, Expression[] arg)
+        {
+            throw new QueryNotSupportException();
+        }
     }
 }

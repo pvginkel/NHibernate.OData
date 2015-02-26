@@ -11,20 +11,25 @@ namespace NHibernate.OData
 {
     internal class AliasingNormalizeVisitor : NormalizeVisitor
     {
-        private readonly ODataSessionFactoryContext _context;
+        private readonly CriterionBuildContext _context;
         private readonly System.Type _persistentClass;
         private readonly bool _caseSensitive;
+        private readonly string _rootAlias;
 
-        public AliasingNormalizeVisitor(ODataSessionFactoryContext context, System.Type persistentClass, bool caseSensitive)
+        public AliasingNormalizeVisitor(CriterionBuildContext context, System.Type persistentClass, bool caseSensitive, string rootAlias)
         {
+            if (rootAlias != null && rootAlias.Length == 0)
+                throw new ArgumentException("Root alias cannot be an empty string.", "rootAlias");
+
             _context = context;
             _persistentClass = persistentClass;
             _caseSensitive = caseSensitive;
+            _rootAlias = rootAlias;
 
-            Aliases = new Dictionary<string, string>(StringComparer.Ordinal);
+            Aliases = new Dictionary<string, Alias>(StringComparer.Ordinal);
         }
 
-        public IDictionary<string, string> Aliases { get; private set; }
+        public IDictionary<string, Alias> Aliases { get; private set; }
 
         public override Expression MemberExpression(MemberExpression expression)
         {
@@ -32,17 +37,23 @@ namespace NHibernate.OData
             MappedClassMetadata mappedClass = null;
 
             if (type != null)
-                _context.MappedClassMetadata.TryGetValue(type, out mappedClass);
+                _context.SessionFactoryContext.MappedClassMetadata.TryGetValue(type, out mappedClass);
 
             if (expression.Members.Count == 1)
             {
                 Debug.Assert(expression.Members[0].IdExpression == null);
 
-                return new ResolvedMemberExpression(expression.MemberType, ResolveName(mappedClass, string.Empty, expression.Members[0].Name, ref type));
+                string resolvedName = ResolveName(mappedClass, string.Empty, expression.Members[0].Name, ref type);
+
+                return new ResolvedMemberExpression(
+                    expression.MemberType,
+                    (_rootAlias != null ? _rootAlias + "." : null) + resolvedName,
+                    type
+                );
             }
 
             var sb = new StringBuilder();
-            string lastAlias = null;
+            string lastAliasName = _rootAlias;
 
             for (int i = 0; i < expression.Members.Count; i++)
             {
@@ -58,17 +69,25 @@ namespace NHibernate.OData
 
                 sb.Append(resolvedName);
 
-                if (type != null && _context.MappedClassMetadata.ContainsKey(type) && !isLastMember)
+                if (type != null && _context.SessionFactoryContext.MappedClassMetadata.ContainsKey(type) && !isLastMember)
                 {
-                    mappedClass = _context.MappedClassMetadata[type];
+                    mappedClass = _context.SessionFactoryContext.MappedClassMetadata[type];
 
-                    string path = (lastAlias != null ? lastAlias + "." : null) + sb;
-
-                    if (!Aliases.TryGetValue(path, out lastAlias))
+                    string path = (lastAliasName != null ? lastAliasName + "." : null) + sb;
+                    Alias alias;
+                   
+                    if (!Aliases.TryGetValue(path, out alias))
                     {
-                        lastAlias = "t" + (Aliases.Count + 1).ToString(CultureInfo.InvariantCulture);
-                        Aliases.Add(path, lastAlias);
+                        alias = new Alias(
+                            _context.CreateUniqueAliasName(),
+                            path,
+                            type
+                        );
+
+                        Aliases.Add(path, alias);
                     }
+
+                    lastAliasName = alias.Name;
 
                     sb.Clear();
                 }
@@ -76,7 +95,8 @@ namespace NHibernate.OData
 
             return new ResolvedMemberExpression(
                 expression.MemberType,
-                (lastAlias != null ? lastAlias + "." : null) + sb
+                (lastAliasName != null ? lastAliasName + "." : null) + sb,
+                type
             );
         }
 

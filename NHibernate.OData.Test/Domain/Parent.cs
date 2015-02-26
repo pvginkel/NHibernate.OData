@@ -19,6 +19,8 @@ namespace NHibernate.OData.Test.Domain
 
         public virtual Child Child { get; set; }
 
+        public virtual ISet<Parent> RelatedParents { get; set; }
+
         public override string ToString()
         {
             return Name;

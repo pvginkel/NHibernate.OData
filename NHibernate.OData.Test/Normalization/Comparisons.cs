@@ -87,8 +87,8 @@ namespace NHibernate.OData.Test.Normalization
                 "A eq B",
                 new ComparisonExpression(
                     Operator.Eq,
-                    new ResolvedMemberExpression(MemberType.Normal, "A"),
-                    new ResolvedMemberExpression(MemberType.Normal, "B")
+                    new ResolvedMemberExpression(MemberType.Normal, "A", null),
+                    new ResolvedMemberExpression(MemberType.Normal, "B", null)
                 )
             );
         }

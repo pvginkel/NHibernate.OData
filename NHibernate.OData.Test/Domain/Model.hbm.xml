@@ -9,6 +9,10 @@
     <property name="LengthString" type="string" />
     <property name="DateTime" type="datetime" />
     <many-to-one name="Child" column="ChildId" />
+    <set name="RelatedParents">
+      <key column="ParentId"/>
+      <many-to-many column="RelatedParentId" class="Parent"/>
+    </set>
   </class>
   <class name="Child">
     <id name="Id" type="int">

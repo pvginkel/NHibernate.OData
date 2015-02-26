@@ -184,18 +184,21 @@ namespace NHibernate.OData
 
     internal class ResolvedMemberExpression : Expression
     {
-        public ResolvedMemberExpression(MemberType memberType, string member)
+        public ResolvedMemberExpression(MemberType memberType, string member, System.Type returnedType)
             : base(ExpressionType.ResolvedMember)
         {
             Require.NotNull(member, "member");
 
             Member = member;
             MemberType = memberType;
+            ReturnedType = returnedType;
         }
 
         public string Member { get; private set; }
 
         public MemberType MemberType { get; private set; }
+
+        public System.Type ReturnedType { get; private set; }
 
         public override bool IsBool
         {
@@ -217,7 +220,8 @@ namespace NHibernate.OData
             return
                 other != null &&
                 Member == other.Member &&
-                IsBool == other.IsBool;
+                IsBool == other.IsBool &&
+                ReturnedType == other.ReturnedType;
         }
 
         public override string ToString()
@@ -542,7 +546,7 @@ namespace NHibernate.OData
 
         public override T Visit<T>(IVisitor<T> visitor)
         {
-            throw new NotImplementedException();
+            return visitor.LambdaExpression(this);
         }
 
         public override bool Equals(object obj)

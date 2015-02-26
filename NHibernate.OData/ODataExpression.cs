@@ -9,21 +9,31 @@ namespace NHibernate.OData
 {
     internal class ODataExpression
     {
+        private const string RootAlias = "root";
+
         private int? _top;
         private int? _skip;
         private ICriterion _criterion;
         private OrderBy[] _orderBys;
         private readonly AliasingNormalizeVisitor _normalizeVisitor;
+        private readonly CriterionBuildContext _context;
+        private readonly System.Type _persistentClass;
         private readonly ODataParserConfiguration _configuration;
 
-        private ODataExpression(ODataSessionFactoryContext context, System.Type persistentClass, ODataParserConfiguration configuration)
+        private ODataExpression(ODataSessionFactoryContext sessionFactoryContext, System.Type persistentClass, ODataParserConfiguration configuration)
         {
-            Require.NotNull(context, "context");
+            Require.NotNull(sessionFactoryContext, "sessionFactoryContext");
             Require.NotNull(persistentClass, "persistentClass");
             Require.NotNull(configuration, "configuration");
 
+            _persistentClass = persistentClass;
             _configuration = configuration;
-            _normalizeVisitor = new AliasingNormalizeVisitor(context, persistentClass, configuration.CaseSensitive);
+
+            _context = new CriterionBuildContext(sessionFactoryContext);
+            _context.AliasesByName.Add(RootAlias, new Alias(RootAlias, string.Empty, _persistentClass));
+            
+            _normalizeVisitor = new AliasingNormalizeVisitor(_context, persistentClass, configuration.CaseSensitive, RootAlias);
+            _context.AddAliases(_normalizeVisitor.Aliases.Values);
         }
 
         public ODataExpression(ODataSessionFactoryContext context, string queryString, System.Type persistentClass, ODataParserConfiguration configuration)
@@ -79,9 +89,8 @@ namespace NHibernate.OData
 
         private void ProcessFilter(string value)
         {
-            _criterion = CriterionVisitor.CreateCriterion(
-                new FilterParser(value).Parse().Visit(_normalizeVisitor)
-            );
+            var expression = new FilterParser(value).Parse().Visit(_normalizeVisitor);
+            _criterion = new CriterionVisitor(_context).CreateCriterion(expression);
         }
 
         private void ProcessOrderBy(string value)
@@ -115,9 +124,9 @@ namespace NHibernate.OData
 
         internal ICriteria BuildCriteria(ISession session, System.Type persistentClass)
         {
-            var criteria = session.CreateCriteria(persistentClass);
+            var criteria = session.CreateCriteria(persistentClass, RootAlias);
 
-            foreach (var alias in _normalizeVisitor.Aliases)
+            foreach (var alias in _normalizeVisitor.Aliases.Values)
             {
                 // This is the default when no join type is provided.
                 var joinType = JoinType.InnerJoin;
@@ -125,7 +134,7 @@ namespace NHibernate.OData
                 if (_configuration.OuterJoin)
                     joinType = JoinType.LeftOuterJoin;
 
-                criteria.CreateAlias(alias.Key, alias.Value, joinType);
+                criteria.CreateAlias(alias.AssociationPath, alias.Name, joinType);
             }
 
             if (_criterion != null)

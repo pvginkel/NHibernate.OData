@@ -26,5 +26,7 @@ namespace NHibernate.OData
         T MethodCallExpression(MethodCallExpression expression);
 
         T ResolvedMemberExpression(ResolvedMemberExpression expression);
+
+        T LambdaExpression(LambdaExpression expression);
     }
 }

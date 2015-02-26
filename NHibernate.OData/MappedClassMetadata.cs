@@ -13,12 +13,16 @@ namespace NHibernate.OData
         private readonly IDictionary<string, DynamicComponentProperty> _caseSensitiveDynamicProperties = new Dictionary<string, DynamicComponentProperty>(StringComparer.Ordinal);
         private readonly IDictionary<string, DynamicComponentProperty> _caseInsensitiveDynamicProperties = new Dictionary<string, DynamicComponentProperty>(StringComparer.OrdinalIgnoreCase);
 
+        public string IdentifierPropertyName { get; private set; }
+
         public MappedClassMetadata(IClassMetadata classMetadata)
         {
             Require.NotNull(classMetadata, "classMetadata");
 
             for (int i = 0; i < classMetadata.PropertyNames.Length; i++)
                 BuildDynamicComponentPropertyList(classMetadata.PropertyNames[i], classMetadata.PropertyTypes[i]);
+
+            IdentifierPropertyName = classMetadata.IdentifierPropertyName;
         }
 
         public DynamicComponentProperty FindDynamicComponentProperty(string fullPath, bool caseSensitive)
