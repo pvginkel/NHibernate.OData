@@ -83,5 +83,28 @@ namespace NHibernate.OData.Test.Criterions
                 Session.QueryOver<Parent>().Where(x => x.Name == "Parent 10").List()
             );
         }
+
+        [Test]
+        public void AllWithSimpleCondition()
+        {
+            Verify(
+                "RelatedParents/all(x:x/Int32 ge 5)",
+                Session.QueryOver<Parent>().Where(x => x.Name != "Parent 9").List()
+            );
+
+            Verify(
+                "RelatedParents/all(x:x/Int32 ge 999)",
+                Session.QueryOver<Parent>().Where(x => x.Name != "Parent 9" && x.Name != "Parent 10").List()
+            );
+        }
+
+        [Test]
+        public void AllWithJoin()
+        {
+            Verify(
+                "RelatedParents/All(x:x/Child/Int32 ge 5)",
+                Session.QueryOver<Parent>().Where(x => x.Name != "Parent 9").List()
+            );
+        }
     }
 }

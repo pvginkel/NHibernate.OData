@@ -73,7 +73,20 @@ namespace NHibernate.OData
             else
                 return base.AnyMethod(method, arguments);
 
-            var resolvedMember = (ResolvedMemberExpression)arguments[0];
+            return CreateAnyOrAllCriterion(method, (ResolvedMemberExpression)arguments[0], lambdaExpression);
+        }
+
+        public override ICriterion AllMethod(AllMethod method, Expression[] arguments)
+        {
+            if (arguments.Length != 2 || arguments[0].Type != ExpressionType.ResolvedMember || arguments[1].Type != ExpressionType.Lambda)
+                return base.AllMethod(method, arguments);
+
+            return CreateAnyOrAllCriterion(method, (ResolvedMemberExpression)arguments[0], (LambdaExpression)arguments[1]);
+        }
+
+        private ICriterion CreateAnyOrAllCriterion(CollectionMethod method, ResolvedMemberExpression resolvedMember, LambdaExpression lambdaExpression)
+        {
+            Require.That(method.MethodType == MethodType.Any || method.MethodType == MethodType.All, "Invalid method type", "method");
 
             // Resolved member's name may contain multiple dots if it's inside a component (i.e. 'root.Component.Collection')
             int p = resolvedMember.Member.IndexOf('.');
@@ -121,18 +134,21 @@ namespace NHibernate.OData
 
             if (lambdaExpression != null)
             {
+                if (method.MethodType == MethodType.All)
+                    lambdaExpression = (LambdaExpression)InverseVisitor.Invert(lambdaExpression);
+
                 _context.PushLambdaContext(lambdaExpression, itemType, lambdaAlias);
-                
+
                 try
                 {
                     var lambdaNormalizeVisitor = new AliasingNormalizeVisitor(
-                        _context, 
-                        _context.AliasesByName[collectionHolderAliasName].ReturnedType, 
+                        _context,
+                        _context.AliasesByName[collectionHolderAliasName].ReturnedType,
                         collectionHolderAliasName
                     );
 
                     var bodyExpression = lambdaExpression.Body.Visit(lambdaNormalizeVisitor);
-                    
+
                     var criterion = bodyExpression.Visit(new CriterionVisitor(_context));
 
                     if (criterion != null)
@@ -149,7 +165,10 @@ namespace NHibernate.OData
                 }
             }
 
-            return Subqueries.Exists(detachedCriteria);
+            if (method.MethodType == MethodType.Any)
+                return Subqueries.Exists(detachedCriteria);
+            else
+                return Subqueries.NotExists(detachedCriteria);
         }
     }
 }
