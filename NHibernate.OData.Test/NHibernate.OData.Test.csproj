@@ -76,6 +76,7 @@
     <Compile Include="Domain\IEntity.cs" />
     <Compile Include="Interface\EntityNameInterface.cs" />
     <Compile Include="Interface\ParsedQueryString.cs" />
+    <Compile Include="Inverse\Basics.cs" />
     <Compile Include="Issues\Issue13Fixture.cs" />
     <Compile Include="Issues\Issue6Fixture.cs" />
     <Compile Include="Parser\CollectionMethodCalls.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Pagings\Paging.cs" />
     <Compile Include="SupportFixtures\TypeUtil.cs" />
     <Compile Include="Support\DomainTestFixture.cs" />
+    <Compile Include="Support\InverseTestFixture.cs" />
     <Compile Include="Support\LexerTestFixture.cs" />
     <Compile Include="Parser\Basics.cs" />
     <Compile Include="Parser\Comparison.cs" />
