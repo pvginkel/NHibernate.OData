@@ -11,9 +11,9 @@ namespace NHibernate.OData
         public IDictionary<string, Alias> AliasesByName { get; private set; }
         public bool CaseSensitive { get; private set; }
 
-        public bool IsInsideLambdaContext
+        public int ExpressionLevel
         {
-            get { return _lambdaContextStack.Count != 0; }
+            get { return _lambdaContextStack.Count; }
         }
 
         private int _aliasCounter;
@@ -50,12 +50,12 @@ namespace NHibernate.OData
             return "t" + (++_aliasCounter).ToString(CultureInfo.InvariantCulture);
         }
 
-        public void PushLambdaContext(LambdaExpression lambdaExpression, System.Type parameterType, string parameterAlias)
+        public void PushLambdaContext(string parameterName, System.Type parameterType, string parameterAlias)
         {
-            if (lambdaExpression.ParameterName == "$it" || _lambdaContextStack.Any(x => x.Expression.ParameterName.Equals(lambdaExpression.ParameterName, StringComparison.Ordinal)))
-                throw new ODataException(string.Format("Lambda expression parameter '{0}' has been already defined in the parent scope.", lambdaExpression.ParameterName));
+            if (_lambdaContextStack.Any(x => x.ParameterName.Equals(parameterName, StringComparison.Ordinal)))
+                throw new ODataException(string.Format(ErrorMessages.Expression_LambdaParameterIsAlreadyDefined, parameterName));
 
-            _lambdaContextStack.Push(new LambdaExpressionContext(lambdaExpression, parameterType, parameterAlias));
+            _lambdaContextStack.Push(new LambdaExpressionContext(parameterName, parameterType, parameterAlias));
         }
 
         public void PopLambdaContext()
@@ -67,7 +67,7 @@ namespace NHibernate.OData
         {
             Require.NotNull(parameterName, "parameterName");
 
-            return _lambdaContextStack.FirstOrDefault(x => x.Expression.ParameterName.Equals(parameterName, StringComparison.Ordinal));
+            return _lambdaContextStack.FirstOrDefault(x => x.ParameterName.Equals(parameterName, StringComparison.Ordinal));
         }
     }
 }

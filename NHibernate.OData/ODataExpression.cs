@@ -31,6 +31,9 @@ namespace NHibernate.OData
 
             _context = new CriterionBuildContext(sessionFactoryContext, configuration.CaseSensitive);
             _context.AliasesByName.Add(RootAlias, new Alias(RootAlias, string.Empty, _persistentClass));
+
+            if (persistentClass != null)
+                _context.PushLambdaContext("$it", _persistentClass, RootAlias);
             
             _normalizeVisitor = new AliasingNormalizeVisitor(_context, persistentClass, RootAlias);
             _context.AddAliases(_normalizeVisitor.Aliases.Values);

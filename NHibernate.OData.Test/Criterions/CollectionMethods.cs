@@ -49,11 +49,16 @@ namespace NHibernate.OData.Test.Criterions
         }
 
         [Test]
-        public void OuterScopeVariable()
+        public void RootScopeVariable()
         {
             Verify(
                 "RelatedParents/any(x:x/Int32 eq $it/Int32 sub 8)",
                 Session.QueryOver<Parent>().Where(x => x.Name == "Parent 9").List()
+            );
+
+            Verify(
+                "RelatedParents/any(x:x/RelatedParents/any(y:y/Int32 eq $it/Int32 sub 6))",
+                Session.QueryOver<Parent>().Where(x => x.Name == "Parent 10").List()
             );
         }
 

@@ -261,4 +261,7 @@
   <data name="Resolve_CannotResolveName" xml:space="preserve">
     <value>Cannot resolve name '{0}' on '{1}'</value>
   </data>
+  <data name="Expression_LambdaParameterIsAlreadyDefined" xml:space="preserve">
+    <value>Lambda expression parameter '{0}' has been already defined in the parent scope.</value>
+  </data>
 </root>

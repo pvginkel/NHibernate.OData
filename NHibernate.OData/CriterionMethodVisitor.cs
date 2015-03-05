@@ -137,7 +137,7 @@ namespace NHibernate.OData
                 if (method.MethodType == MethodType.All)
                     lambdaExpression = (LambdaExpression)InverseVisitor.Invert(lambdaExpression);
 
-                _context.PushLambdaContext(lambdaExpression, itemType, lambdaAlias);
+                _context.PushLambdaContext(lambdaExpression.ParameterName, itemType, lambdaAlias);
 
                 try
                 {

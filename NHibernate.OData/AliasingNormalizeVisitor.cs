@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -34,21 +35,23 @@ namespace NHibernate.OData
             var members = expression.Members;
             var lastAliasName = _rootAlias;
 
-            // Lambda member expression MUST start with a variable name
-            if (_context.IsInsideLambdaContext)
+            // If we are inside a lambda expression
+            if (_context.ExpressionLevel > 1)
             {
-                // Special case: variable $it refers to the other variable of lambda expession
-                if (members[0].Name != "$it")
-                {
-                    var lambdaContext = _context.FindLambdaContext(members[0].Name);
-                    if (lambdaContext == null)
-                        throw new QueryException(ErrorMessages.Expression_LambdaMemberMustStartWithParameter);
+                // Lambda member expression MUST start with a variable name
+                var lambdaContext = _context.FindLambdaContext(members[0].Name);
+                if (lambdaContext == null)
+                    throw new QueryException(ErrorMessages.Expression_LambdaMemberMustStartWithParameter);
 
-                    type = lambdaContext.ParameterType;
-                    lastAliasName = lambdaContext.ParameterAlias;
-                }
+                type = lambdaContext.ParameterType;
+                lastAliasName = lambdaContext.ParameterAlias;
 
-                members.RemoveAt(0);
+                members = members.Skip(1).ToList();
+            }
+            else if (members[0].Name == "$it")
+            {
+                // Special case: $it variable outside of lambda expression
+                members = members.Skip(1).ToList();
             }
 
             if (type != null)

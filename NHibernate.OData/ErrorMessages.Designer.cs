@@ -106,6 +106,15 @@ namespace NHibernate.OData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lambda expression parameter &apos;{0}&apos; has been already defined in the parent scope..
+        /// </summary>
+        internal static string Expression_LambdaParameterIsAlreadyDefined {
+            get {
+                return ResourceManager.GetString("Expression_LambdaParameterIsAlreadyDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected exponent for decimal literal at {0}..
         /// </summary>
         internal static string Lexer_DecimalCannotHaveExponent {

@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Criterions\Arithmetics.cs" />
     <Compile Include="Criterions\Casting.cs" />
+    <Compile Include="Criterions\ImplicitVariable.cs" />
     <Compile Include="Criterions\CollectionMethods.cs" />
     <Compile Include="Criterions\Comparisons.cs" />
     <Compile Include="Criterions\DynamicComponents.cs" />
