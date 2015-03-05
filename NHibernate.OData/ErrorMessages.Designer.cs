@@ -97,6 +97,15 @@ namespace NHibernate.OData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member expressions inside a lambda expression must start with a lambda parameter.
+        /// </summary>
+        internal static string Expression_LambdaMemberMustStartWithParameter {
+            get {
+                return ResourceManager.GetString("Expression_LambdaMemberMustStartWithParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected exponent for decimal literal at {0}..
         /// </summary>
         internal static string Lexer_DecimalCannotHaveExponent {
@@ -462,6 +471,24 @@ namespace NHibernate.OData {
         internal static string PathParser_InvalidPath {
             get {
                 return ResourceManager.GetString("PathParser_InvalidPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot resolve member &apos;{0}&apos; of dynamic component &apos;{1}&apos; on &apos;{2}&apos;.
+        /// </summary>
+        internal static string Resolve_CannotResolveDynamicComponentMember {
+            get {
+                return ResourceManager.GetString("Resolve_CannotResolveDynamicComponentMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot resolve name &apos;{0}&apos; on &apos;{1}&apos;.
+        /// </summary>
+        internal static string Resolve_CannotResolveName {
+            get {
+                return ResourceManager.GetString("Resolve_CannotResolveName", resourceCulture);
             }
         }
     }

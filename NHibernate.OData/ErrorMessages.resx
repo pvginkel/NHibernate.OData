@@ -252,4 +252,13 @@
   <data name="Parser_CannotParseLambdaExpression" xml:space="preserve">
     <value>Cannot parse lambda expression.</value>
   </data>
+  <data name="Expression_LambdaMemberMustStartWithParameter" xml:space="preserve">
+    <value>Member expressions inside a lambda expression must start with a lambda parameter</value>
+  </data>
+  <data name="Resolve_CannotResolveDynamicComponentMember" xml:space="preserve">
+    <value>Cannot resolve member '{0}' of dynamic component '{1}' on '{2}'</value>
+  </data>
+  <data name="Resolve_CannotResolveName" xml:space="preserve">
+    <value>Cannot resolve name '{0}' on '{1}'</value>
+  </data>
 </root>

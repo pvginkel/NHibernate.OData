@@ -462,7 +462,7 @@ namespace NHibernate.OData
 
             ExpectAny();
 
-            List<Expression> arguments = new List<Expression>(2)
+            var arguments = new List<Expression>(2)
             {
                 new MemberExpression(MemberType.Normal, collectionMembers)
             };

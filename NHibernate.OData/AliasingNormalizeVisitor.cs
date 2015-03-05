@@ -42,7 +42,7 @@ namespace NHibernate.OData
                 {
                     var lambdaContext = _context.FindLambdaContext(members[0].Name);
                     if (lambdaContext == null)
-                        throw new QueryException("Member expressions inside a lambda expression must start with a lambda parameter");
+                        throw new QueryException(ErrorMessages.Expression_LambdaMemberMustStartWithParameter);
 
                     type = lambdaContext.ParameterType;
                     lastAliasName = lambdaContext.ParameterAlias;
@@ -123,7 +123,7 @@ namespace NHibernate.OData
 
                 if (dynamicProperty == null)
                     throw new QueryException(String.Format(
-                        "Cannot resolve member '{0}' of dynamic component '{1}' on '{2}'", name, mappedClassPath, type
+                        ErrorMessages.Resolve_CannotResolveDynamicComponentMember, name, mappedClassPath, type
                     ));
 
                 type = dynamicProperty.Type;
@@ -152,7 +152,7 @@ namespace NHibernate.OData
             }
 
             throw new QueryException(String.Format(
-                "Cannot resolve name '{0}' on '{1}'", name, type)
+                ErrorMessages.Resolve_CannotResolveName, name, type)
             );
         }
     }
