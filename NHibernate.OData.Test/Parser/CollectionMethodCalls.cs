@@ -133,9 +133,16 @@ namespace NHibernate.OData.Test.Parser
         public void IllegalCalls()
         {
             VerifyThrows("any()");
-            VerifyThrows("Collection/any");
-
             VerifyThrows("Collection/all()"); // An argument is required
+            VerifyThrows("Collection/any(");
+            VerifyThrows("Collection/any()/OtherMember");
+        }
+
+        [Test]
+        public void NotCollectionMethodCall()
+        {
+            Verify("A/any", new MemberExpression(MemberType.Normal, "A", "any"));
+            Verify("A/all/B", new MemberExpression(MemberType.Normal, "A", "all", "B"));
         }
     }
 }

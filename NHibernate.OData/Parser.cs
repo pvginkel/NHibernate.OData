@@ -348,7 +348,10 @@ namespace NHibernate.OData
         {
             var identifier = Current as IdentifierToken;
 
-            return identifier != null && Method.FindMethodByName(identifier.Identifier) is CollectionMethod;
+            return 
+                identifier != null && 
+                Equals(Next, SyntaxToken.ParenOpen) &&
+                Method.FindMethodByName(identifier.Identifier) is CollectionMethod;
         }
 
         private MethodCallExpression ParseMethodCall()
@@ -471,7 +474,7 @@ namespace NHibernate.OData
 
             ValidateArgumentCount(method, arguments.Count);
 
-            MoveNext();
+            Expect(SyntaxToken.ParenClose);
 
             return new MethodCallExpression(
                 MethodCallType.Boolean,
