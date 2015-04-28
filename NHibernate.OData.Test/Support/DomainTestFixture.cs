@@ -79,7 +79,8 @@ namespace NHibernate.OData.Test.Support
                             { "DynamicString", "Value " + i },
                             { "DynamicInt", i },
                             { "DynamicChildRef", previousChild },
-                        }
+                        },
+                        RelatedParents = new HashSet<Parent>(parents),
                     };
 
                     if (i == 10)

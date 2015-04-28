@@ -97,6 +97,7 @@ namespace NHibernate.OData
                     {
                         alias = new Alias(_context.CreateUniqueAliasName(), path, type);
                         Aliases.Add(path, alias);
+                        _context.AddAlias(alias);
                     }
 
                     lastAliasName = alias.Name;

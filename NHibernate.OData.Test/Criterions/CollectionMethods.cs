@@ -111,5 +111,23 @@ namespace NHibernate.OData.Test.Criterions
                 Session.QueryOver<Parent>().Where(x => x.Name != "Parent 9").List()
             );
         }
+
+        [Test]
+        public void JoinToCollectionAny()
+        {
+            Verify(
+                "Child/RelatedParents/any()",
+                Session.QueryOver<Parent>().Where(x => x.Name != "Parent 1" && x.Name != "Parent 11").List()
+            );
+        }
+
+        [Test]
+        public void JoinToCollectionAnyWithItemJoin()
+        {
+            Verify(
+                "Child/RelatedParents/any(x:x/Child/Int32 ge 5)",
+                Session.QueryOver<Parent>().Where(x => x.Int32 >= 6 && x.Int32 <= 10).List()
+            );
+        }
     }
 }

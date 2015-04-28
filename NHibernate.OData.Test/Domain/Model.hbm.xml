@@ -29,5 +29,9 @@
       <property name="DynamicInt" type="int"/>
       <many-to-one name="DynamicChildRef" class="Child"/>
     </dynamic-component>
+    <set name="RelatedParents" table="Child_RelatedParents">
+      <key column="ParentId"/>
+      <many-to-many column="RelatedParentId" class="Parent"/>
+    </set>
   </class>
 </hibernate-mapping>
