@@ -18,7 +18,7 @@ namespace NHibernate.OData
         /// <param name="type">The type of the entity to map the name for.</param>
         /// <param name="caseSensitive">Whether the <param name="name"> parameter must be treated case sensitive.</param></param>
         /// <returns>The mapped name and member type or null when the name could not be resolved.</returns>
-        public virtual ResolvedName ResolveName(string name, ref System.Type type, bool caseSensitive)
+        public virtual ResolvedName ResolveName(string name, System.Type type, bool caseSensitive)
         {
             var bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 

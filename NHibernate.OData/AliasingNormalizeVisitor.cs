@@ -134,7 +134,7 @@ namespace NHibernate.OData
                 return dynamicProperty.Name;
             }
 
-            var resolvedName = _context.NameResolver.ResolveName(name, ref type, _context.CaseSensitive);
+            var resolvedName = _context.NameResolver.ResolveName(name, type, _context.CaseSensitive);
             if (resolvedName != null)
             {
                 type = resolvedName.Type;

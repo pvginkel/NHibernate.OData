@@ -26,12 +26,12 @@ namespace NHibernate.OData.Test.Criterions
 
         private class MyNameResolver : NameResolver
         {
-            public override ResolvedName ResolveName(string name, ref System.Type type, bool caseSensitive)
+            public override ResolvedName ResolveName(string name, System.Type type, bool caseSensitive)
             {
                 if (name.EndsWith("DTO"))
                     name = name.Substring(0, name.Length - 3);
 
-                return base.ResolveName(name, ref type, caseSensitive);
+                return base.ResolveName(name, type, caseSensitive);
             }
         }
     }
