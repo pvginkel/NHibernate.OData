@@ -408,5 +408,15 @@ namespace NHibernate.OData
         {
             return NormalizeFloatingPoint(method, arguments);
         }
+
+        public Expression AnyMethod(AnyMethod method, LiteralExpression[] arg)
+        {
+            throw new QueryNotSupportException();
+        }
+
+        public Expression AllMethod(AllMethod method, LiteralExpression[] arg)
+        {
+            throw new QueryNotSupportException();
+        }
     }
 }

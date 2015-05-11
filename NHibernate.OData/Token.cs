@@ -107,6 +107,7 @@ namespace NHibernate.OData
         public static readonly SyntaxToken Slash = new SyntaxToken('/');
         public static readonly SyntaxToken Comma = new SyntaxToken(',');
         public static readonly SyntaxToken Negative = new SyntaxToken('-');
+        public static readonly SyntaxToken Colon = new SyntaxToken(':');
 
         public char Syntax { get; private set; }
 

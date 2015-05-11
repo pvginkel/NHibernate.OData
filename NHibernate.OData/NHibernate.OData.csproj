@@ -54,7 +54,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Alias.cs" />
     <Compile Include="ArgumentType.cs" />
+    <Compile Include="CriterionBuildContext.cs" />
     <Compile Include="CriterionMethodVisitor.cs" />
     <Compile Include="CriterionVisitor.cs" />
     <Compile Include="DynamicComponentProperty.cs" />
@@ -73,6 +75,8 @@
     <Compile Include="HttpUtil.cs" />
     <Compile Include="IMethodVisitor.cs" />
     <Compile Include="Inflector.cs" />
+    <Compile Include="InverseVisitor.cs" />
+    <Compile Include="LambdaExpressionContext.cs" />
     <Compile Include="MappedClassMetadata.cs" />
     <Compile Include="NormalizeVisitor.cs" />
     <Compile Include="ODataContext.cs" />
@@ -108,6 +112,7 @@
     <Compile Include="Token.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="TokenType.cs" />
+    <Compile Include="TypeUtil.cs" />
     <Compile Include="XmlTimeSpan.cs" />
   </ItemGroup>
   <ItemGroup>

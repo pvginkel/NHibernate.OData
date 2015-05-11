@@ -60,6 +60,7 @@ namespace NHibernate.OData.Test.Support
                 string lengthString = "";
 
                 Child previousChild = null;
+                var parents = new List<Parent>();
 
                 for (int i = 1; i <= 10; i++)
                 {
@@ -78,7 +79,8 @@ namespace NHibernate.OData.Test.Support
                             { "DynamicString", "Value " + i },
                             { "DynamicInt", i },
                             { "DynamicChildRef", previousChild },
-                        }
+                        },
+                        RelatedParents = new HashSet<Parent>(parents),
                     };
 
                     if (i == 10)
@@ -89,14 +91,22 @@ namespace NHibernate.OData.Test.Support
 
                     session.Save(child);
 
-                    session.Save(new Parent
+                    var parent = new Parent
                     {
                         Name = "Parent " + i,
                         Int32 = i,
                         Child = child,
                         LengthString = lengthString,
                         DateTime = new DateTime(2000 + i, i, i, i, i, i)
-                    });
+                    };
+
+                    if (i == 9)
+                        parent.RelatedParents = new HashSet<Parent>(parents.Where(x => x.Int32 < 5));
+                    if (i == 10)
+                        parent.RelatedParents = new HashSet<Parent>(parents.Where(x => x.Int32 >= 5));
+
+                    session.Save(parent);
+                    parents.Add(parent);
 
                     previousChild = child;
                 }
@@ -108,6 +118,8 @@ namespace NHibernate.OData.Test.Support
                     LengthString = lengthString,
                     DateTime = new DateTime(2000 + 11, 11, 11, 11, 11, 11)
                 });
+
+                session.Flush();
             }
         }
 

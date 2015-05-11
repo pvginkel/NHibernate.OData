@@ -97,6 +97,24 @@ namespace NHibernate.OData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member expressions inside a lambda expression must start with a lambda parameter.
+        /// </summary>
+        internal static string Expression_LambdaMemberMustStartWithParameter {
+            get {
+                return ResourceManager.GetString("Expression_LambdaMemberMustStartWithParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lambda expression parameter &apos;{0}&apos; has been already defined in the parent scope..
+        /// </summary>
+        internal static string Expression_LambdaParameterIsAlreadyDefined {
+            get {
+                return ResourceManager.GetString("Expression_LambdaParameterIsAlreadyDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected exponent for decimal literal at {0}..
         /// </summary>
         internal static string Lexer_DecimalCannotHaveExponent {
@@ -304,6 +322,15 @@ namespace NHibernate.OData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot parse lambda expression..
+        /// </summary>
+        internal static string Parser_CannotParseLambdaExpression {
+            get {
+                return ResourceManager.GetString("Parser_CannotParseLambdaExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected empty expression..
         /// </summary>
         internal static string Parser_EmptySource {
@@ -430,6 +457,15 @@ namespace NHibernate.OData {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unknown collection method &apos;{0}&apos;..
+        /// </summary>
+        internal static string Parser_UnknownCollectionMethod {
+            get {
+                return ResourceManager.GetString("Parser_UnknownCollectionMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown method &apos;{0}&apos;..
         /// </summary>
         internal static string Parser_UnknownMethod {
@@ -444,6 +480,24 @@ namespace NHibernate.OData {
         internal static string PathParser_InvalidPath {
             get {
                 return ResourceManager.GetString("PathParser_InvalidPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot resolve member &apos;{0}&apos; of dynamic component &apos;{1}&apos; on &apos;{2}&apos;.
+        /// </summary>
+        internal static string Resolve_CannotResolveDynamicComponentMember {
+            get {
+                return ResourceManager.GetString("Resolve_CannotResolveDynamicComponentMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot resolve name &apos;{0}&apos; on &apos;{1}&apos;.
+        /// </summary>
+        internal static string Resolve_CannotResolveName {
+            get {
+                return ResourceManager.GetString("Resolve_CannotResolveName", resourceCulture);
             }
         }
     }

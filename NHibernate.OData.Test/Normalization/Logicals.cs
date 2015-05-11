@@ -42,15 +42,15 @@ namespace NHibernate.OData.Test.Normalization
                 "not A",
                 new BoolUnaryExpression(
                     Operator.Not,
-                    new ResolvedMemberExpression(MemberType.Boolean, "A")
+                    new ResolvedMemberExpression(MemberType.Boolean, "A", null)
                 )
             );
             Verify(
                 "A or B",
                 new LogicalExpression(
                     Operator.Or,
-                    new ResolvedMemberExpression(MemberType.Normal, "A"),
-                    new ResolvedMemberExpression(MemberType.Normal, "B")
+                    new ResolvedMemberExpression(MemberType.Normal, "A", null),
+                    new ResolvedMemberExpression(MemberType.Normal, "B", null)
                 )
             );
         }

@@ -8,15 +8,18 @@ namespace NHibernate.OData
 {
     internal class CriterionVisitor : QueryVisitorBase<ICriterion>
     {
-        private static readonly CriterionVisitor _instance = new CriterionVisitor();
+        private readonly CriterionBuildContext _context;
 
-        private CriterionVisitor()
+        public CriterionVisitor(CriterionBuildContext context)
         {
+            Require.NotNull(context, "context");
+
+            _context = context;
         }
 
-        public static ICriterion CreateCriterion(Expression expression)
+        public ICriterion CreateCriterion(Expression expression)
         {
-            return expression.Visit(_instance);
+            return expression.Visit(this);
         }
 
         public override ICriterion ComparisonExpression(ComparisonExpression expression)
@@ -115,7 +118,7 @@ namespace NHibernate.OData
 
         public override ICriterion MethodCallExpression(MethodCallExpression expression)
         {
-            return CriterionMethodVisitor.CreateCriterion(expression.Method, expression.Arguments);
+            return new CriterionMethodVisitor(_context).CreateCriterion(expression.Method, expression.Arguments);
         }
     }
 }

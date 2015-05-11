@@ -50,5 +50,9 @@ namespace NHibernate.OData
         TResult FloorMethod(FloorMethod method, TArg arg);
 
         TResult CeilingMethod(CeilingMethod method, TArg arg);
+
+        TResult AnyMethod(AnyMethod method, TArg arg);
+
+        TResult AllMethod(AllMethod method, TArg arg);
     }
 }

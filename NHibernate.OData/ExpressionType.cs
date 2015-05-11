@@ -18,6 +18,7 @@ namespace NHibernate.OData
         Member,
         Paren,
         ArithmeticUnary,
-        ResolvedMember
+        ResolvedMember,
+        Lambda
     }
 }
