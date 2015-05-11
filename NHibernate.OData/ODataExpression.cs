@@ -29,7 +29,11 @@ namespace NHibernate.OData
             _persistentClass = persistentClass;
             _configuration = configuration;
 
-            _context = new CriterionBuildContext(sessionFactoryContext, configuration.CaseSensitive);
+            _context = new CriterionBuildContext(
+                sessionFactoryContext,
+                configuration.CaseSensitive,
+                configuration.NameResolver ?? new NameResolver()
+            );
             _context.AliasesByName.Add(RootAlias, new Alias(RootAlias, string.Empty, _persistentClass));
 
             if (persistentClass != null)

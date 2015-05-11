@@ -26,6 +26,11 @@ namespace NHibernate.OData
         public bool UTF8Unescape { get; set; }
 
         /// <summary>
+        /// Custom name resolver to influence the way member names are resolved.
+        /// </summary>
+        public NameResolver NameResolver { get; set; }
+
+        /// <summary>
         /// Create a new instance of the ODataParserConfiguration class.
         /// </summary>
         public ODataParserConfiguration()

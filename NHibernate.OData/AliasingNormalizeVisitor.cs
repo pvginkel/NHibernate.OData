@@ -134,25 +134,11 @@ namespace NHibernate.OData
                 return dynamicProperty.Name;
             }
 
-            var bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-
-            if (!_context.CaseSensitive)
-                bindingFlags |= BindingFlags.IgnoreCase;
-
-            var property = type.GetProperty(name, bindingFlags);
-
-            if (property != null)
+            var resolvedName = _context.NameResolver.ResolveName(name, ref type, _context.CaseSensitive);
+            if (resolvedName != null)
             {
-                type = property.PropertyType;
-                return property.Name;
-            }
-
-            var field = type.GetField(name, bindingFlags);
-
-            if (field != null)
-            {
-                type = field.FieldType;
-                return field.Name;
+                type = resolvedName.Type;
+                return resolvedName.Name;
             }
 
             throw new QueryException(String.Format(

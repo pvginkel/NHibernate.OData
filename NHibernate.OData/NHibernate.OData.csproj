@@ -74,6 +74,7 @@
     <Compile Include="FilterParser.cs" />
     <Compile Include="HttpUtil.cs" />
     <Compile Include="IMethodVisitor.cs" />
+    <Compile Include="NameResolver.cs" />
     <Compile Include="Inflector.cs" />
     <Compile Include="InverseVisitor.cs" />
     <Compile Include="LambdaExpressionContext.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryVisitorBase.cs" />
     <Compile Include="Require.cs" />
+    <Compile Include="ResolvedName.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="TokenType.cs" />

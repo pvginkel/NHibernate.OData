@@ -10,6 +10,7 @@ namespace NHibernate.OData
         public ODataSessionFactoryContext SessionFactoryContext { get; private set; }
         public IDictionary<string, Alias> AliasesByName { get; private set; }
         public bool CaseSensitive { get; private set; }
+        public NameResolver NameResolver { get; private set; }
 
         public int ExpressionLevel
         {
@@ -20,12 +21,14 @@ namespace NHibernate.OData
 
         private readonly Stack<LambdaExpressionContext> _lambdaContextStack = new Stack<LambdaExpressionContext>();
 
-        public CriterionBuildContext(ODataSessionFactoryContext sessionFactoryContext, bool caseSensitive)
+        public CriterionBuildContext(ODataSessionFactoryContext sessionFactoryContext, bool caseSensitive, NameResolver nameResolver)
         {
             Require.NotNull(sessionFactoryContext, "sessionFactoryContext");
+            Require.NotNull(nameResolver, "nameResolver");
 
             SessionFactoryContext = sessionFactoryContext;
             CaseSensitive = caseSensitive;
+            NameResolver = nameResolver;
 
             AliasesByName = new Dictionary<string, Alias>(StringComparer.Ordinal);
         }
