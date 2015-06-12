@@ -11,7 +11,7 @@ namespace NHibernate.OData
     {
         private static readonly CultureInfo ParseCulture = CultureInfo.InvariantCulture;
         private static readonly Regex DateTimeRegex = new Regex("^(\\d{4})-(\\d{1,2})-(\\d{1,2})T(\\d{1,2}):(\\d{2})(?::(\\d{2})(?:\\.(\\d{1,7}))?)?(Z|(?:[+-](\\d{1,2}):(\\d{2})))?$");
-        private static readonly Regex GuidRegex = new Regex("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$");
+        private static readonly Regex GuidRegex = new Regex("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$");
         private static readonly Regex DurationRegex = new Regex("^(-)?P(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)D)?T?(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d*)?)S)?$");
         private readonly string _source;
         private int _offset;

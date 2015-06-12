@@ -106,5 +106,13 @@ namespace NHibernate.OData.Test.Lexer
             Verify("datetime'2014-01-02T3:04+01:30'", new DateTimeOffset(2014, 1, 2, 3, 4, 0, TimeSpan.FromMinutes(90)).UtcDateTime);
             Verify("datetime'2014-01-02T3:04-01:30'", new DateTimeOffset(2014, 1, 2, 3, 4, 0, TimeSpan.FromMinutes(-90)).UtcDateTime);
         }
+
+        [Test]
+        public void Guid()
+        {
+            Verify("guid'00000000-0000-0000-0000-000000000000'", System.Guid.Empty);
+            Verify("guid'0DF3A082-4556-465D-88E5-31060CC439B0'", new Guid("0DF3A082-4556-465D-88E5-31060CC439B0"));
+            Verify("guid'0df3a082-4556-465d-88e5-31060cc439b0'", new Guid("0DF3A082-4556-465D-88E5-31060CC439B0"));
+        }
     }
 }
