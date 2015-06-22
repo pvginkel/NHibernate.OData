@@ -28,11 +28,7 @@ namespace NHibernate.OData
             if (arguments[0].Type != ExpressionType.Literal)
                 return base.SubStringOfMethod(method, arguments);
 
-            return Restrictions.Like(
-                ProjectionVisitor.CreateProjection(arguments[1]),
-                LiteralUtil.CoerceString(((LiteralExpression)arguments[0])),
-                MatchMode.Anywhere
-            );
+            return CreateLikeCriterion(arguments[1], arguments[0], MatchMode.Anywhere);
         }
 
         public override ICriterion StartsWithMethod(StartsWithMethod method, Expression[] arguments)
@@ -40,11 +36,7 @@ namespace NHibernate.OData
             if (arguments[1].Type != ExpressionType.Literal)
                 return base.StartsWithMethod(method, arguments);
 
-            return Restrictions.Like(
-                ProjectionVisitor.CreateProjection(arguments[0]),
-                LiteralUtil.CoerceString(((LiteralExpression)arguments[1])),
-                MatchMode.Start
-            );
+            return CreateLikeCriterion(arguments[0], arguments[1], MatchMode.Start);
         }
 
         public override ICriterion EndsWithMethod(EndsWithMethod method, Expression[] arguments)
@@ -52,11 +44,7 @@ namespace NHibernate.OData
             if (arguments[1].Type != ExpressionType.Literal)
                 return base.EndsWithMethod(method, arguments);
 
-            return Restrictions.Like(
-                ProjectionVisitor.CreateProjection(arguments[0]),
-                LiteralUtil.CoerceString(((LiteralExpression)arguments[1])),
-                MatchMode.End
-            );
+            return CreateLikeCriterion(arguments[0], arguments[1], MatchMode.End);
         }
 
         public override ICriterion AnyMethod(AnyMethod method, Expression[] arguments)
@@ -82,6 +70,14 @@ namespace NHibernate.OData
                 return base.AllMethod(method, arguments);
 
             return CreateAnyOrAllCriterion(method, (ResolvedMemberExpression)arguments[0], (LambdaExpression)arguments[1]);
+        }
+
+        private ICriterion CreateLikeCriterion(Expression projectionExpression, Expression literalExpression, MatchMode matchMode)
+        {
+            var projection = ProjectionVisitor.CreateProjection(projectionExpression);
+            var value = LiteralUtil.CoerceString((LiteralExpression)literalExpression);
+
+            return _context.CaseSensitiveLike ? Restrictions.Like(projection, value, matchMode) : Restrictions.InsensitiveLike(projection, value, matchMode);
         }
 
         private ICriterion CreateAnyOrAllCriterion(CollectionMethod method, ResolvedMemberExpression resolvedMember, LambdaExpression lambdaExpression)

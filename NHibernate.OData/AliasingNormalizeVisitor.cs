@@ -123,7 +123,7 @@ namespace NHibernate.OData
             {
                 string fullPath = mappedClassPath + "." + name;
 
-                var dynamicProperty = mappedClass.FindDynamicComponentProperty(fullPath, _context.CaseSensitive);
+                var dynamicProperty = mappedClass.FindDynamicComponentProperty(fullPath, _context.CaseSensitiveResolve);
 
                 if (dynamicProperty == null)
                     throw new QueryException(String.Format(
@@ -134,7 +134,7 @@ namespace NHibernate.OData
                 return dynamicProperty.Name;
             }
 
-            var resolvedName = _context.NameResolver.ResolveName(name, type, _context.CaseSensitive);
+            var resolvedName = _context.NameResolver.ResolveName(name, type, _context.CaseSensitiveResolve);
             if (resolvedName != null)
             {
                 type = resolvedName.Type;

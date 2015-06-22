@@ -204,6 +204,12 @@ namespace NHibernate.OData.Test.Support
             Verify(filter, query(Session.QueryOver<T>()).List());
         }
 
+        protected void Verify<T>(string filter, Func<IQueryOver<T, T>, IQueryOver<T, T>> query, ODataParserConfiguration configuration)
+            where T : class, IEntity
+        {
+            Verify(filter, query(Session.QueryOver<T>()).List(), configuration);
+        }
+
         protected void VerifyOrdered<T>(string filter, Func<IQueryOver<T, T>, IQueryOver<T, T>> query)
             where T : class, IEntity
         {
