@@ -32,6 +32,7 @@ namespace NHibernate.OData
             _context = new CriterionBuildContext(
                 sessionFactoryContext,
                 configuration.CaseSensitive,
+                configuration.CaseSensitiveLike,
                 configuration.NameResolver ?? new NameResolver()
             );
             _context.AliasesByName.Add(RootAlias, new Alias(RootAlias, string.Empty, _persistentClass));

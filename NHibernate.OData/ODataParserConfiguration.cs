@@ -16,6 +16,12 @@ namespace NHibernate.OData
         public bool CaseSensitive { get; set; }
 
         /// <summary>
+        /// Instructs NHibernate to use case sensitive (true) or case insensitive (false) LIKE expressions.
+        /// Actual support depends on the RDBMS of choice and NHibernate dialect.
+        /// </summary>
+        public bool CaseSensitiveLike { get; set; }
+
+        /// <summary>
         /// By default joins will be inner joins. Set this to true to use left outer joins.
         /// </summary>
         public bool OuterJoin { get; set; }
@@ -36,6 +42,7 @@ namespace NHibernate.OData
         public ODataParserConfiguration()
         {
             CaseSensitive = true;
+            CaseSensitiveLike = true;
         }
     }
 }

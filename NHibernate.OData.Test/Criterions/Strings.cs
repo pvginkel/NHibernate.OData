@@ -58,6 +58,20 @@ namespace NHibernate.OData.Test.Criterions
             VerifyThrows<Parent>("endswith(LengthString, Name)");
         }
 
+        // SQLite has case insensitive LIKE by default; just test that CaseSensitiveLike option doen't throw
+        [Test]
+        public void InsensitiveLikeDoesNotThrow()
+        {
+            var configuration = new ODataParserConfiguration
+            {
+                CaseSensitiveLike = false
+            };
+
+            Verify<Parent>("substringof('cde', LengthString)", q => q.Where(p => p.LengthString.IsInsensitiveLike("cde", MatchMode.Anywhere)), configuration);
+            Verify<Parent>("startswith(LengthString, 'abcde')", q => q.Where(p => p.LengthString.IsInsensitiveLike("abcde", MatchMode.Start)), configuration);
+            Verify<Parent>("endswith(LengthString, 'cde')", q => q.Where(p => p.LengthString.IsInsensitiveLike("cde", MatchMode.End)), configuration);
+        }
+
         [Test]
         public void SubStringOfAndEndsWith()
         {
