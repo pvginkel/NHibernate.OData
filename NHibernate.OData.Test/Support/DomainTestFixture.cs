@@ -80,7 +80,7 @@ namespace NHibernate.OData.Test.Support
                             { "DynamicInt", i },
                             { "DynamicChildRef", previousChild },
                         },
-                        RelatedParents = new HashSet<Parent>(parents),
+                        RelatedParents = new HashSet<Parent>(parents)
                     };
 
                     if (i == 10)
@@ -104,6 +104,8 @@ namespace NHibernate.OData.Test.Support
                         parent.RelatedParents = new HashSet<Parent>(parents.Where(x => x.Int32 < 5));
                     if (i == 10)
                         parent.RelatedParents = new HashSet<Parent>(parents.Where(x => x.Int32 >= 5));
+
+                    parent.EnumerableRelatedParents = parent.RelatedParents;
 
                     session.Save(parent);
                     parents.Add(parent);

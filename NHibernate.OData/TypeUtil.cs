@@ -12,11 +12,19 @@ namespace NHibernate.OData
             if (collectionType == null)
                 return null;
 
-            System.Type enumerableType = collectionType.GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+            if (collectionType.IsInterface && IsCollectionType(collectionType))
+                return collectionType.GetGenericArguments().Single();
+
+            System.Type enumerableType = collectionType.GetInterfaces().FirstOrDefault(IsCollectionType);
             if (enumerableType == null)
                 return null;
 
             return enumerableType.GetGenericArguments().Single();
+        }
+
+        private static bool IsCollectionType(System.Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>);
         }
     }
 }

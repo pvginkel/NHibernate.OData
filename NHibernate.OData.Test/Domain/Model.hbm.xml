@@ -13,6 +13,10 @@
       <key column="ParentId"/>
       <many-to-many column="RelatedParentId" class="Parent"/>
     </set>
+    <set name="EnumerableRelatedParents">
+      <key column="ParentId"/>
+      <many-to-many column="RelatedParentId" class="Parent"/>
+    </set>
   </class>
   <class name="Child">
     <id name="Id" type="int">

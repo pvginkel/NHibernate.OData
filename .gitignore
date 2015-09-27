@@ -6,3 +6,4 @@ Thumbs.db
 /*.shfbproj_*
 /*.dotCover
 _ReSharper.*
+/.vs
