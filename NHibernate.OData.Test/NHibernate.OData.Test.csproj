@@ -79,6 +79,7 @@
     <Compile Include="Interface\EntityNameInterface.cs" />
     <Compile Include="Interface\ParsedQueryString.cs" />
     <Compile Include="Inverse\Basics.cs" />
+    <Compile Include="Issues\Issue24Fixture.cs" />
     <Compile Include="Issues\Issue23Fixture.cs" />
     <Compile Include="Issues\Issue13Fixture.cs" />
     <Compile Include="Issues\Issue6Fixture.cs" />
@@ -134,7 +135,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Domain\Model.hbm.xml" />
+    <EmbeddedResource Include="Domain\Model.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

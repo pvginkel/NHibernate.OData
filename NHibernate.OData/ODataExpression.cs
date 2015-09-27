@@ -13,6 +13,7 @@ namespace NHibernate.OData
 
         private int? _top;
         private int? _skip;
+        private bool _count;
         private ICriterion _criterion;
         private OrderBy[] _orderBys;
         private readonly AliasingNormalizeVisitor _normalizeVisitor;
@@ -87,6 +88,7 @@ namespace NHibernate.OData
                 case "$orderby": ProcessOrderBy(value); break;
                 case "$top": ProcessTop(value); break;
                 case "$skip": ProcessSkip(value); break;
+                case "$count": ProcessCount(value); break;
 
                 default:
                     throw new ODataException(String.Format(
@@ -114,6 +116,22 @@ namespace NHibernate.OData
         private void ProcessSkip(string value)
         {
             _skip = GetPositiveInteger("$skip", value);
+        }
+
+        private void ProcessCount(string value)
+        {
+            switch (value)
+            {
+                case "true":
+                    _count = true;
+                    break;
+
+                case "false":
+                    break;
+
+                default:
+                    throw new ODataException(ErrorMessages.ODataRequest_ExpectedTrueOrFalseOnCount);
+            }
         }
 
         private int GetPositiveInteger(string key, string value)
@@ -147,10 +165,14 @@ namespace NHibernate.OData
 
             if (_criterion != null)
                 criteria = criteria.Add(_criterion);
-            if (_skip.HasValue)
-                criteria = criteria.SetFirstResult(_skip.Value);
-            if (_top.HasValue)
-                criteria = criteria.SetMaxResults(_top.Value);
+
+            if (!_count)
+            {
+                if (_skip.HasValue)
+                    criteria = criteria.SetFirstResult(_skip.Value);
+                if (_top.HasValue)
+                    criteria = criteria.SetMaxResults(_top.Value);
+            }
 
             if (_orderBys != null)
             {
@@ -162,6 +184,9 @@ namespace NHibernate.OData
                         criteria = criteria.AddOrder(Order.Desc(orderBy.Projection));
                 }
             }
+
+            if (_count)
+                criteria.SetProjection(Projections.Count(Projections.Id()));
 
             return criteria;
         }

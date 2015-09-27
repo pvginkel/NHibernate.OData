@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Expression_CannotCompareTypes" xml:space="preserve">
     <value>Cannot compare values of type '{0}'.</value>
@@ -263,5 +263,8 @@
   </data>
   <data name="Expression_LambdaParameterIsAlreadyDefined" xml:space="preserve">
     <value>Lambda expression parameter '{0}' has been already defined in the parent scope.</value>
+  </data>
+  <data name="ODataRequest_ExpectedTrueOrFalseOnCount" xml:space="preserve">
+    <value>Expected 'true' or 'false' as parameter to $count.</value>
   </data>
 </root>
