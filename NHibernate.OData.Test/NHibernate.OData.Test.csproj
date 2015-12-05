@@ -79,6 +79,7 @@
     <Compile Include="Interface\EntityNameInterface.cs" />
     <Compile Include="Interface\ParsedQueryString.cs" />
     <Compile Include="Inverse\Basics.cs" />
+    <Compile Include="Issues\Issue25Fixture.cs" />
     <Compile Include="Issues\Issue24Fixture.cs" />
     <Compile Include="Issues\Issue23Fixture.cs" />
     <Compile Include="Issues\Issue13Fixture.cs" />

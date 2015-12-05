@@ -165,7 +165,7 @@ namespace NHibernate.OData
                     result = Rebalance(
                         binary,
                         @operator.Value,
-                        right
+                        ParseCommon(right)
                     );
                 }
                 else
