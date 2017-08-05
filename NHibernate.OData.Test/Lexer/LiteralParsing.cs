@@ -101,10 +101,16 @@ namespace NHibernate.OData.Test.Lexer
             Verify("datetime'2014-01-02T03:04:05'", new DateTime(2014, 1, 2, 3, 4, 5));
             Verify("datetime'2014-01-02T03:04:05.5000'", new DateTime(2014, 1, 2, 3, 4, 5, 5000 / 1000));
             Verify("datetime'2014-01-02T03:04:05.0002000'", new DateTime(2014, 1, 2, 3, 4, 5, 2000 / 1000));
+            Verify("2017-8-5", new DateTime(2017, 8, 5, 0, 0, 0));
+            Verify("2017-08-05", new DateTime(2017, 8, 5, 0, 0, 0));
 
             Verify("datetime'2014-01-02T3:04Z'", new DateTimeOffset(2014, 1, 2, 3, 4, 0, TimeSpan.Zero).UtcDateTime);
             Verify("datetime'2014-01-02T3:04+01:30'", new DateTimeOffset(2014, 1, 2, 3, 4, 0, TimeSpan.FromMinutes(90)).UtcDateTime);
             Verify("datetime'2014-01-02T3:04-01:30'", new DateTimeOffset(2014, 1, 2, 3, 4, 0, TimeSpan.FromMinutes(-90)).UtcDateTime);
+            Verify("2017-08-05T09:08:07.06Z", new DateTimeOffset(2017, 8, 5, 9, 8, 7, 6 / 1000, TimeSpan.Zero).UtcDateTime);
+            Verify("2017-8-5T9:08:07.6Z", new DateTimeOffset(2017, 8, 5, 9, 8, 7, 6 / 1000, TimeSpan.Zero).UtcDateTime);
+            Verify("2017-08-05Z", new DateTimeOffset(new DateTime(2017, 8, 5, 0, 0, 0), TimeSpan.Zero).UtcDateTime);
+            Verify("2017-8-5Z", new DateTimeOffset(new DateTime(2017, 8, 5, 0, 0, 0), TimeSpan.Zero).UtcDateTime);
         }
 
         [Test]
