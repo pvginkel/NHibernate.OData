@@ -37,7 +37,7 @@ namespace NHibernate.OData.Test.Support
         {
             _databasePath = Path.GetTempFileName();
             _databaseBackupPath = Path.GetTempFileName();
-            
+
             var cfg = new Configuration()
                 .SetProperty(NhEnvironment.Dialect, typeof(SQLiteDialectEx).AssemblyQualifiedName)
                 .SetProperty(NhEnvironment.ConnectionString, String.Format("data source={0};pooling=false;", _databasePath))
@@ -246,6 +246,27 @@ namespace NHibernate.OData.Test.Support
             catch (Exception ex)
             {
                 Assert.AreEqual(exceptionType, ex.GetType());
+            }
+        }
+        /// <summary>
+        /// Verifies only selected fields were retrieved
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="filter"></param>
+        /// <param name="fieldsInSelect"> only required fields to check!</param>
+        /// <param name="fieldsNotInSelect">only nullable fields to check!</param>
+        protected void VerifySelectedFields<T>(string filter, string[] fieldsInSelect, string[] fieldsNotInSelect)
+        {
+            var items = Session.ODataQuery<T>(GetQueryString(filter)).List<T>();
+            Assert.IsNotEmpty(items);
+            var item = items[0];
+            foreach (var field in fieldsInSelect)
+            {
+                Assert.IsNotNull(item.GetType().GetProperty(field).GetValue(item,null));
+            }
+            foreach (var field in fieldsNotInSelect)
+            {
+                Assert.IsNull(item.GetType().GetProperty(field).GetValue(item, null));
             }
         }
 

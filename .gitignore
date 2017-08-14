@@ -7,3 +7,4 @@ Thumbs.db
 /*.dotCover
 _ReSharper.*
 /.vs
+/packages/*.*

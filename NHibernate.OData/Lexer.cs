@@ -10,7 +10,7 @@ namespace NHibernate.OData
     internal class Lexer
     {
         private static readonly CultureInfo ParseCulture = CultureInfo.InvariantCulture;
-        private static readonly Regex DateTimeRegex = new Regex("^(\\d{4})-(\\d{1,2})-(\\d{1,2})T(\\d{1,2}):(\\d{2})(?::(\\d{2})(?:\\.(\\d{1,7}))?)?(Z|(?:[+-](\\d{1,2}):(\\d{2})))?$");
+        private static readonly Regex DateTimeRegex = new Regex(@"^(\d{4})-(\d{1,2})-(\d{1,2})(?:T(\d{1,2}):(\d{2}))?(?::(\d{2})(?:\.(\d{1,7}))?)?(Z|(?:[+-](\d{1,2}):(\d{2})))?$");
         private static readonly Regex GuidRegex = new Regex("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$");
         private static readonly Regex DurationRegex = new Regex("^(-)?P(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)D)?T?(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d*)?)S)?$");
         private readonly string _source;
@@ -75,7 +75,16 @@ namespace NHibernate.OData
                 default:
                     if (Char.IsNumber(c))
                     {
-                        return ParseNumeric();
+                        string value = string.Empty;
+                        if (TryParseDateTimeValue(out value))
+                        {
+                            return ParseDateTimeString(value);
+                        }
+                        else
+                        {
+                            return ParseNumeric();
+                        }
+
                     }
                     else if (IsIdentifierStartChar(c))
                     {
@@ -88,6 +97,22 @@ namespace NHibernate.OData
                         ));
                     }
             }
+        }
+
+        private bool TryParseDateTimeValue(out string value)
+        {
+            value = string.Empty;
+            var currstr = _source.Substring(_current);
+            var OdataV4Regex = new Regex(@"^(\d{4})-(\d{1,2})-(\d{1,2})(?:T(\d{1,2}):(\d{2}))?(?::(\d{2})(?:\.(\d{1,7}))?)?(Z|(?:[+-](\d{1,2}):(\d{2})))?");
+            var match = OdataV4Regex.Match(currstr);
+            if (match.Success)
+            {
+                value = match.Value;
+                _current += value.Length;
+                _offset = _current + 1;
+            }
+            return match.Success;
+
         }
 
         private bool IsIdentifierStartChar(char c)
@@ -136,7 +161,8 @@ namespace NHibernate.OData
                     if (
                         _current < _source.Length - 1 &&
                         _source[_current + 1] == '\''
-                    ) {
+                    )
+                    {
                         _current++;
                         sb.Append('\'');
                     }
@@ -480,8 +506,8 @@ namespace NHibernate.OData
                 int year = int.Parse(match.Groups[1].Value, ParseCulture);
                 int month = int.Parse(match.Groups[2].Value, ParseCulture);
                 int day = int.Parse(match.Groups[3].Value, ParseCulture);
-                int hour = int.Parse(match.Groups[4].Value, ParseCulture);
-                int minute = int.Parse(match.Groups[5].Value, ParseCulture);
+                int hour = match.Groups[4].Value.Length > 0 ? int.Parse(match.Groups[4].Value, ParseCulture) : 0;
+                int minute = match.Groups[5].Value.Length > 0 ? int.Parse(match.Groups[5].Value, ParseCulture) : 0;
                 int second = match.Groups[6].Value.Length > 0 ? int.Parse(match.Groups[6].Value, ParseCulture) : 0;
                 int nanoSecond = match.Groups[7].Value.Length > 0 ? int.Parse(match.Groups[7].Value, ParseCulture) : 0;
 
