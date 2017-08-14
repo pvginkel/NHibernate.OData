@@ -16,10 +16,12 @@ namespace NHibernate.OData
         private bool _count;
         private ICriterion _criterion;
         private OrderBy[] _orderBys;
+        private ProjectionList _projections;
         private readonly AliasingNormalizeVisitor _normalizeVisitor;
         private readonly CriterionBuildContext _context;
         private readonly System.Type _persistentClass;
         private readonly ODataParserConfiguration _configuration;
+        
 
         private ODataExpression(ODataSessionFactoryContext sessionFactoryContext, System.Type persistentClass, ODataParserConfiguration configuration)
         {
@@ -89,12 +91,30 @@ namespace NHibernate.OData
                 case "$top": ProcessTop(value); break;
                 case "$skip": ProcessSkip(value); break;
                 case "$count": ProcessCount(value); break;
+                case "$select": ProcessSelect(value); break;
 
                 default:
                     throw new ODataException(String.Format(
                         ErrorMessages.ODataExpression_InvalidQueryStringElement, key
                     ));
             }
+        }
+
+        private void ProcessSelect(string value)
+        {
+            // the select fields are split by ','
+            var fields = value.Split(',');
+            _projections = GetProjections(fields);
+        }
+
+        private ProjectionList GetProjections(string[] fields)
+        {
+            var projections = Projections.ProjectionList();
+            foreach (var field in fields)
+            {
+                projections.Add(Projections.Property(field), field);
+            }
+            return projections;
         }
 
         private void ProcessFilter(string value)
@@ -183,6 +203,11 @@ namespace NHibernate.OData
                     else
                         criteria = criteria.AddOrder(Order.Desc(orderBy.Projection));
                 }
+            }
+            if (_projections != null)
+            {
+                criteria.SetProjection(_projections);
+                criteria.SetResultTransformer(new Transform.AliasToBeanResultTransformer(persistentClass));
             }
 
             if (_count)

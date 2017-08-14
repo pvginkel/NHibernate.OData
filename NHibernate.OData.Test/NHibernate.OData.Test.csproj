@@ -88,6 +88,7 @@
     <Compile Include="Issues\Issue13Fixture.cs" />
     <Compile Include="Issues\Issue6Fixture.cs" />
     <Compile Include="Parser\CollectionMethodCalls.cs" />
+    <Compile Include="Selects\Select.cs" />
     <Compile Include="SupportFixtures\HttpUtil.cs" />
     <Compile Include="Interface\IllegalQueryString.cs" />
     <Compile Include="Interface\NoFilter.cs" />
